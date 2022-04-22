@@ -65,15 +65,40 @@ const Conference = (props) => {
             audio: true,
             video: true,
             data: true
-        }
+        };
+        connection.sdpConstraints.mandartory = {
+            OfferToReceiveAudio: true,
+            OfferToReceiveVideo: true
+        };
         connection.onUserStatusChanged = (event) => {
-            var infoBar = document.getElement
+            var infoBar = document.getElementById('onUserStatusChanged');
+            var names = [];
+            connection.getAllParticipants().forEach((pid) => {
+                names.push(getFullName(pid));
+            });
+            if(!names.length) names = ['Only You'];
+            else names = [connection.extra.userFullName || 'You'].concat(names);
+
+            infoBar.innerHTML = <b>"Active users:"</b> + names.join(', ');
+        };
+
+        connection.onopen = (event) => {
+            connection.onUserStatusChanged(event);
+            
         }
     }
 
     const extractParams = () => {
         var r =  /([^&=]+)=?([^&]*)/g;
 
+    }
+
+    const getFullName = (userId) => {
+        var _userFullName = userId;
+        if(connection.peers[userId] && connection.peers[userId].extra.userFullName) {
+            _userFullName = connection.peers[userId].extra.userFullName;
+        }
+        return _userFullName;
     }
 
     return (
