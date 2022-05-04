@@ -6,6 +6,7 @@ import CodeContainer from './CodeContainer';
 import CodeContainerOptionContainer from './CodeContainerOptionContainer';
 import ColorPaletteConatiner from './ColorPaletteContainer';
 import CopyPathContainer from './CopyPathContainer';
+import EraserContainer from './eraser/EraserContainer';
 import FontSelector from './FontSelector';
 import LineWidthContainer from './LineWidthContainer';
 import MarkerContainer from './marker/MarkerContainer';
@@ -61,6 +62,7 @@ const CanvasDrawerWidget = (props) => {
         colorPaletteConatiner: false,
         markerContainer: false,
         pencilContainer: false,
+        eraserContainer: false,
         copyPathContainer: false,
         additionalOptionContainer: false,
         fontSelectionContainer: false,
@@ -108,6 +110,7 @@ const CanvasDrawerWidget = (props) => {
             colorPaletteConatiner: shouldbeOpenContainer === "colorPaletteConatiner" ? true : false,
             markerContainer: shouldbeOpenContainer === "markerContainer" ? true : false,
             pencilContainer: shouldbeOpenContainer === "pencilContainer" ? true : false,
+            eraserContainer: shouldbeOpenContainer === "eraserContainer" ? true: false,
             copyPathContainer: shouldbeOpenContainer === "copyPathContainer" ? true : false,
             additionalOptionContainer: shouldbeOpenContainer === "additionalOptionContainer" ? true : false,
             fontSelectionContainer: shouldbeOpenContainer === "fontSelectionContainer" ? true : false,
@@ -143,6 +146,10 @@ const CanvasDrawerWidget = (props) => {
                 open={ containersShow.pencilContainer } 
                 controlOpen={ controlShows } 
                 toolIconId="pencil-icon" />
+            <EraserContainer 
+                open={ containersShow.eraserContainer } 
+                controlOpen={ controlShows } 
+                toolIconId="eraser-icon" />
 
             <CopyPathContainer open={ containersShow.copyPathContainer } controlOpen={ controlShows } />
 

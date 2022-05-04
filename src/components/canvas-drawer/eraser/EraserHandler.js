@@ -1,4 +1,6 @@
-import drawHelper from "../helpers/DrawHelper";
+import eraserDrawHelper from "./EraserDrawHelper";
+
+var eraserHandler = undefined;
 
 export default class EraserHandler {
 
@@ -9,6 +11,8 @@ export default class EraserHandler {
         this.ismousedown = false;
         this.prevX = 0;
         this.prevY = 0;
+        this.opts = [];
+        eraserHandler = this;
     }
 
     mousedown (e, points) {
@@ -23,9 +27,9 @@ export default class EraserHandler {
         t.ismousedown = true;
 
         this.tempContext.lineCap = 'round';
-        drawHelper.line(this.tempContext, [t.prevX, t.prevY, x, y]);
+        eraserDrawHelper.line(this.tempContext, [t.prevX, t.prevY, x, y]);
 
-        points[points.length] = ['line', [t.prevX, t.prevY, x, y], drawHelper.getOptions()];
+        points[points.length] = ['line', [t.prevX, t.prevY, x, y], eraserDrawHelper.getOptions()];
 
         t.prevX = x;
         t.prevY = y;
@@ -43,12 +47,65 @@ export default class EraserHandler {
 
         if (t.ismousedown) {
             this.tempContext.lineCap = 'round';
-            drawHelper.line(this.tempContext, [t.prevX, t.prevY, x, y]);
+            eraserDrawHelper.line(this.tempContext, [t.prevX, t.prevY, x, y]);
 
-            points[points.length] = ['line', [t.prevX, t.prevY, x, y], drawHelper.getOptions()];
+            points[points.length] = ['line', [t.prevX, t.prevY, x, y], eraserDrawHelper.getOptions()];
 
             t.prevX = x;
             t.prevY = y;
         }
     }
+
+    updateOptionsChanged (options) {
+        if(options.eraserLineWidth) {
+            this.opts[0] = options.eraserLineWidth;
+            eraserDrawHelper.setLineWidth(options.eraserLineWidth);
+        }
+        if(options.eraserStrokeStyle) {
+            this.opts[1] = options.eraserStrokeStyle;
+            eraserDrawHelper.setStrokeStyle(options.eraserStrokeStyle);
+        }
+        if(options.fillStyle) {
+            this.opts[2] = options.fillStyle;
+            eraserDrawHelper.setFillStyle(options.fillStyle);
+        }
+        if(options.globalAlpha) {
+            this.opts[3] = options.globalAlpha;
+            eraserDrawHelper.setGlobalAlpha(options.globalAlpha);
+        }
+        if(options.globalCompositeOperation) {
+            this.opts[4] = options.globalCompositeOperation;
+            eraserDrawHelper.setGlobalCompositeOperation(options.globalCompositeOperation)
+        }
+        if(options.lineCap) {
+            this.opts[5] = options.lineCap;
+            eraserDrawHelper.setLineCap(options.lineCap);
+        }
+        if(options.lineJoin) {
+            this.opts[6] = options.lineJoin;
+            eraserDrawHelper.setLineJoin(options.lineJoin);
+        }
+        if(options.font) {
+            this.opts[7] = options.font;
+            eraserDrawHelper.setFont(options.font);
+        }
+     }
+}
+
+const createEraserHandler = (context, tempContext) => {
+    if(eraserHandler === undefined) {
+        new EraserHandler(context, tempContext);
+    }
+
+    return eraserHandler;
+}
+
+const listenEraserOptionsChanged = (options) => {
+    if(eraserHandler === undefined) return;
+    eraserHandler.updateOptionsChanged(options);
+}
+
+export {
+    createEraserHandler,
+    listenEraserOptionsChanged
 }

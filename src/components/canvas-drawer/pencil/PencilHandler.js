@@ -58,18 +58,38 @@ export default class PencilHandler {
     }
 
     updateOptionsChanged (options) {
-       if(options.pencilLineWidth) this.opts[0] = options.pencilLineWidth;
-       if(options.pencilStrokeStyle) this.opts[1] = options.pencilStrokeStyle;
-       if(options.fillStyle) this.opts[2] = options.fillStyle;
-       if(options.globalAlpha) this.opts[3] = options.globalAlpha;
-       if(options.globalCompositeOperation) this.opts[4] = options.globalCompositeOperation;
-       if(options.lineCap) this.opts[5] = options.lineCap;
-       if(options.lineJoin) this.opts[6] = options.lineJoin;
-       if(options.font) this.opts[7] = options.font;
-
-       console.log("this.opts[7] : " + this.opts[7]);
-       console.log("this.opts[0] : " + this.opts[0]);
-       console.log("this.opts[1] : " + this.opts[1]);
+       if(options.pencilLineWidth) {
+           this.opts[0] = options.pencilLineWidth;
+           pencilDrawHelper.setLineWidth(options.pencilLineWidth);
+       }
+       if(options.pencilStrokeStyle) {
+           this.opts[1] = options.pencilStrokeStyle;
+           pencilDrawHelper.setStrokeStyle(options.pencilStrokeStyle);
+       }
+       if(options.fillStyle) {
+           this.opts[2] = options.fillStyle;
+           pencilDrawHelper.setFillStyle(options.fillStyle);
+       }
+       if(options.globalAlpha) {
+           this.opts[3] = options.globalAlpha;
+           pencilDrawHelper.setGlobalAlpha(options.globalAlpha);
+       }
+       if(options.globalCompositeOperation) {
+           this.opts[4] = options.globalCompositeOperation;
+           pencilDrawHelper.setGlobalCompositeOperation(options.globalCompositeOperation)
+       }
+       if(options.lineCap) {
+           this.opts[5] = options.lineCap;
+           pencilDrawHelper.setLineCap(options.lineCap);
+       }
+       if(options.lineJoin) {
+           this.opts[6] = options.lineJoin;
+           pencilDrawHelper.setLineJoin(options.lineJoin);
+       }
+       if(options.font) {
+           this.opts[7] = options.font;
+           pencilDrawHelper.setFont(options.font);
+       }
     }
 }
 

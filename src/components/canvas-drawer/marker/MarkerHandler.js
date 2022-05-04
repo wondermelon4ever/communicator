@@ -59,14 +59,38 @@ export default class MarkerHandler {
     }
 
     updateOptionsChanged (options) {
-        if(options.markerLineWidth) this.opts[0] = options.markerLineWidth;
-        if(options.markerStrokeStyle) this.opts[1] = options.markerStrokeStyle;
-        if(options.fillStyle) this.opts[2] = options.fillStyle;
-        if(options.globalAlpha) this.opts[3] = options.globalAlpha;
-        if(options.globalCompositeOperation) this.opts[4] = options.globalCompositeOperation;
-        if(options.lineCap) this.opts[5] = options.lineCap;
-        if(options.lineJoin) this.opts[6] = options.lineJoin;
-        if(options.font) this.opts[7] = options.font; 
+        if(options.markerLineWidth) {
+            this.opts[0] = options.markerLineWidth;
+            markerDrawHelper.setLineWidth(options.markerLineWidth);
+        }
+        if(options.markerStrokeStyle) {
+            this.opts[1] = options.markerStrokeStyle;
+            markerDrawHelper.setStrokeStyle(options.markerStrokeStyle);
+        }
+        if(options.fillStyle) {
+            this.opts[2] = options.fillStyle;
+            markerDrawHelper.setFillStyle(options.fillStyle);
+        }
+        if(options.globalAlpha) {
+            this.opts[3] = options.globalAlpha;
+            markerDrawHelper.setGlobalAlpha(options.globalAlpha);
+        }
+        if(options.globalCompositeOperation) {
+            this.opts[4] = options.globalCompositeOperation;
+            markerDrawHelper.setGlobalCompositeOperation(options.globalCompositeOperation)
+        }
+        if(options.lineCap) {
+            this.opts[5] = options.lineCap;
+            markerDrawHelper.setLineCap(options.lineCap);
+        }
+        if(options.lineJoin) {
+            this.opts[6] = options.lineJoin;
+            markerDrawHelper.setLineJoin(options.lineJoin);
+        }
+        if(options.font) {
+            this.opts[7] = options.font;
+            markerDrawHelper.setFont(options.font);
+        }
      }
 }
 
