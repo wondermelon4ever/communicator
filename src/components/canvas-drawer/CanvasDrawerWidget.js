@@ -16,6 +16,7 @@ import PreviewPanel from './PreviewPanel';
 import Toolbox from './toolbox/Toolbox';
 import FontSizeSelector from './text/FontSizeSelector';
 import TextContainer from './text/TextContainer';
+import initWidget from './CanvasDrawerWidgetScript';
 import {
     addEvent,
     colors,
@@ -98,7 +99,8 @@ const CanvasDrawerWidget = (props) => {
         } else {
             window.selectedIcon = 'Pencil';
         }
-        require('./CanvasDrawerWidgetScript');
+        initWidget(iconShows);
+        // require('./CanvasDrawerWidgetScript');
     }
 
     const controlShows = (shouldbeOpenContainer) => {

@@ -57,7 +57,7 @@ export default class PencilHandler {
         }
     }
 
-    updateOptionsChanged (options) {
+    updateOptions (options) {
        if(options.pencilLineWidth) {
            this.opts[0] = options.pencilLineWidth;
            pencilDrawHelper.setLineWidth(options.pencilLineWidth);
@@ -103,13 +103,13 @@ const createPencilHandler = (context, tempContext) => {
 
 const initPencilOptions = (options) => {
     if(pencilHandler === undefined) return;
-    pencilHandler.updateOptionsChanged(otpions);
+    pencilHandler.updateOptions(otpions);
 
 }
 
 const onPencilOptionsChanged = (options) => {
     if(pencilHandler === undefined) return;
-    pencilHandler.updateOptionsChanged(options);
+    pencilHandler.updateOptions(options);
 }
 
 export {

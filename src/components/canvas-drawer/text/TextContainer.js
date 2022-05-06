@@ -3,6 +3,7 @@ import '../canvas-drawer-widget.css';
 import FontSelector from './FontSelector';
 import FontSizeSelector from './FontSizeSelector';
 import ColorPaletteAsTable from '../palette/ColorPaletteAsTable';
+import { onTextOptionsChanged } from './TextHandler';
 import {
     addEvent,
     colors,
@@ -41,6 +42,7 @@ const TextContainer = (props) => {
     });
 
     const toolIconId = props.toolIconId == undefined ? "text-icon" : props.toolIconId;
+    var alpha = 0.2;
     React.useEffect(()=>{
         var canvas = document.getElementById(toolIconId);
         addEvent(canvas, 'dblclick', function() {
@@ -86,10 +88,12 @@ const TextContainer = (props) => {
     const applyChange = () => {
         setOpen(false);
         setPaletteOpen(false);
-        // onTextOptionsChanged({
-        //     pencilLineWidth: info.thickness,
-        //     pencilStrokeStyle: hexToRGBA(info.color, alpha)
-        // });
+        onTextOptionsChanged({
+            font: info.font,
+            fontSize: info.fontSize,
+            // textColor: hexToRGBA(info.color, alpha)
+            textColor:info.color
+        });
     }
 
     const showPalatte = () => {

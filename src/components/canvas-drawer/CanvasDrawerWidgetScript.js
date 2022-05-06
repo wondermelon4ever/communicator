@@ -2,8 +2,8 @@
 import * as pdfjsLib from 'pdfjs-dist';
 import PencilHandler, { createPencilHandler } from './pencil/PencilHandler';
 import MarkerHandler, { createMarkerHandler } from './marker/MarkerHandler';
-import EraserHandler from './eraser/EraserHandler';
-// import TextHandler from './text/TextHandler';
+import EraserHandler, { createEraserHandler } from './eraser/EraserHandler';
+import TextHandler, { createTextHandler } from './text/TextHandler';
 import drawHelper from './helpers/DrawHelper';
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
 
@@ -19,8 +19,8 @@ import {
     syncData
 } from './util/Utils'
 
-// function initWidget (pencilHandler) {
-(function() {
+function initWidget (shows) {
+// (function() {
 
     var is = {
         isLine: false,
@@ -1539,7 +1539,7 @@ import {
         lineJoin: lineJoin,
         font: font
     }
-    pencilHandler.updateOptionsChanged(options);
+    pencilHandler.updateOptions(options);
 
     var markerLineWidth = document.getElementById('marker-stroke-style').value,
         markerStrokeStyle = '#' + document.getElementById('marker-fill-style').value,
@@ -1558,209 +1558,209 @@ import {
     }
     markerHandler.updateOptionsChanged(moptions);
 
-    var eraserHandler = new EraserHandler(context, tempContext);
-    // var textHandler = new TextHandler(context, tempContext);
+    var eraserHandler = createEraserHandler(context, tempContext);
+    var textHandler = createTextHandler(context, tempContext);
 
-    var textHandler = {
-        text: '',
-        selectedFontFamily: 'Arial',
-        selectedFontSize: '15',
-        lastFillStyle: '',
-        onShapeSelected: function() {
-            tempContext.canvas.style.cursor = 'text';
-            this.x = this.y = this.pageX = this.pageY = 0;
-            this.text = '';
-        },
-        onShapeUnSelected: function() {
-            this.text = '';
-            this.showOrHideTextTools('hide');
-            tempContext.canvas.style.cursor = 'default';
+    // var textHandler = {
+    //     text: '',
+    //     selectedFontFamily: 'Arial',
+    //     selectedFontSize: '15',
+    //     lastFillStyle: '',
+    //     onShapeSelected: function() {
+    //         tempContext.canvas.style.cursor = 'text';
+    //         this.x = this.y = this.pageX = this.pageY = 0;
+    //         this.text = '';
+    //     },
+    //     onShapeUnSelected: function() {
+    //         this.text = '';
+    //         this.showOrHideTextTools('hide');
+    //         tempContext.canvas.style.cursor = 'default';
 
-            if (typeof this.blinkCursorInterval !== 'undefined') {
-                clearInterval(this.blinkCursorInterval);
-            }
-        },
-        getFillColor: function(color) {
-            color = (color || fillStyle).toLowerCase();
+    //         if (typeof this.blinkCursorInterval !== 'undefined') {
+    //             clearInterval(this.blinkCursorInterval);
+    //         }
+    //     },
+    //     getFillColor: function(color) {
+    //         color = (color || fillStyle).toLowerCase();
 
-            if (color == 'rgba(255, 255, 255, 0)' || color == 'transparent' || color === 'white') {
-                return 'black';
-            }
+    //         if (color == 'rgba(255, 255, 255, 0)' || color == 'transparent' || color === 'white') {
+    //             return 'black';
+    //         }
 
-            return color;
-        },
-        writeText: function(keyPressed, isBackKeyPressed) {
-            if (!is.isText) return;
+    //         return color;
+    //     },
+    //     writeText: function(keyPressed, isBackKeyPressed) {
+    //         if (!is.isText) return;
 
-            if (isBackKeyPressed) {
-                textHandler.text = textHandler.text.substr(0, textHandler.text.length - 1);
-                textHandler.fillText(textHandler.text);
-                return;
-            }
+    //         if (isBackKeyPressed) {
+    //             textHandler.text = textHandler.text.substr(0, textHandler.text.length - 1);
+    //             textHandler.fillText(textHandler.text);
+    //             return;
+    //         }
 
-            textHandler.text += keyPressed;
-            textHandler.fillText(textHandler.text);
-        },
-        fillText: function(text) {
-            if (!is.isText) return;
+    //         textHandler.text += keyPressed;
+    //         textHandler.fillText(textHandler.text);
+    //     },
+    //     fillText: function(text) {
+    //         if (!is.isText) return;
 
-            tempContext.clearRect(0, 0, tempContext.canvas.width, tempContext.canvas.height);
+    //         tempContext.clearRect(0, 0, tempContext.canvas.width, tempContext.canvas.height);
 
-            var options = textHandler.getOptions();
-            drawHelper.handleOptions(tempContext, options);
-            tempContext.fillStyle = textHandler.getFillColor(options[2]);
-            tempContext.font = textHandler.selectedFontSize + 'px "' + textHandler.selectedFontFamily + '"';
+    //         var options = textHandler.getOptions();
+    //         drawHelper.handleOptions(tempContext, options);
+    //         tempContext.fillStyle = textHandler.getFillColor(options[2]);
+    //         tempContext.font = textHandler.selectedFontSize + 'px "' + textHandler.selectedFontFamily + '"';
 
-            tempContext.fillText(text, textHandler.x, textHandler.y);
-        },
-        blinkCursorInterval: null,
-        index: 0,
-        blinkCursor: function() {
-            textHandler.index++;
-            if (textHandler.index % 2 == 0) {
-                textHandler.fillText(textHandler.text + '|');
-            } else {
-                textHandler.fillText(textHandler.text);
-            }
-        },
-        getOptions: function() {
-            var options = {
-                font: textHandler.selectedFontSize + 'px "' + textHandler.selectedFontFamily + '"',
-                fillStyle: textHandler.getFillColor(),
-                strokeStyle: '#6c96c8',
-                globalCompositeOperation: 'source-over',
-                globalAlpha: 1,
-                lineJoin: 'round',
-                lineCap: 'round',
-                lineWidth: 2
-            };
-            font = options.font;
-            return options;
-        },
-        appendPoints: function() {
-            var options = textHandler.getOptions();
-            points[points.length] = ['text', ['"' + textHandler.text + '"', textHandler.x, textHandler.y], drawHelper.getOptions(options)];
-        },
-        mousedown: function(e) {
-            if (!is.isText) return;
+    //         tempContext.fillText(text, textHandler.x, textHandler.y);
+    //     },
+    //     blinkCursorInterval: null,
+    //     index: 0,
+    //     blinkCursor: function() {
+    //         textHandler.index++;
+    //         if (textHandler.index % 2 == 0) {
+    //             textHandler.fillText(textHandler.text + '|');
+    //         } else {
+    //             textHandler.fillText(textHandler.text);
+    //         }
+    //     },
+    //     getOptions: function() {
+    //         var options = {
+    //             font: textHandler.selectedFontSize + 'px "' + textHandler.selectedFontFamily + '"',
+    //             fillStyle: textHandler.getFillColor(),
+    //             strokeStyle: '#6c96c8',
+    //             globalCompositeOperation: 'source-over',
+    //             globalAlpha: 1,
+    //             lineJoin: 'round',
+    //             lineCap: 'round',
+    //             lineWidth: 2
+    //         };
+    //         font = options.font;
+    //         return options;
+    //     },
+    //     appendPoints: function() {
+    //         var options = textHandler.getOptions();
+    //         points[points.length] = ['text', ['"' + textHandler.text + '"', textHandler.x, textHandler.y], drawHelper.getOptions(options)];
+    //     },
+    //     mousedown: function(e) {
+    //         if (!is.isText) return;
 
-            if (textHandler.text.length) {
-                this.appendPoints();
-            }
+    //         if (textHandler.text.length) {
+    //             this.appendPoints();
+    //         }
 
-            textHandler.x = textHandler.y = 0;
-            textHandler.text = '';
+    //         textHandler.x = textHandler.y = 0;
+    //         textHandler.text = '';
 
-            textHandler.pageX = e.pageX;
-            textHandler.pageY = e.pageY;
+    //         textHandler.pageX = e.pageX;
+    //         textHandler.pageY = e.pageY;
 
-            textHandler.x = e.pageX - canvas.offsetLeft - 5;
-            textHandler.y = e.pageY - canvas.offsetTop + 10;
+    //         textHandler.x = e.pageX - canvas.offsetLeft - 5;
+    //         textHandler.y = e.pageY - canvas.offsetTop + 10;
 
-            if (typeof textHandler.blinkCursorInterval !== 'undefined') {
-                clearInterval(textHandler.blinkCursorInterval);
-            }
+    //         if (typeof textHandler.blinkCursorInterval !== 'undefined') {
+    //             clearInterval(textHandler.blinkCursorInterval);
+    //         }
 
-            textHandler.blinkCursor();
-            textHandler.blinkCursorInterval = setInterval(textHandler.blinkCursor, 700);
+    //         textHandler.blinkCursor();
+    //         textHandler.blinkCursorInterval = setInterval(textHandler.blinkCursor, 700);
 
-            this.showTextTools();
-        },
-        mouseup: function(e) {},
-        mousemove: function(e) {},
-        showOrHideTextTools: function(show) {
-            if (show === 'hide') {
-                if (this.lastFillStyle.length) {
-                    fillStyle = this.lastFillStyle;
-                    this.lastFillStyle = '';
-                }
-            } else if (!this.lastFillStyle.length) {
-                this.lastFillStyle = fillStyle;
-                fillStyle = 'black';
-            }
+    //         this.showTextTools();
+    //     },
+    //     mouseup: function(e) {},
+    //     mousemove: function(e) {},
+    //     showOrHideTextTools: function(show) {
+    //         if (show === 'hide') {
+    //             if (this.lastFillStyle.length) {
+    //                 fillStyle = this.lastFillStyle;
+    //                 this.lastFillStyle = '';
+    //             }
+    //         } else if (!this.lastFillStyle.length) {
+    //             this.lastFillStyle = fillStyle;
+    //             fillStyle = 'black';
+    //         }
 
-            this.fontFamilyBox.style.display = show == 'show' ? 'block' : 'none';
-            this.fontSizeBox.style.display = show == 'show' ? 'block' : 'none';
+    //         this.fontFamilyBox.style.display = show == 'show' ? 'block' : 'none';
+    //         this.fontSizeBox.style.display = show == 'show' ? 'block' : 'none';
 
-            this.fontSizeBox.style.left = this.x + 'px';
-            this.fontFamilyBox.style.left = (this.fontSizeBox.clientWidth + this.x) + 'px';
+    //         this.fontSizeBox.style.left = this.x + 'px';
+    //         this.fontFamilyBox.style.left = (this.fontSizeBox.clientWidth + this.x) + 'px';
 
-            this.fontSizeBox.style.top = this.y + 'px';
-            this.fontFamilyBox.style.top = this.y + 'px';
-        },
-        showTextTools: function() {
-            if (!this.fontFamilyBox || !this.fontSizeBox) return;
+    //         this.fontSizeBox.style.top = this.y + 'px';
+    //         this.fontFamilyBox.style.top = this.y + 'px';
+    //     },
+    //     showTextTools: function() {
+    //         if (!this.fontFamilyBox || !this.fontSizeBox) return;
 
-            this.unselectAllFontFamilies();
-            this.unselectAllFontSizes();
+    //         this.unselectAllFontFamilies();
+    //         this.unselectAllFontSizes();
 
-            this.showOrHideTextTools('show');
+    //         this.showOrHideTextTools('show');
 
-            this.eachFontFamily(function(child) {
-                child.onclick = function(e) {
-                    e.preventDefault();
+    //         this.eachFontFamily(function(child) {
+    //             child.onclick = function(e) {
+    //                 e.preventDefault();
 
-                    textHandler.showOrHideTextTools('hide');
+    //                 textHandler.showOrHideTextTools('hide');
 
-                    textHandler.selectedFontFamily = this.innerHTML;
-                    this.className = 'font-family-selected';
-                };
-                child.style.fontFamily = child.innerHTML;
-            });
+    //                 textHandler.selectedFontFamily = this.innerHTML;
+    //                 this.className = 'font-family-selected';
+    //             };
+    //             child.style.fontFamily = child.innerHTML;
+    //         });
 
-            this.eachFontSize(function(child) {
-                child.onclick = function(e) {
-                    e.preventDefault();
+    //         this.eachFontSize(function(child) {
+    //             child.onclick = function(e) {
+    //                 e.preventDefault();
 
-                    textHandler.showOrHideTextTools('hide');
+    //                 textHandler.showOrHideTextTools('hide');
 
-                    textHandler.selectedFontSize = this.innerHTML;
-                    this.className = 'font-family-selected';
-                };
-                // child.style.fontSize = child.innerHTML + 'px';
-            });
-        },
-        eachFontFamily: function(callback) {
-            var childs = this.fontFamilyBox.querySelectorAll('li');
-            for (var i = 0; i < childs.length; i++) {
-                callback(childs[i]);
-            }
-        },
-        unselectAllFontFamilies: function() {
-            this.eachFontFamily(function(child) {
-                child.className = '';
-                if (child.innerHTML === textHandler.selectedFontFamily) {
-                    child.className = 'font-family-selected';
-                }
-            });
-        },
-        eachFontSize: function(callback) {
-            var childs = this.fontSizeBox.querySelectorAll('li');
-            for (var i = 0; i < childs.length; i++) {
-                callback(childs[i]);
-            }
-        },
-        unselectAllFontSizes: function() {
-            this.eachFontSize(function(child) {
-                child.className = '';
-                if (child.innerHTML === textHandler.selectedFontSize) {
-                    child.className = 'font-size-selected';
-                }
-            });
-        },
-        onReturnKeyPressed: function() {
-            if (!textHandler.text || !textHandler.text.length) return;
-            var fontSize = parseInt(textHandler.selectedFontSize) || 15;
-            this.mousedown({
-                pageX: this.pageX,
-                // pageY: parseInt(tempContext.measureText(textHandler.text).height * 2) + 10
-                pageY: this.pageY + fontSize + 5
-            });
-            drawHelper.redraw(context, tempContext, points, this);
-        },
-        fontFamilyBox: document.querySelector('.fontSelectUl'),
-        fontSizeBox: document.querySelector('.fontSizeUl')
-    };
+    //                 textHandler.selectedFontSize = this.innerHTML;
+    //                 this.className = 'font-family-selected';
+    //             };
+    //             // child.style.fontSize = child.innerHTML + 'px';
+    //         });
+    //     },
+    //     eachFontFamily: function(callback) {
+    //         var childs = this.fontFamilyBox.querySelectorAll('li');
+    //         for (var i = 0; i < childs.length; i++) {
+    //             callback(childs[i]);
+    //         }
+    //     },
+    //     unselectAllFontFamilies: function() {
+    //         this.eachFontFamily(function(child) {
+    //             child.className = '';
+    //             if (child.innerHTML === textHandler.selectedFontFamily) {
+    //                 child.className = 'font-family-selected';
+    //             }
+    //         });
+    //     },
+    //     eachFontSize: function(callback) {
+    //         var childs = this.fontSizeBox.querySelectorAll('li');
+    //         for (var i = 0; i < childs.length; i++) {
+    //             callback(childs[i]);
+    //         }
+    //     },
+    //     unselectAllFontSizes: function() {
+    //         this.eachFontSize(function(child) {
+    //             child.className = '';
+    //             if (child.innerHTML === textHandler.selectedFontSize) {
+    //                 child.className = 'font-size-selected';
+    //             }
+    //         });
+    //     },
+    //     onReturnKeyPressed: function() {
+    //         if (!textHandler.text || !textHandler.text.length) return;
+    //         var fontSize = parseInt(textHandler.selectedFontSize) || 15;
+    //         this.mousedown({
+    //             pageX: this.pageX,
+    //             // pageY: parseInt(tempContext.measureText(textHandler.text).height * 2) + 10
+    //             pageY: this.pageY + fontSize + 5
+    //         });
+    //         drawHelper.redraw(context, tempContext, points, this);
+    //     },
+    //     fontFamilyBox: document.querySelector('.fontSelectUl'),
+    //     fontSizeBox: document.querySelector('.fontSizeUl')
+    // };
 
     var arcHandler = {
         global: {
@@ -3466,7 +3466,7 @@ import {
         else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousedown(e);
         else if (cache.isPencil) pencilHandler.mousedown(e, points);
         else if (cache.isEraser) eraserHandler.mousedown(e, points);
-        else if (cache.isText) textHandler.mousedown(e);
+        else if (cache.isText) textHandler.mousedown(e, points, shows.text);
         else if (cache.isImage) imageHandler.mousedown(e);
         else if (cache.isPdf) pdfHandler.mousedown(e);
         else if (cache.isArrow) arrowHandler.mousedown(e);
@@ -3544,7 +3544,7 @@ import {
         else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousemove(e);
         else if (cache.isPencil) pencilHandler.mousemove(e, points);
         else if (cache.isEraser) eraserHandler.mousemove(e, points);
-        else if (cache.isText) textHandler.mousemove(e);
+        else if (cache.isText) textHandler.mousemove(e, points);
         else if (cache.isImage) imageHandler.mousemove(e);
         else if (cache.isPdf) pdfHandler.mousedown(e);
         else if (cache.isArrow) arrowHandler.mousemove(e);
@@ -3609,20 +3609,20 @@ import {
 
         keyCode = e.which || e.keyCode || 0;
 
-        if (keyCode === 13 && is.isText) {
-            textHandler.onReturnKeyPressed();
+        if (keyCode === 13 && shows.text) {
+            textHandler.onReturnKeyPressed(points, shows.text);
             return;
         }
 
         if (keyCode == 8 || keyCode == 46) {
             if (isBackKey(e, keyCode)) {
-                textHandler.writeText(textHandler.lastKeyPress, true);
+                textHandler.writeText(textHandler.lastKeyPress, true, shows.text);
             }
             return;
         }
 
         // Ctrl + t
-        if (isControlKeyPressed && keyCode === 84 && is.isText) {
+        if (isControlKeyPressed && keyCode === 84 && shows.text) {
             textHandler.showTextTools();
             return;
         }
@@ -3680,7 +3680,7 @@ import {
 
         var inp = String.fromCharCode(keyCode);
         if (/[a-zA-Z0-9-_ !?|\/'",.=:;(){}\[\]`~@#$%^&*+-]/.test(inp)) {
-            textHandler.writeText(String.fromCharCode(keyCode));
+            textHandler.writeText(String.fromCharCode(keyCode), false, shows.text);
         }
     }
 
@@ -3695,7 +3695,7 @@ import {
             pastedText = e.clipboardData.getData('text/plain');
         }
         if (pastedText && pastedText.length) {
-            textHandler.writeText(pastedText);
+            textHandler.writeText(pastedText, false, shows.text);
         }
     }
 
@@ -3845,7 +3845,7 @@ import {
             uid: uid
         }, '*');
     }
-// }
-})();
+}
+// })();
 
-// export default initWidget;
+export default initWidget;

@@ -140,7 +140,7 @@ var drawHelper = {
 
     text : function(context, point, options, textHandler) {
         this.handleOptions(context, options);
-        context.fillStyle = textHandler.getFillColor(options[2]);
+        if(textHandler) context.fillStyle = textHandler.getFillColor(options[2]);
         context.fillText(point[0].substr(1, point[0].length - 2), point[1], point[2]);
     },
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { onFontSizeChanged } from './TextHandler';
 
 const fontSizeList = [ "8", "9", "10", "11", "12", "14", "15", "16", "18", "20", "24", "28", "32", "36", "40", "44", "48", "54", "60", "72" ]
 
@@ -8,6 +9,7 @@ const FontSizeSelector = (props) => {
 
     const handleFontSizeChange = (index) => {
         setFontSize(fontSizeList[index]);
+        onFontSizeChanged(fontSizeList[index]);
     }
 
     React.useEffect(()=>{
@@ -21,8 +23,7 @@ const FontSizeSelector = (props) => {
                 position: "absolute", 
                 top: 0, 
                 left: 0, 
-                width: 
-                "50px", 
+                width: "50px", 
                 textAlign: "center" 
             }}
         >

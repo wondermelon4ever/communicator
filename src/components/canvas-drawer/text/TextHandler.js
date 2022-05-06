@@ -1,245 +1,275 @@
+import { ConstructionOutlined } from "@mui/icons-material";
 import drawHelper from "../helpers/DrawHelper";
+
+var textHandler = undefined;
 
 export default class TextHandler {
     constructor(context, tempContext) {
         this.context = context;
         this.tempContext = tempContext;
+        this.canvas = tempContext.canvas;
         
         this.text = "";
         this.selectedFontFamily = 'Arial';
         this.selectedFontSize = '15';
-        this.lastFillStyle = '';
+        this.textColor = '#000000';
 
-        // this.fillStyle = props.fillStyle;
+        this.fillStyle = "#000000";
         this.blinkCursorInterval = undefined;
         this.index = 0;
-        // this.fontFamilyBox = document.querySelector(props.fontFamilyBoxName === undefined ? '.fontSelectUl' : props.fontFamilyBoxName);
-        // this.fontSizeBox   = document.querySelector(props.fontSizeBoxName === undefined ? '.fontSizeUl' : props.fontSizeBoxName);
         
         this.x = 0, this.y = 0, this.pageX = 0, this.pageY = 0;
+        textHandler = this;
     }
 
-    // onShapeSelected = function() {
-    //     this.tempContext.canvas.style.cursor = 'text';
-    //     this.x = this.y = this.pageX = this.pageY = 0;
-    //     this.text = '';
-    // }
+    setSelectedFontFamily = (font) => {
+        this.selectedFontFamily = font;
+    }
 
-    // onShapeUnSelected = function() {
-    //     this.text = '';
-    //     this.showOrHideTextTools('hide');
-    //     this.tempContext.canvas.style.cursor = 'default';
+    setSelectedFontSize = (fontSize) => {
+        this.selectedFontSize = fontSize;
+    }
 
-    //     if (typeof this.blinkCursorInterval !== 'undefined') {
-    //         clearInterval(this.blinkCursorInterval);
-    //     }
-    // }
+    setSelectedTextColor = (color) => {
+        this.textColor = "#"+color;
+        this.fillStyle = "#"+color;
+    }
 
-    // getFillColor = function(color) {
-    //     color = (color || this.fillStyle).toLowerCase();
+    onShapeSelected = () => {
+        this.tempContext.canvas.style.cursor = 'text';
+        this.x = this.y = this.pageX = this.pageY = 0;
+        this.text = '';
+    }
 
-    //     if (color == 'rgba(255, 255, 255, 0)' || color == 'transparent' || color === 'white') {
-    //         return 'black';
-    //     }
+    onShapeUnSelected = () => {
+        this.text = '';
+        this.showOrHideTextTools('hide');
+        this.tempContext.canvas.style.cursor = 'default';
 
-    //     return color;
-    // }
+        if (typeof this.blinkCursorInterval !== 'undefined') {
+            clearInterval(this.blinkCursorInterval);
+        }
+    }
 
-    // writeText = (keyPressed, isBackKeyPressed, isText = false) => {
-    //     if (!isText) return;
+    updateOptions = (options) => {
+        this.setSelectedFontFamily(options.font);
+        this.setSelectedFontSize(options.fontSize);
+        this.setSelectedTextColor(options.textColor);
+    }
 
-    //     if (isBackKeyPressed) {
-    //         this.text = this.text.substr(0, this.textHandler.text.length - 1);
-    //         this.fillText(this.text);
-    //         return;
-    //     }
+    getFillColor = (color) => {
+        color = (color || this.fillStyle).toLowerCase();
 
-    //     this.text += keyPressed;
-    //     this.fillText(this.text, isText);
-    // }
+        if (color == 'rgba(255, 255, 255, 0)' || color == 'transparent' || color === 'white') {
+            return 'black';
+        }
 
-    // fillText = function(text, isText = false) {
-    //     if (!isText) return;
+        return color;
+    }
 
-    //     this.tempContext.clearRect(0, 0, this.tempContext.canvas.width, this.tempContext.canvas.height);
+    writeText = (keyPressed, isBackKeyPressed, isText = false) => {
+        if (!isText) return;
 
-    //     var options = this.getOptions();
-    //     drawHelper.handleOptions(tempContext, options);
-    //     this.tempContext.fillStyle = getFillColor(options[2]);
-    //     this.tempContext.font = this.selectedFontSize + 'px "' + this.selectedFontFamily + '"';
+        if (isBackKeyPressed) {
+            this.text = this.text.substr(0, this.text.length - 1);
+            this.fillText(this.text, isText);
+            return;
+        }
 
-    //     this.tempContext.fillText(text, this.x, this.y);
-    // }
+        this.text += keyPressed;
+        this.fillText(this.text, isText);
+    }
 
-    // blinkCursor = function() {
-    //     textHandler.index++;
-    //     if (textHandler.index % 2 == 0) {
-    //         textHandler.fillText(textHandler.text + '|');
-    //     } else {
-    //         textHandler.fillText(textHandler.text);
-    //     }
-    // }
+    fillText = (text, isText = false) => {
+        if (!isText) return;
 
-    // getOptions = function() {
-    //     var options = {
-    //         font: textHandler.selectedFontSize + 'px "' + textHandler.selectedFontFamily + '"',
-    //         fillStyle: textHandler.getFillColor(),
-    //         strokeStyle: '#6c96c8',
-    //         globalCompositeOperation: 'source-over',
-    //         globalAlpha: 1,
-    //         lineJoin: 'round',
-    //         lineCap: 'round',
-    //         lineWidth: 2
-    //     };
-    //     font = options.font;
-    //     return options;
-    // }
+        this.tempContext.clearRect(0, 0, this.tempContext.canvas.width, this.tempContext.canvas.height);
 
-    // appendPoints = function() {
-    //     var options = textHandler.getOptions();
-    //     points[points.length] = ['text', ['"' + textHandler.text + '"', textHandler.x, textHandler.y], drawHelper.getOptions(options)];
-    // }
+        var options = this.getOptions();
+        drawHelper.handleOptions(this.tempContext, options);
+        this.tempContext.fillStyle = this.getFillColor(options[2]);
+        this.tempContext.font = this.selectedFontSize + 'px "' + this.selectedFontFamily + '"';
 
-    // mousedown = function(e) {
-    //     if (!is.isText) return;
+        this.tempContext.fillText(text, this.x, this.y);
+    }
 
-    //     if (textHandler.text.length) {
-    //         this.appendPoints();
-    //     }
+    blinkCursor = (isText = false) => {
+        this.index++;
+        if (this.index % 2 == 0) {
+            this.fillText(this.text + '|', isText);
+        } else {
+            this.fillText(this.text, isText);
+        }
+    }
 
-    //     textHandler.x = textHandler.y = 0;
-    //     textHandler.text = '';
+    getOptions = () => {
+        var options = {
+            font: this.selectedFontSize + 'px "' + this.selectedFontFamily + '"',
+            fillStyle: this.getFillColor(),
+            strokeStyle: '#6c96c8',
+            globalCompositeOperation: 'source-over',
+            globalAlpha: 1,
+            lineJoin: 'round',
+            lineCap: 'round',
+            lineWidth: 2
+        };
+        this.font = options.font;
+        return options;
+    }
 
-    //     textHandler.pageX = e.pageX;
-    //     textHandler.pageY = e.pageY;
+    appendPoints = (points) => {
+        var options = this.getOptions();
+        points[points.length] = ['text', ['"' + this.text + '"', this.x, this.y], drawHelper.getOptions(options)];
+    }
 
-    //     textHandler.x = e.pageX - canvas.offsetLeft - 5;
-    //     textHandler.y = e.pageY - canvas.offsetTop + 10;
+    mousedown = (e, points, isText = false) => {
+        if (!isText) return;
 
-    //     if (typeof textHandler.blinkCursorInterval !== 'undefined') {
-    //         clearInterval(textHandler.blinkCursorInterval);
-    //     }
+        if (this.text.length) {
+            this.appendPoints(points);
+        }
 
-    //     textHandler.blinkCursor();
-    //     textHandler.blinkCursorInterval = setInterval(textHandler.blinkCursor, 700);
+        this.x = this.y = 0;
+        this.text = '';
 
-    //     this.showTextTools();
-    // }
+        this.pageX = e.pageX;
+        this.pageY = e.pageY;
 
-    // mouseup = function(e) {}
-    // mousemove = function(e) {}
+        this.x = e.pageX - this.canvas.offsetLeft - 5;
+        this.y = e.pageY - this.canvas.offsetTop + 10;
 
-    // showOrHideTextTools = function(show) {
-    //     if (show === 'hide') {
-    //         if (this.lastFillStyle.length) {
-    //             fillStyle = this.lastFillStyle;
-    //             this.lastFillStyle = '';
-    //         }
-    //     } else if (!this.lastFillStyle.length) {
-    //         this.lastFillStyle = fillStyle;
-    //         fillStyle = 'black';
-    //     }
+        if (typeof this.blinkCursorInterval !== 'undefined') {
+            clearInterval(this.blinkCursorInterval);
+        }
 
-    //     this.fontFamilyBox.style.display = show == 'show' ? 'block' : 'none';
-    //     this.fontSizeBox.style.display = show == 'show' ? 'block' : 'none';
+        this.blinkCursor(isText);
+        this.blinkCursorInterval = setInterval(() =>  this.blinkCursor(isText), 700);
 
-    //     this.fontSizeBox.style.left = this.x + 'px';
-    //     this.fontFamilyBox.style.left = (this.fontSizeBox.clientWidth + this.x) + 'px';
+        this.showTextTools();
+    }
 
-    //     this.fontSizeBox.style.top = this.y + 'px';
-    //     this.fontFamilyBox.style.top = this.y + 'px';
-    // }
+    mouseup = function(e) {}
+    mousemove = function(e) {}
 
-    // showTextTools = function() {
-    //     if (!this.fontFamilyBox || !this.fontSizeBox) return;
+    showOrHideTextTools = (show) => {
+        var infobox = document.getElementById("text-infobox");
+        if(!infobox) {
+            infobox = document.createElement('div');
+            infobox.id = "text-infobox";
+            infobox.style.left = this.x + 'px';
+            infobox.style.top = (this.y+5) + 'px';
+            infobox.style.zIndex = 100000;
+            infobox.innerHTML = this.selectedFontFamily + ", " + this.selectedFontSize + ", " + this.fillStyle;
+        }
 
-    //     this.unselectAllFontFamilies();
-    //     this.unselectAllFontSizes();
+        if(show === 'hide') infobox.style.display = 'none';
+        else infobox.style.display = 'block';
 
-    //     this.showOrHideTextTools('show');
+        console.log(infobox.id + ", " + show);
+    }
 
-    //     this.eachFontFamily(function(child) {
-    //         child.onclick = function(e) {
-    //             e.preventDefault();
+    showTextTools = () => {
+        // if (!this.fontFamilyBox || !this.fontSizeBox) return;
 
-    //             this.showOrHideTextTools('hide');
+        // this.unselectAllFontFamilies();
+        // this.unselectAllFontSizes();
 
-    //             this.selectedFontFamily = this.innerHTML;
-    //             this.className = 'font-family-selected';
-    //         };
-    //         child.style.fontFamily = child.innerHTML;
-    //     });
+        this.showOrHideTextTools('show');
 
-    //     this.eachFontSize(function(child) {
-    //         child.onclick = function(e) {
-    //             e.preventDefault();
+        // this.eachFontFamily( child => {
+        //     child.onclick =  (e) => {
+        //         e.preventDefault();
 
-    //             this.showOrHideTextTools('hide');
+        //         this.showOrHideTextTools('hide');
 
-    //             this.selectedFontSize = this.innerHTML;
-    //             this.className = 'font-family-selected';
-    //         };
-    //         // child.style.fontSize = child.innerHTML + 'px';
-    //     });
-    // }
+        //         this.selectedFontFamily = this.innerHTML;
+        //         this.className = 'font-family-selected';
+        //     };
+        //     child.style.fontFamily = child.innerHTML;
+        // });
 
-    // eachFontFamily = function(callback) {
-    //     var childs = this.fontFamilyBox.querySelectorAll('li');
-    //     for (var i = 0; i < childs.length; i++) {
-    //         callback(childs[i]);
-    //     }
-    // }
-    // unselectAllFontFamilies = function() {
-    //     this.eachFontFamily(function(child) {
-    //         child.className = '';
-    //         if (child.innerHTML === textHandler.selectedFontFamily) {
-    //             child.className = 'font-family-selected';
-    //         }
-    //     });
-    // }
+        // this.eachFontSize(child => {
+        //     child.onclick = (e) => {
+        //         e.preventDefault();
 
-    // eachFontSize = function(callback) {
-    //     var childs = this.fontSizeBox.querySelectorAll('li');
-    //     for (var i = 0; i < childs.length; i++) {
-    //         callback(childs[i]);
-    //     }
-    // }
+        //         this.showOrHideTextTools('hide');
 
-    // unselectAllFontSizes = function() {
-    //     this.eachFontSize(function(child) {
-    //         child.className = '';
-    //         if (child.innerHTML === textHandler.selectedFontSize) {
-    //             child.className = 'font-size-selected';
-    //         }
-    //     });
-    // }
+        //         this.selectedFontSize = this.innerHTML;
+        //         this.className = 'font-family-selected';
+        //     };
+        //     // child.style.fontSize = child.innerHTML + 'px';
+        // });
+    }
 
-    // onReturnKeyPressed = function() {
-    //     if (!textHandler.text || !textHandler.text.length) return;
-    //     var fontSize = parseInt(textHandler.selectedFontSize) || 15;
-    //     this.mousedown({
-    //         pageX: this.pageX,
-    //         // pageY: parseInt(tempContext.measureText(textHandler.text).height * 2) + 10
-    //         pageY: this.pageY + fontSize + 5
-    //     });
-    //     drawHelper.redraw();
-    // }
+    eachFontFamily = (callback) => {
+        // var childs = this.fontFamilyBox.querySelectorAll('li');
+        // for (var i = 0; i < childs.length; i++) {
+        //     callback(childs[i]);
+        // }
+    }
+
+    unselectAllFontFamilies = () => {
+        // this.eachFontFamily((child) => {
+        //     child.className = '';
+        //     if (child.innerHTML === this.selectedFontFamily) {
+        //         child.className = 'font-family-selected';
+        //     }
+        // });
+    }
+
+    eachFontSize = (callback) => {
+        // var childs = this.fontSizeBox.querySelectorAll('li');
+        // for (var i = 0; i < childs.length; i++) {
+        //     callback(childs[i]);
+        // }
+    }
+
+    unselectAllFontSizes = () => {
+        // this.eachFontSize((child) => {
+        //     child.className = '';
+        //     if (child.innerHTML === this.selectedFontSize) {
+        //         child.className = 'font-size-selected';
+        //     }
+        // });
+    }
+
+    onReturnKeyPressed = (points, isText) => {
+        if (!this.text || !this.text.length) return;
+        var fontSize = parseInt(this.selectedFontSize) || 15;
+        this.mousedown({
+            pageX: this.pageX,
+            pageY: this.pageY + fontSize + 5,
+        }, points, isText);
+        drawHelper.redraw(this.context, this.tempContext, points, this);
+    }
+}
+
+const createTextHandler = (context, tempContext) => {
+    if(textHandler === undefined) new TextHandler(context, tempContext);
+    return textHandler;
 }
 
 const onFontChanged = (font) => {
-    console.log("clicked font=>" + font);
+    textHandler.setSelectedFontFamily(font);
 }
 
 const onFontSizeChanged = (fontSize) => {
-
+    textHandler.setSelectedFontSize(fontSize);
 }
 
 const onTextColorChanged = (textColor) => {
+    textHandler.setSelectedTextColor(textColor);
+}
 
+const onTextOptionsChanged = (options) => {
+    console.log(JSON.stringify(options));
+    textHandler.updateOptions(options);
 }
 
 export {
+    createTextHandler,
     onFontChanged,
     onFontSizeChanged,
-    onTextColorChanged
+    onTextColorChanged,
+    onTextOptionsChanged
 }
