@@ -9,8 +9,8 @@ import {
     hideContainers
 } from '../util/Utils';
 
-import { listenPencilOptionsChanged } from './PencilHandler';
-import ColorPaletteAsTable from '../palette/ColorPalatteAsTable';
+import { onPencilOptionsChanged } from './PencilHandler';
+import ColorPaletteAsTable from '../palette/ColorPaletteAsTable';
 
 const thicknessOptions = [
     { label: 1,  value: 1  },
@@ -86,7 +86,7 @@ const PencilContainer = (props) => {
             color: selectedColor
         });
 
-        setPaletteOpen(false);        
+        setPaletteOpen(false);
     }
 
     const showPalatte = () => {
@@ -96,7 +96,7 @@ const PencilContainer = (props) => {
     const applyChange = () => {
         setOpen(false);
         setPaletteOpen(false);
-        listenPencilOptionsChanged({
+        onPencilOptionsChanged({
             pencilLineWidth: info.thickness,
             pencilStrokeStyle: hexToRGBA(info.color, alpha)
         });

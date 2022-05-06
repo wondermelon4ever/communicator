@@ -7,14 +7,15 @@ import CodeContainerOptionContainer from './CodeContainerOptionContainer';
 import ColorPaletteConatiner from './ColorPaletteContainer';
 import CopyPathContainer from './CopyPathContainer';
 import EraserContainer from './eraser/EraserContainer';
-import FontSelector from './FontSelector';
+import FontSelector from './text/FontSelector';
 import LineWidthContainer from './LineWidthContainer';
 import MarkerContainer from './marker/MarkerContainer';
 import PencilContainer from './pencil/PencilContainer';
 import PdfContainer from './PdfContainer';
 import PreviewPanel from './PreviewPanel';
 import Toolbox from './toolbox/Toolbox';
-import FontSizeSelector from './FontSizeSelector';
+import FontSizeSelector from './text/FontSizeSelector';
+import TextContainer from './text/TextContainer';
 import {
     addEvent,
     colors,
@@ -63,6 +64,7 @@ const CanvasDrawerWidget = (props) => {
         markerContainer: false,
         pencilContainer: false,
         eraserContainer: false,
+        textContainer: false,
         copyPathContainer: false,
         additionalOptionContainer: false,
         fontSelectionContainer: false,
@@ -111,6 +113,7 @@ const CanvasDrawerWidget = (props) => {
             markerContainer: shouldbeOpenContainer === "markerContainer" ? true : false,
             pencilContainer: shouldbeOpenContainer === "pencilContainer" ? true : false,
             eraserContainer: shouldbeOpenContainer === "eraserContainer" ? true: false,
+            textContainer: shouldbeOpenContainer === "textContainer" ? true: false,
             copyPathContainer: shouldbeOpenContainer === "copyPathContainer" ? true : false,
             additionalOptionContainer: shouldbeOpenContainer === "additionalOptionContainer" ? true : false,
             fontSelectionContainer: shouldbeOpenContainer === "fontSelectionContainer" ? true : false,
@@ -150,13 +153,17 @@ const CanvasDrawerWidget = (props) => {
                 open={ containersShow.eraserContainer } 
                 controlOpen={ controlShows } 
                 toolIconId="eraser-icon" />
+            <TextContainer 
+                open={ containersShow.textContainer } 
+                controlOpen={ controlShows } 
+                toolIconId="text-icon" />
 
             <CopyPathContainer open={ containersShow.copyPathContainer } controlOpen={ controlShows } />
 
             <AdditionalOptionContainier open={ containersShow.additionalOptionContainer } controlOpen={ controlShows } />
 
             <FontSelector open={ containersShow.fontSelectionContainer } controlOpen={ controlShows } />
-            <FontSizeSelector open={ containersShow.fontSizeSelectionContainer } controlOpen={ controlShows } />            
+            <FontSizeSelector open={ containersShow.fontSizeSelectionContainer } controlOpen={ controlShows } />
         </div>
     )
 }

@@ -407,41 +407,49 @@ input:focus {
     background: rgb(6, 205, 255)!important;
     color: white!important;
 }
-#marker-selected-color,
-#marker-selected-color-2, #pencil-selected-color,
-#pencil-selected-color-2 {
+
+#text-selected-color, #text-selected-colir-2,
+#marker-selected-color, #marker-selected-color-2, 
+#pencil-selected-color, #pencil-selected-color-2 {
     display: inline-block;
     vertical-align: middle;
     width: 30px;
     height: 30px;
 }
-#marker-fill-colors, #pencil-fill-colors {
+
+#text-fill-colors, #marker-fill-colors, #pencil-fill-colors {
     display: block;
 }
-#marker-color-container, #pencil-color-container {
+
+#text-color-container, #marker-color-container, #pencil-color-container {
     position: relative;
 }
-#marker-fill-colors, #pencil-fill-colors {
+
+#text-fill-colors, #marker-fill-colors, #pencil-fill-colors {
     left: 100%;
     top: 0;
     width: 100px;
     padding: 10px;
 }
-#marker-fill-style, #pencil-fill-style {
+
+#text-fill-style, #marker-fill-style, #pencil-fill-style {
     width: 50px;
     display: inline-block;
 }
-#marker-colors-list, #pencil-colors-list {
+
+#text-colors-list, #marker-colors-list, #pencil-colors-list {
     margin: 10px auto;
     border-collapse: collapse;
 }
-#marker-colors-list td, #pencil-colors-list td {
+
+#text-colors-list td, #marker-colors-list td, #pencil-colors-list td {
     width: 15px;
     height: 15px;
     border: 1px solid black;
     padding: 0;
 }
-#marker-colors-list td:hover, #pencil-colors-list td:hover {
+
+#text-colors-list td:hover, #marker-colors-list td:hover, #pencil-colors-list td:hover {
     border: 1px solid white;
 }
 

@@ -108,7 +108,7 @@ const initMarkerOptions = (options) => {
 
 }
 
-const listenMarkerOptionsChanged = (options) => {
+const onMarkerOptionsChanged = (options) => {
     if(markerHandler === undefined) return;
     markerHandler.updateOptionsChanged(options);
 }
@@ -116,5 +116,5 @@ const listenMarkerOptionsChanged = (options) => {
 export {
     createMarkerHandler,
     initMarkerOptions,
-    listenMarkerOptionsChanged
+    onMarkerOptionsChanged
 }

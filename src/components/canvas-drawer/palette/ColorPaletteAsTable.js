@@ -1,4 +1,5 @@
 import React from 'react';
+import '../canvas-drawer-widget.css';
 
 const ColorPaletteAsTable = (props) => {
 

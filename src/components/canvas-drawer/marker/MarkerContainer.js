@@ -8,8 +8,8 @@ import {
     hexToRGBA,
     hideContainers
 } from '../util/Utils';
-import { listenMarkerOptionsChanged } from './MarkerHandler';
-import ColorPaletteAsTable from '../palette/ColorPalatteAsTable';
+import { onMarkerOptionsChanged } from './MarkerHandler';
+import ColorPaletteAsTable from '../palette/ColorPaletteAsTable';
 
 const thicknessOptions = [
     { label: 8,  value: 8  },
@@ -85,7 +85,7 @@ const MarkerContainer = (props) => {
     const applyChange = () => {
         setOpen(false);
         setPaletteOpen(false);
-        listenMarkerOptionsChanged({
+        onMarkerOptionsChanged({
             markerLineWidth: info.thickness,
             markerStrokeStyle: hexToRGBA(info.color, alpha)
         });

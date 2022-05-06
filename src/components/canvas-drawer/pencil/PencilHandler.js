@@ -107,7 +107,7 @@ const initPencilOptions = (options) => {
 
 }
 
-const listenPencilOptionsChanged = (options) => {
+const onPencilOptionsChanged = (options) => {
     if(pencilHandler === undefined) return;
     pencilHandler.updateOptionsChanged(options);
 }
@@ -115,5 +115,5 @@ const listenPencilOptionsChanged = (options) => {
 export {
     createPencilHandler,
     initPencilOptions,
-    listenPencilOptionsChanged
+    onPencilOptionsChanged
 }

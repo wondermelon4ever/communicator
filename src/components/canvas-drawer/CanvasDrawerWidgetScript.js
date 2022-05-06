@@ -3,6 +3,7 @@ import * as pdfjsLib from 'pdfjs-dist';
 import PencilHandler, { createPencilHandler } from './pencil/PencilHandler';
 import MarkerHandler, { createMarkerHandler } from './marker/MarkerHandler';
 import EraserHandler from './eraser/EraserHandler';
+// import TextHandler from './text/TextHandler';
 import drawHelper from './helpers/DrawHelper';
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
 
@@ -1558,6 +1559,7 @@ import {
     markerHandler.updateOptionsChanged(moptions);
 
     var eraserHandler = new EraserHandler(context, tempContext);
+    // var textHandler = new TextHandler(context, tempContext);
 
     var textHandler = {
         text: '',
@@ -1754,7 +1756,7 @@ import {
                 // pageY: parseInt(tempContext.measureText(textHandler.text).height * 2) + 10
                 pageY: this.pageY + fontSize + 5
             });
-            drawHelper.redraw(context, tempContext, points);
+            drawHelper.redraw(context, tempContext, points, this);
         },
         fontFamilyBox: document.querySelector('.fontSelectUl'),
         fontSizeBox: document.querySelector('.fontSizeUl')
@@ -3513,7 +3515,7 @@ import {
         else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mouseup(e);
         else if (cache.isPencil) pencilHandler.mouseup(e, points);
         else if (cache.isEraser) eraserHandler.mouseup(e, points);
-        else if (cache.isText) textHandler.mouseup(e);
+        else if (cache.isText) textHandler.mouseup(e, points);
         else if (cache.isImage) imageHandler.mouseup(e);
         else if (cache.isPdf) pdfHandler.mousedown(e);
         else if (cache.isArrow) arrowHandler.mouseup(e);

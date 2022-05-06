@@ -13,16 +13,15 @@ var drawHelper = {
     _lineJoin: "round",
     _font: "15px Arial",
 
-    redraw : function (context, tempContext, points) {
+    redraw : function (context, tempContext, points, handler) {
         tempContext.clearRect(0, 0, innerWidth, innerHeight);
         context.clearRect(0, 0, innerWidth, innerHeight);
-
         var i, point, length = points.length;
         for (i = 0; i < length; i++) {
             point = points[i];
             // point[0] != 'pdf' && 
             if (point && point.length && this[point[0]]) {
-                this[point[0]](context, point[1], point[2]);
+                this[point[0]](context, point[1], point[2], handler);
             }
             // else warn
         }
@@ -139,7 +138,7 @@ var drawHelper = {
         this.handleOptions(context, options);
     },
 
-    text : function(context, point, options) {
+    text : function(context, point, options, textHandler) {
         this.handleOptions(context, options);
         context.fillStyle = textHandler.getFillColor(options[2]);
         context.fillText(point[0].substr(1, point[0].length - 2), point[1], point[2]);
@@ -158,7 +157,7 @@ var drawHelper = {
         context.fillRect(point[0], point[1], point[2], point[3]);
     }, 
 
-    image : function(context, point, options) {
+    image : function(context, point, options, imageHandler) {
         this.handleOptions(context, options, true);
 
         var image = imageHandler.images[point[5]];
@@ -180,7 +179,7 @@ var drawHelper = {
         context.drawImage(image, point[1], point[2], point[3], point[4]);
     },
 
-    pdf : function(context, point, options) {
+    pdf : function(context, point, options, pdfHandler) {
         this.handleOptions(context, options, true);
 
         var image = pdfHandler.images[point[5]];
