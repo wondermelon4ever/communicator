@@ -1,7 +1,7 @@
 import React from 'react';
 import './canvas-drawer-widget.css';
 import AdditionalOptionContainier from './AdditionalOptionContainer';
-import ArcContainer from './ArcContainer';
+import ArcContainer from './arc/ArcContainer';
 import CodeContainer from './CodeContainer';
 import CodeContainerOptionContainer from './CodeContainerOptionContainer';
 import ColorPaletteConatiner from './ColorPaletteContainer';
@@ -16,6 +16,7 @@ import PreviewPanel from './PreviewPanel';
 import Toolbox from './toolbox/Toolbox';
 import FontSizeSelector from './text/FontSizeSelector';
 import TextContainer from './text/TextContainer';
+import TextInfoContainer from './text/TextInfoContainer';
 import initWidget from './CanvasDrawerWidgetScript';
 import {
     addEvent,
@@ -69,7 +70,8 @@ const CanvasDrawerWidget = (props) => {
         copyPathContainer: false,
         additionalOptionContainer: false,
         fontSelectionContainer: false,
-        fontSizeSelectionContainer: false
+        fontSizeSelectionContainer: false,
+        textInfoContainer: false
     });
 
     React.useEffect(()=>{
@@ -119,7 +121,8 @@ const CanvasDrawerWidget = (props) => {
             copyPathContainer: shouldbeOpenContainer === "copyPathContainer" ? true : false,
             additionalOptionContainer: shouldbeOpenContainer === "additionalOptionContainer" ? true : false,
             fontSelectionContainer: shouldbeOpenContainer === "fontSelectionContainer" ? true : false,
-            fontSizeSelectionContainer: shouldbeOpenContainer === "fontSizeSelectionContainer" ? true : false
+            fontSizeSelectionContainer: shouldbeOpenContainer === "fontSizeSelectionContainer" ? true : false,
+            textInfoContainer: shouldbeOpenContainer === "textInfoContainer" ? true : false
         });
     }
 
@@ -166,6 +169,8 @@ const CanvasDrawerWidget = (props) => {
 
             <FontSelector open={ containersShow.fontSelectionContainer } controlOpen={ controlShows } />
             <FontSizeSelector open={ containersShow.fontSizeSelectionContainer } controlOpen={ controlShows } />
+            <TextInfoContainer open={ containersShow.TextInfoContainer } controlOpen={ controlShows } />
+
         </div>
     )
 }

@@ -28,7 +28,7 @@ const FontSelector = (props) => {
     }
 
     return (
-        <ul className="fontSelectUl" 
+        <ul className="aafontSelectUl" 
             style={{ 
                 display: "none", 
                 position: "absolute", 

@@ -153,19 +153,18 @@ export default class TextHandler {
 
     showOrHideTextTools = (show) => {
         var infobox = document.getElementById("text-infobox");
-        if(!infobox) {
-            infobox = document.createElement('div');
-            infobox.id = "text-infobox";
-            infobox.style.left = this.x + 'px';
-            infobox.style.top = (this.y+5) + 'px';
-            infobox.style.zIndex = 100000;
-            infobox.innerHTML = this.selectedFontFamily + ", " + this.selectedFontSize + ", " + this.fillStyle;
-        }
+        if(!infobox) return;
+
+        infobox.id = "text-infobox";
+        infobox.style.left = this.x + 'px';
+        infobox.style.top = (this.y+5) + 'px';
+        infobox.style.backgroundColor = '#000000';
+        infobox.style.color = '#FFFFFF';
+        infobox.innerHTML = "Type you want. Your choices are <br/>";
+        infobox.innerHTML += "<b>" + this.selectedFontFamily + ", " + this.selectedFontSize + ", " + this.fillStyle + "</b>";
 
         if(show === 'hide') infobox.style.display = 'none';
         else infobox.style.display = 'block';
-
-        console.log(infobox.id + ", " + show);
     }
 
     showTextTools = () => {
@@ -262,7 +261,6 @@ const onTextColorChanged = (textColor) => {
 }
 
 const onTextOptionsChanged = (options) => {
-    console.log(JSON.stringify(options));
     textHandler.updateOptions(options);
 }
 

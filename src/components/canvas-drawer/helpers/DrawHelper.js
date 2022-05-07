@@ -21,6 +21,7 @@ var drawHelper = {
             point = points[i];
             // point[0] != 'pdf' && 
             if (point && point.length && this[point[0]]) {
+                console.log("redraw called. handler=>" + handler);
                 this[point[0]](context, point[1], point[2], handler);
             }
             // else warn
@@ -107,7 +108,8 @@ var drawHelper = {
         this.handleOptions(context, options);
     },
 
-    arrow : function(context, point, options) {
+    arrow : function(context, point, options, arrowHandler) {
+        console.log("arrow called, arrow handler =>" + arrowHandler);
         var mx = point[0];
         var my = point[1];
 
@@ -144,10 +146,10 @@ var drawHelper = {
         context.fillText(point[0].substr(1, point[0].length - 2), point[1], point[2]);
     },
 
-    arc : function(context, point, options) {
+    arc : function (context, points, options, arcHandler) {
         context.beginPath();
-        context.arc(point[0], point[1], point[2], point[3], 0, point[4]);
-
+        context.arc(points[0], points[1], points[2], points[3], 0, points[4]);
+        // context.stroke();
         this.handleOptions(context, options);
     },
 
