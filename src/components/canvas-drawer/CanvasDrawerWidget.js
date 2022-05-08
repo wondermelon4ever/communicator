@@ -1,22 +1,22 @@
 import React from 'react';
 import './canvas-drawer-widget.css';
-import AdditionalOptionContainier from './AdditionalOptionContainer';
-import ArcContainer from './arc/ArcContainer';
+import AdditionalOptionContainier from './common/options/AdditionalOptionContainer';
+import ArcContainer from './tools/arc/ArcContainer';
 import CodeContainer from './CodeContainer';
 import CodeContainerOptionContainer from './CodeContainerOptionContainer';
-import ColorPaletteConatiner from './ColorPaletteContainer';
+import ColorPaletteConatiner from './common/options/ColorPaletteContainer';
 import CopyPathContainer from './CopyPathContainer';
-import EraserContainer from './eraser/EraserContainer';
-import FontSelector from './text/FontSelector';
-import LineWidthContainer from './LineWidthContainer';
-import MarkerContainer from './marker/MarkerContainer';
-import PencilContainer from './pencil/PencilContainer';
-import PdfContainer from './PdfContainer';
+import EraserContainer from './tools/eraser/EraserContainer';
+import FontSelector from './tools/text/FontSelector';
+import LineWidthContainer from './common/options/LineWidthContainer';
+import MarkerContainer from './tools/marker/MarkerContainer';
+import PencilContainer from './tools/pencil/PencilContainer';
+import PdfContainer from './tools/pdf/PdfContainer';
 import PreviewPanel from './PreviewPanel';
 import Toolbox from './toolbox/Toolbox';
-import FontSizeSelector from './text/FontSizeSelector';
-import TextContainer from './text/TextContainer';
-import TextInfoContainer from './text/TextInfoContainer';
+import FontSizeSelector from './tools/text/FontSizeSelector';
+import TextContainer from './tools/text/TextContainer';
+import TextInfoContainer from './tools/text/TextInfoContainer';
 import initWidget from './CanvasDrawerWidgetScript';
 import {
     addEvent,
@@ -62,7 +62,7 @@ const CanvasDrawerWidget = (props) => {
         previewPanel: false,
         codeContainerOptionsContainer: false,
         lineWidthContainer: false,
-        colorPaletteConatiner: false,
+        colorPaletteContainer: false,
         markerContainer: false,
         pencilContainer: false,
         eraserContainer: false,
@@ -113,7 +113,7 @@ const CanvasDrawerWidget = (props) => {
             previewPanel: shouldbeOpenContainer === "previewPanel" ? true : false,
             codeContainerOptionsContainer: shouldbeOpenContainer === "codeContainerOptionsContainer" ? true : false,
             lineWidthContainer: shouldbeOpenContainer === "lineWidthContainer" ? true : false,
-            colorPaletteConatiner: shouldbeOpenContainer === "colorPaletteConatiner" ? true : false,
+            colorPaletteContainer: shouldbeOpenContainer === "colorPaletteContainer" ? true : false,
             markerContainer: shouldbeOpenContainer === "markerContainer" ? true : false,
             pencilContainer: shouldbeOpenContainer === "pencilContainer" ? true : false,
             eraserContainer: shouldbeOpenContainer === "eraserContainer" ? true: false,
@@ -142,9 +142,19 @@ const CanvasDrawerWidget = (props) => {
             <PreviewPanel open={ containersShow.previewPanel } controlOpen={ controlShows } />
             
             <CodeContainerOptionContainer open={ containersShow.codeContainerOptionsContainer } controlOpen={ controlShows } />
-            <LineWidthContainer open={ containersShow.lineWidthContainer } controlOpen={ controlShows } />
 
-            <ColorPaletteConatiner open={ containersShow.colorPaletteConatiner } controlOpen={ controlShows } />
+            <LineWidthContainer 
+                open={ containersShow.lineWidthContainer } 
+                controlOpen={ controlShows } 
+                toolIconId="line-width" />
+            <ColorPaletteConatiner 
+                open={ containersShow.colorPaletteContainer } 
+                controlOpen={ controlShows } 
+                toolIconId="colors" />
+            <AdditionalOptionContainier 
+                open={ containersShow.additionalOptionContainer } 
+                controlOpen={ controlShows } 
+                toolIconId="additional" />
             
             <MarkerContainer 
                 open={ containersShow.markerContainer } 
@@ -163,9 +173,9 @@ const CanvasDrawerWidget = (props) => {
                 controlOpen={ controlShows } 
                 toolIconId="text-icon" />
 
-            <CopyPathContainer open={ containersShow.copyPathContainer } controlOpen={ controlShows } />
-
-            <AdditionalOptionContainier open={ containersShow.additionalOptionContainer } controlOpen={ controlShows } />
+            <CopyPathContainer 
+                open={ containersShow.copyPathContainer } 
+                controlOpen={ controlShows } />
 
             <FontSelector open={ containersShow.fontSelectionContainer } controlOpen={ controlShows } />
             <FontSizeSelector open={ containersShow.fontSizeSelectionContainer } controlOpen={ controlShows } />

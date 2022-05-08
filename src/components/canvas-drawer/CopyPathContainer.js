@@ -7,7 +7,10 @@ const CopyPathContainer = (props) => {
     }, []);
 
     return (
-        <section id="copy-container" className="context-popup">
+        <section 
+            id="copy-container" 
+            className="context-popup"
+        >
             <div>
                 <input type="checkbox" id="copy-last" checked onChange={ (e)=>console.log(e)}/>
                 <label htmlFor="copy-last">Copy last path</label>
