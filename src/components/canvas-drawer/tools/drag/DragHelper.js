@@ -155,19 +155,19 @@ export default class DragHelper {
         g.ismousedown = true;
     }
 
-    mouseup = (isDragLastPath) => {
+    mouseup = (e, points, isDragLastPath) => {
         var g = this.global;
 
         if (isDragLastPath) {
             this.tempContext.clearRect(0, 0, innerWidth, innerHeight);
             this.context.clearRect(0, 0, innerWidth, innerHeight);
-            this.end();
+            this.end(points);
         }
 
         g.ismousedown = false;
     }
 
-    mousemove = (e, points) => {
+    mousemove = (e, points, isDragLastPath) => {
         var x = e.pageX - this.canvas.offsetLeft,
             y = e.pageY - this.canvas.offsetTop,
             g = this.global;
@@ -178,7 +178,7 @@ export default class DragHelper {
             this.dragShape(x, y);
         }
 
-        if (is.isDragLastPath) this.init();
+        if (isDragLastPath) this.init();
     }
 
     init = (points) => {
@@ -291,7 +291,7 @@ export default class DragHelper {
 
             this.tempContext.beginPath();
             this.tempContext.arc(point[1] + point[3], point[2] + point[4], 10, Math.PI * 2, 0, !1);
-            vtempContext.fill();
+            this.tempContext.fill();
         }
     }
 
@@ -388,7 +388,7 @@ export default class DragHelper {
         this.tempContext.clearRect(0, 0, innerWidth, innerHeight);
 
         var point = points[points.length - 1];
-        drawHelper[point[0]](context, point[1], point[2]);
+        drawHelper[point[0]](this.context, point[1], point[2]);
     }
 
     dragAllPaths = (x, y, points) => {
