@@ -165,7 +165,7 @@ function initWidget (shows) {
     var eraserHandler = createEraserHandler(context, tempContext);
     var textHandler = createTextHandler(context, tempContext);
 
-    var arcHandler = createArcHandler(context, tempContext);
+    var arcHandler = createArcHandler(context, tempContext, getPoints);
     arcHandler.init(points);
 
     var lineHandler = createLineHandler(context, tempContext);
@@ -174,7 +174,7 @@ function initWidget (shows) {
     var quadraticHandler = createQuadraticHandler(context, tempContext);
     var bezierHandler = createBezierHandler(context, tempContext);
     var zoomHandler = createZoomHandler(context, tempContext);
-    var imageHandler = createImageHandler(context, tempContext);
+    var imageHandler = createImageHandler(context, tempContext, syncPoints);
     var pdfHandler = createPdfHandler(context, tempContext);
 
     var icons = {};
@@ -277,7 +277,8 @@ function initWidget (shows) {
         tools: tools,
         common: common,
         getPoints: getPoints,
-        endLastPath: endLastPath
+        endLastPath: endLastPath,
+        syncPoints: syncPoints
     });
 
     function getPoints () {
@@ -314,7 +315,7 @@ function initWidget (shows) {
         else if (cache.isRectangle) rectHandler.mousedown(e, points);
         else if (cache.isQuadraticCurve) quadraticHandler.mousedown(e, points);
         else if (cache.isBezierCurve) bezierHandler.mousedown(e, points);
-        else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousedown(e, points);
+        else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousedown(e, points, is.isDragAllPaths);
         else if (cache.isPencil) pencilHandler.mousedown(e, points);
         else if (cache.isEraser) eraserHandler.mousedown(e, points);
         else if (cache.isText) textHandler.mousedown(e, points, shows.text);
@@ -363,7 +364,7 @@ function initWidget (shows) {
         else if (cache.isRectangle) rectHandler.mouseup(e, points);
         else if (cache.isQuadraticCurve) quadraticHandler.mouseup(e, points);
         else if (cache.isBezierCurve) bezierHandler.mouseup(e, points);
-        else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mouseup(e, points);
+        else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mouseup(e, points, is.isDragLastPath);
         else if (cache.isPencil) pencilHandler.mouseup(e, points);
         else if (cache.isEraser) eraserHandler.mouseup(e, points);
         else if (cache.isText) textHandler.mouseup(e, points);
@@ -556,7 +557,7 @@ function initWidget (shows) {
 
     var uid;
 
-    window.addEventListener('message', function(event) {
+    window.addEventListener('message', (event) => {
         if (!event.data) return;
 
         if (!uid) {
@@ -664,12 +665,13 @@ function initWidget (shows) {
     }, false);
 
     function syncPoints(isSyncAll) {
+        
         if (isSyncAll) {
             lastPointIndex = 0;
         }
 
         if (lastPointIndex == points.length) return;
-
+        
         var pointsToShare = [];
         for (var i = lastPointIndex; i < points.length; i++) {
             pointsToShare[i - lastPointIndex] = points[i];
