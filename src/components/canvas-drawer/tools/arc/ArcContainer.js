@@ -4,8 +4,8 @@ import { onArcRangeKeyDowned, onIsClockwiseChanged } from './ArcHandler';
 
 const ArcContainer = (props) => {
 
-    const [arcRange, setArcRange] = React.useState(2);
-    const [isClockwise, setIsClockwise] = React.useState(true);
+    const [arcRange, setArcRange] = React.useState(1);
+    const [isClockwise, setIsClockwise] = React.useState(false);
 
     React.useEffect(()=>{
         
@@ -33,12 +33,12 @@ const ArcContainer = (props) => {
                 type="text" 
                 value={ arcRange } 
                 // onKeyDown={ handleKeydown } 
-                onChange={ (e)=>console.log() }
+                onChange={ (e)=>console.log(e) }
             />
             <input 
                 type="checkbox" 
                 id="is-clockwise" 
-                value={ isClockwise } 
+                checked={ isClockwise } 
                 className="allow-select" 
                 onChange={ handleIsClockwiseChanged }
             />
