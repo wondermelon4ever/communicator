@@ -4,7 +4,7 @@ export default class FileSelector {
 
     constructor () {
         this.selector = this;
-        this.selector.selectSingleFile = selectFile;
+        this.selector.selectSingleFile = this.selectFile;
         this.selector.selectMultipleFiles = (callback) => {
             selectFile(callback, true);
         }
@@ -40,7 +40,7 @@ export default class FileSelector {
         };
         file.style.display = 'none';
         (document.body || document.documentElement).appendChild(file);
-        fireClickEvent(file);
+        this.fireClickEvent(file);
     }
 
     fireClickEvent = (element) => {
