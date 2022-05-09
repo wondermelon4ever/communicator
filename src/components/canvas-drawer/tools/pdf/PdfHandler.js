@@ -1,10 +1,11 @@
 import * as pdfjsLib from 'pdfjs-dist';
 import drawHelper, { setPdfHandler } from "../../common/helpers/DrawHelper";
+import data_uris from '../../toolbox/ToolboxImages';
 
 var pdfHandler = undefined;
 export default class PdfHandler {
 
-    constructor(context, tempContext) {
+    constructor(context, tempContext, getPoints, syncPoints) {
         this.context = context;
         this.tempContext = tempContext;
         this.canvas = tempContext.canvas;
@@ -24,6 +25,10 @@ export default class PdfHandler {
         this.ismousedown = false;
         this.prevX = 0;
         this.prevY = 0;
+        this.pdf = undefined;
+
+        this.getPoints = getPoints;
+        this.syncPoints = syncPoints;
     }
 
     getPage = (pageNumber, callback) => {
@@ -31,19 +36,19 @@ export default class PdfHandler {
 
         if (!this.pdf) {
             pdfjsLib.disableWorker = false;
-            pdfjsLib.getDocument(this.lastPdfURL).then(function(pdf) {
-                this.pdf = pdf;
+            pdfjsLib.getDocument(this.lastPdfURL).promise.then( pdfDocument => {
+                this.pdf = pdfDocument;
                 this.getPage(pageNumber, callback);
             });
             return;
         }
 
         var pdf = this.pdf;
-        pdf.getPage(pageNumber).then(function(page) {
-            pdfHandler.pageNumber = pageNumber;
+        pdf.getPage(pageNumber).then( page => {
+            this.pageNumber = pageNumber;
 
             var scale = 1.5;
-            var viewport = page.getViewport(scale);
+            var viewport = page.getViewport({ scale: scale });
 
             var cav = document.createElement('canvas');
             var ctx = cav.getContext('2d');
@@ -55,12 +60,12 @@ export default class PdfHandler {
                 viewport: viewport
             };
 
-            if (pdfHandler.removeWhiteBackground === true) {
-                renderContext.background = 'rgba(0,0,0,0)';
+            if (this.removeWhiteBackground === true) {
+                this.background = 'rgba(0,0,0,0)';
             }
 
-            page.render(renderContext).then(function() {
-                if (pdfHandler.removeWhiteBackground === true) {
+            page.render(renderContext).promise.then( () => {
+                if (this.removeWhiteBackground === true) {
                     var imgd = ctx.getImageData(0, 0, cav.width, cav.height);
                     var pix = imgd.data;
                     var newColor = {
@@ -85,52 +90,52 @@ export default class PdfHandler {
                     ctx.putImageData(imgd, 0, 0);
                 }
 
-                pdfHandler.lastPage = cav.toDataURL('image/png');
-                callback(pdfHandler.lastPage, cav.width, cav.height, pdf.numPages);
+                this.lastPage = cav.toDataURL('image/png');
+                callback(this.lastPage, cav.width, cav.height, pdf.numPages);
             });
         });
     }
 
     load = (lastPdfURL) => {
-        pdfHandler.lastPdfURL = lastPdfURL;
-        pdfHandler.getPage(parseInt(pdfHandler.pdfPagesList.value || 1), function(lastPage, width, height, numPages) {
-            pdfHandler.prevX = canvas.width - width - parseInt(width / 2);
+        this.lastPdfURL = lastPdfURL;
+        this.getPage(parseInt(this.pdfPagesList.value || 1), (lastPage, width, height, numPages) => {
+            this.prevX = this.canvas.width - width - parseInt(width / 2);
 
-            var t = pdfHandler;
-            pdfHandler.lastIndex = pdfHandler.images.length;
-            var point = [lastPage, 60, 20, width, height, pdfHandler.lastIndex];
+            var points = this.getPoints();
+            this.lastIndex = this.images.length;
+            var point = [lastPage, 60, 20, width, height, this.lastIndex];
 
-            pdfHandler.lastPointIndex = points.length;
+            this.lastPointIndex = points.length;
             points[points.length] = ['pdf', point, drawHelper.getOptions()];
 
-            pdfHandler.pdfPagesList.innerHTML = '';
+            this.pdfPagesList.innerHTML = '';
             for (var i = 1; i <= numPages; i++) {
                 var option = document.createElement('option');
                 option.value = i;
                 option.innerHTML = 'Page #' + i;
-                pdfHandler.pdfPagesList.appendChild(option);
+                this.pdfPagesList.appendChild(option);
 
-                if (pdfHandler.pageNumber.toString() == i.toString()) {
+                if (this.pageNumber.toString() == i.toString()) {
                     option.selected = true;
                 }
             }
 
-            this.pdfPagesList.onchange = function() {
-                pdfHandler.load(lastPdfURL);
+            this.pdfPagesList.onchange = () => {
+                this.load(lastPdfURL);
             };
 
-            this.pdfNext.onclick = function() {
-                pdfHandler.pdfPagesList.selectedIndex++;
-                pdfHandler.pdfPagesList.onchange();
+            this.pdfNext.onclick = () => {
+                this.pdfPagesList.selectedIndex++;
+                this.pdfPagesList.onchange();
             };
 
-            this.pdfPrev.onclick = function() {
-                pdfHandler.pdfPagesList.selectedIndex--;
-                pdfHandler.pdfPagesList.onchange();
+            this.pdfPrev.onclick = () => {
+                this.pdfPagesList.selectedIndex--;
+                this.pdfPagesList.onchange();
             };
 
-            this.pdfClose.onclick = function() {
-                pdfHandler.pdfPageContainer.style.display = 'none';
+            this.pdfClose.onclick = () => {
+                this.pdfPageContainer.style.display = 'none';
             };
 
             document.getElementById('drag-last-path').click();
@@ -144,7 +149,7 @@ export default class PdfHandler {
             this.pdfPageContainer.style.display = 'block';
 
             // share to webrtc
-            syncPoints(true);
+            this.syncPoints(true);
         });
     }
 
@@ -180,16 +185,17 @@ export default class PdfHandler {
 
         var t = this;
         if (t.ismousedown) {
-            tempContext.clearRect(0, 0, innerWidth, innerHeight);
-            drawHelper.pdf(tempContext, [pdfHandler.lastPage, t.prevX, t.prevY, x - t.prevX, y - t.prevY, pdfHandler.lastIndex]);
+            this.tempContext.clearRect(0, 0, innerWidth, innerHeight);
+            drawHelper.pdf(tempContext, [this.lastPage, t.prevX, t.prevY, x - t.prevX, y - t.prevY, this.lastIndex]);
         }
     }
 
-    reset_pos = (x, y, points) => {
+    reset_pos = (x, y) => {
+        var points = this.getPoints();
         this.pdfPageContainer.style.top = y + 'px';
-        if (!points[pdfHandler.lastPointIndex]) return;
-        var point = points[pdfHandler.lastPointIndex][1];
-        pdfHandler.pdfPageContainer.style.left = (point[1] + point[3] - parseInt(point[3] / 2) - parseInt(pdfHandler.pdfPageContainer.clientWidth / 2)) + 'px';
+        if (!points[this.lastPointIndex]) return;
+        var point = points[this.lastPointIndex][1];
+        this.pdfPageContainer.style.left = (point[1] + point[3] - parseInt(point[3] / 2) - parseInt(this.pdfPageContainer.clientWidth / 2)) + 'px';
     }
 
     end = () => {
@@ -197,9 +203,9 @@ export default class PdfHandler {
     }
 }
 
-const createPdfHandler = (context, tempContext) => {
+const createPdfHandler = (context, tempContext, getPoints, syncPoints) => {
     if(pdfHandler === undefined) {
-        pdfHandler = new PdfHandler(context, tempContext);
+        pdfHandler = new PdfHandler(context, tempContext, getPoints, syncPoints);
         setPdfHandler(pdfHandler);
     }
     return pdfHandler;

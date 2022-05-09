@@ -175,7 +175,7 @@ function initWidget (shows) {
     var bezierHandler = createBezierHandler(context, tempContext);
     var zoomHandler = createZoomHandler(context, tempContext);
     var imageHandler = createImageHandler(context, tempContext, syncPoints);
-    var pdfHandler = createPdfHandler(context, tempContext);
+    var pdfHandler = createPdfHandler(context, tempContext, getPoints, syncPoints);
 
     var icons = {};
     if (params.icons) {
