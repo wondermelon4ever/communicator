@@ -6,6 +6,7 @@ import {
     syncData
 } from '../util/Utils'
 import data_uris from './ToolboxImages';
+import FileSelector from '../tools/file/FileSelector';
 
 const initToolbox = (params) => {
     var imageHandler= params.imageHandler;
@@ -23,6 +24,7 @@ const initToolbox = (params) => {
     var common      = params.common;
     var getPoints   = params.getPoints;
     var endLastPath = params.endLastPath;
+    var syncPoints  = params.syncPoints;
 
     var cache = {};
 
@@ -39,9 +41,8 @@ const initToolbox = (params) => {
         }
 
         addEvent(context.canvas, 'click', function() {
-
             if (textHandler.text.length) {
-                textHandler.appendPoints(points);
+                textHandler.appendPoints(getPoints());
             }
 
             if (shape === 'Text') {
@@ -55,7 +56,6 @@ const initToolbox = (params) => {
             }
 
             dragHelper.global.startingIndex = 0;
-
             setSelection(this, shape);
 
             if (this.id === 'drag-last-path') {
@@ -82,9 +82,9 @@ const initToolbox = (params) => {
                             imageHandler.lastImageIndex = index;
 
                             imageHandler.images.push(image);
-                            imageHandler.load(image.clientWidth, image.clientHeight);
+                            imageHandler.load(image.clientWidth, image.clientHeight, getPoints());
                         };
-                        image.style = 'position: absolute; top: -99999999999; left: -999999999;'
+                        image.style = 'position: absolute; top: -99999999999; left: -999999999;';
                         document.body.appendChild(image);
                         image.src = event.target.result;
                     };
@@ -193,6 +193,7 @@ const initToolbox = (params) => {
             contextUndo.drawImage(image, 4, 4, 32, 32);
 
             document.querySelector('#undo').onclick = function() {
+                var points = getPoint();
                 if (points.length) {
                     points.length = points.length - 1;
                     drawHelper.redraw(context, tempContext, points);
@@ -451,7 +452,7 @@ const initToolbox = (params) => {
 
     addEvent(codePreview, 'click', () => {
         selectBtn(codePreview);
-        btnCodePreviewClicked(getPoints);
+        btnCodePreviewClicked(getPoints());
     });
 
     function btnCodePreviewClicked() {
@@ -459,7 +460,7 @@ const initToolbox = (params) => {
         optionsContainer.style.display = 'block';
 
         codeText.focus();
-        common.updateTextArea(getPoints);
+        common.updateTextArea(getPoints());
 
         setHeightForCodeAndOptionsContainer();
 
