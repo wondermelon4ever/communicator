@@ -1,10 +1,14 @@
-import pdfjsLib from 'pdfjs-dist';
+import * as pdfjsLib from 'pdfjs-dist';
 import drawHelper, { setPdfHandler } from "../../common/helpers/DrawHelper";
 
 var pdfHandler = undefined;
 export default class PdfHandler {
 
     constructor(context, tempContext) {
+        this.context = context;
+        this.tempContext = tempContext;
+        this.canvas = tempContext.canvas;
+
         this.lastPdfURL = null;
         this.lastIndex = 0;
         this.lastPointIndex = 0;
