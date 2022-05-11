@@ -223,8 +223,8 @@ const initToolbox = (params) => {
 
     function decorateZoomUp() {
         var context = getContext('zoom-up');
-        addEvent(context.canvas, 'click', function() {
-            zoomHandler.up();
+        addEvent(context.canvas, 'click', function(e) {
+            zoomHandler.up(e, getPoints());
         });
 
         var image = new Image();
@@ -236,8 +236,8 @@ const initToolbox = (params) => {
 
     function decorateZoomDown() {
         var context = getContext('zoom-down');
-        addEvent(context.canvas, 'click', function() {
-            zoomHandler.down();
+        addEvent(context.canvas, 'click', function(e) {
+            zoomHandler.down(e, getPoints());
         });
 
         var image = new Image();
