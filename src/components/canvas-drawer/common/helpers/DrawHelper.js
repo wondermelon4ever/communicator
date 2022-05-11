@@ -128,7 +128,7 @@ var drawHelper = {
         var arrowSize = arrowHandler.arrowSize;
 
         if (arrowSize == 10) {
-            arrowSize = (options ? options[0] : lineWidth) * 5;
+            arrowSize = (options ? options[0] : this._lineWidth) * 5;
         }
 
         var angle = Math.atan2(ly - my, lx - mx);
@@ -147,6 +147,7 @@ var drawHelper = {
         context.lineTo(lx - arrowSize * Math.cos(angle - Math.PI / 7), ly - arrowSize * Math.sin(angle - Math.PI / 7));
 
         this.handleOptions(context, options);
+        console.log("END");
     },
 
     text : function(context, point, options) {
