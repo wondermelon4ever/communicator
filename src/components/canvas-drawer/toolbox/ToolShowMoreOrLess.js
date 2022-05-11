@@ -1,0 +1,28 @@
+import React from 'react';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import IconButton from '@mui/material/IconButton';
+
+const ToolShowMoreOrLess = (props) => {
+
+    const [expanded, setExpanded] = React.useState(false);
+
+    const handleOnClick = () => {
+        setExpanded(!expanded);
+    }
+
+    return (
+        <div style={{ margine: "3px", padding: "3px" }}>
+            <IconButton onClick={ handleOnClick } sx={{ height: 32, width: 20, color: "#FFFFFF" }} >
+            {
+                expanded ? 
+                <KeyboardArrowLeftIcon fontSize="medium" color="white"/>
+                :
+                <KeyboardArrowRightIcon fontSize="medium" color="white"/>
+            }
+            </IconButton>
+        </div>
+    )
+}
+
+export default ToolShowMoreOrLess;
