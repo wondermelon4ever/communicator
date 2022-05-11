@@ -5,7 +5,7 @@ import MarkerHandler, { createMarkerHandler } from './tools/marker/MarkerHandler
 import EraserHandler, { createEraserHandler } from './tools/eraser/EraserHandler';
 import TextHandler, { createTextHandler } from './tools/text/TextHandler';
 import drawHelper from './common/helpers/DrawHelper';
-import dragHelper from './tools/drag/DragHelper';
+import DragHelper from './tools/drag/DragHelper';
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
 
 import {
@@ -30,7 +30,6 @@ import { createImageHandler } from './tools/file/ImageHandler';
 import { createPdfHandler } from './tools/pdf/PdfHandler';
 import FileSelector from './tools/file/FileSelector';
 import Common from './common/Common';
-import DragHelper from './tools/drag/DragHelper';
 import initToolbox from './toolbox/ToolboxInitializer';
 
 function initWidget (shows) {
@@ -71,7 +70,7 @@ function initWidget (shows) {
 
     var context = getContext('main-canvas'), tempContext = getContext('temp-canvas');
     var common = new Common(textarea);
-    var dragHelper = new DragHelper(context, tempContext);
+    var dragHelper = new DragHelper(context, tempContext, getIsControlKeyPressed, setIsControlKeypressed, copy, paste, getPoints);
 
     function endLastPath() {
         var cache = is;
@@ -91,6 +90,14 @@ function initWidget (shows) {
 
     var copiedStuff = [],
         isControlKeyPressed;
+
+    function getIsControlKeyPressed() {
+        return isControlKeyPressed;
+    }
+
+    function setIsControlKeypressed(isPressed) {
+        isControlKeyPressed = isPressed;
+    }
 
     function copy() {
         endLastPath();
@@ -120,7 +127,7 @@ function initWidget (shows) {
                 startingIndex: points.length - 1
             };
 
-            dragHelper.dragAllPaths(0, 0);
+            dragHelper.dragAllPaths(0, 0, points);
             setSelection(find('drag-last-path'), 'DragLastPath');
         } else {
 
@@ -315,7 +322,7 @@ function initWidget (shows) {
         else if (cache.isRectangle) rectHandler.mousedown(e, points);
         else if (cache.isQuadraticCurve) quadraticHandler.mousedown(e, points);
         else if (cache.isBezierCurve) bezierHandler.mousedown(e, points);
-        else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousedown(e, points, is.isDragAllPaths);
+        else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousedown(e, points, is.isDragAllPaths, is.isDragLastPath);
         else if (cache.isPencil) pencilHandler.mousedown(e, points);
         else if (cache.isEraser) eraserHandler.mousedown(e, points);
         else if (cache.isText) textHandler.mousedown(e, points, shows.text);
@@ -393,7 +400,7 @@ function initWidget (shows) {
         else if (cache.isRectangle) rectHandler.mousemove(e, points);
         else if (cache.isQuadraticCurve) quadraticHandler.mousemove(e, points);
         else if (cache.isBezierCurve) bezierHandler.mousemove(e, points);
-        else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousemove(e, points);
+        else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousemove(e, points, is.isDragAllPaths, is.isDragLastPath);
         else if (cache.isPencil) pencilHandler.mousemove(e, points);
         else if (cache.isEraser) eraserHandler.mousemove(e, points);
         else if (cache.isText) textHandler.mousemove(e, points);
