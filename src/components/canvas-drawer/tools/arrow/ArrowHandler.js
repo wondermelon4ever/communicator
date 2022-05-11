@@ -46,7 +46,7 @@ export default class ArrowHandler {
         if (t.ismousedown) {
             this.tempContext.clearRect(0, 0, innerWidth, innerHeight);
 
-            drawHelper.arrow(this.tempContext, [t.prevX, t.prevY, x, y], [], this);
+            drawHelper.arrow(this.tempContext, [t.prevX, t.prevY, x, y]);
         }
     }
 }
