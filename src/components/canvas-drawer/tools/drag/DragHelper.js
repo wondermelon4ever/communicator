@@ -2,11 +2,15 @@ import drawHelper from "../../common/helpers/DrawHelper";
 
 export default class DragHelper {
 
-    constructor(context, tempContext) {
+    constructor(context, tempContext, getIsControlKeyPressed, setIsControlKeypressed, copy, paste, getPoints) {
         this.context = context;
         this.tempContext = tempContext;
         this.canvas = tempContext.canvas;
-        this.isControlKeyPressed = false;
+        this.getIsControlKeyPressed = getIsControlKeyPressed;
+        this.setIsControlKeypressed = setIsControlKeypressed;
+        this.copy = copy;
+        this.paste= paste;
+        this.getPoints = getPoints
     }
 
     global = {
@@ -17,14 +21,14 @@ export default class DragHelper {
         startingIndex: 0
     }
 
-    mousedown = (e, points) => {
-        if (this.isControlKeyPressed) {
-            copy();
-            paste();
-            this.isControlKeyPressed = false;
+    mousedown = (e, points, isDragAllPaths, isDragLastPath) => {
+        if (this.getIsControlKeyPressed()) {
+            this.copy();
+            this.paste();
+            this.setIsControlKeypressed(false);
         }
 
-        var g = global;
+        var g = this.global;
 
         var x = e.pageX - this.canvas.offsetLeft,
             y = e.pageY - this.canvas.offsetTop;
@@ -93,7 +97,7 @@ export default class DragHelper {
                     g.pointsToMove = 'stretch-third';
                 }
 
-                if (dHelper.isPointInPath(x, y, point[1] + point[3], point[2] + point[4])) {
+                if (this.isPointInPath(x, y, point[1] + point[3], point[2] + point[4])) {
                     g.pointsToMove = 'stretch-last';
                 }
             }
@@ -127,7 +131,7 @@ export default class DragHelper {
                     g.pointsToMove = 'control-points';
                 }
 
-                if (dHelper.isPointInPath(x, y, point[4], point[5])) {
+                if (this.isPointInPath(x, y, point[4], point[5])) {
                     g.pointsToMove = 'ending-points';
                 }
             }
@@ -167,18 +171,17 @@ export default class DragHelper {
         g.ismousedown = false;
     }
 
-    mousemove = (e, points, isDragLastPath) => {
+    mousemove = (e, points, isDragAllPath, isDragLastPath) => {
         var x = e.pageX - this.canvas.offsetLeft,
             y = e.pageY - this.canvas.offsetTop,
             g = this.global;
-
         drawHelper.redraw(this.context, this.tempContext, points);
 
         if (g.ismousedown) {
-            this.dragShape(x, y);
+            this.dragShape(x, y, isDragAllPath, isDragLastPath);
         }
 
-        if (isDragLastPath) this.init();
+        if (isDragLastPath) this.init(points);
     }
 
     init = (points) => {
@@ -369,11 +372,11 @@ export default class DragHelper {
         this.tempContext.clearRect(0, 0, innerWidth, innerHeight);
 
         if (isDragLastPath) {
-            this.dragLastPath(x, y);
+            this.dragLastPath(x, y, this.getPoints());
         }
 
         if (isDragAllPaths) {
-            this.dragAllPaths(x, y);
+            this.dragAllPaths(x, y, this.getPoints());
         }
 
         var g = this.global;
