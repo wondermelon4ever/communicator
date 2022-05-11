@@ -17,6 +17,7 @@ import Toolbox from './toolbox/Toolbox';
 import FontSizeSelector from './tools/text/FontSizeSelector';
 import TextContainer from './tools/text/TextContainer';
 import TextInfoContainer from './tools/text/TextInfoContainer';
+import Toolbox2 from './toolbox/Toolbox2';
 import initWidget from './CanvasDrawerWidgetScript';
 import {
     addEvent,
@@ -134,6 +135,8 @@ const CanvasDrawerWidget = (props) => {
             </section>
 
             <Toolbox shows={ iconShows } />
+
+            <Toolbox2 canvasName="main-canvas" />
 
             <PdfContainer open={ containersShow.pdfContainer } controlOpen={ controlShows } />
             <ArcContainer open={ containersShow.arcContainer } controlOpen={ controlShows }  />
