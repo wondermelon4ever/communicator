@@ -147,7 +147,6 @@ var drawHelper = {
         context.lineTo(lx - arrowSize * Math.cos(angle - Math.PI / 7), ly - arrowSize * Math.sin(angle - Math.PI / 7));
 
         this.handleOptions(context, options);
-        console.log("END");
     },
 
     text : function(context, point, options) {
