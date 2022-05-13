@@ -16,10 +16,56 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import ToolShowMoreOrLess from './ToolShowMoreOrLess';
+import InfoIcon from '@mui/icons-material/Info';
+import HelpIcon from '@mui/icons-material/Help';
+import SettingsIcon from '@mui/icons-material/Settings';
+import ToolSelection from './ToolSelection';
+import ToolArc from '../tools/arc/ToolArc';
+import ToolArrow from '../tools/arrow/ToolArrow';
+import ToolLine from '../tools/line/ToolLine';
+import ToolRectangle from '../tools/rect/ToolRectangle';
+import ToolQuadraticCurve from '../tools/quadratic/ToolQuadraticCurve';
+import ToolBezierCurve from '../tools/bezier/ToolBezierCurve';
+import OptionColorPalette from './OptionColorPalette';
+import OptionAdditional from './OptionAdditional';
+import OptionLineWidth from './OptionLineWidth';
+import ToolDragLastPath from './ToolDragLastPath';
+import ToolDragAllPaths from './ToolDragAllPaths';
+import ToolUndo from './ToolUndo';
+import ToolRedo from './ToolRedo';
+import ToolZoomIn from '../tools/zoom/ToolZoomIn';
+import ToolZoomOut from '../tools/zoom/ToolZoomOut';
 
 const Toolbox2 = (props) => {
 
+    const [count, setCount] = React.useState([ 2, 6, 2, 3, 4 ]);
+    const [expanded, setExpanded] = React.useState(false);
     const [toolbarShow, setToolbarShow] = React.useState(true);
+    const [checkViewShow, setCheckViewShow] = React.useState(false);
+    const [checkedList, setCheckedList] = React.useState({
+        pencil: true,
+        marker: true,
+        eraser: true,
+        text: true,
+        image: true,
+        pdf: true,
+        dragLastPath: true,
+        dragAllPaths: true,
+        line: true,
+        arrow: true,
+        zoomIn: true,
+        zoomOut: true,
+        arc: true,
+        rectangle: true,
+        quadraticCurve: true,
+        bezierCurve: true,
+        undo: true,
+        redo: true,
+        lineWidthSet: true,
+        colorSet: true,
+        additionalOptionSet: true,
+        saveAs: true
+    });
     const [position, setPosition] = React.useState({ x: 0, y: 0 });
 
     const trackPos = (e, data) => {
@@ -43,7 +89,41 @@ const Toolbox2 = (props) => {
         setToolbarShow(!toolbarShow);
     }
 
+    const saveChange = (sels) => {
+        var count = [ 0, 0, 0, 0, 0 ];
+        if(sels.image === true) count[0]++;
+        if(sels.pdf === true) count[0]++;
+
+        if(sels.line === true) count[1]++;
+        if(sels.arrow === true) count[1]++;
+        if(sels.arc === true) count[1]++;
+        if(sels.rectangle === true) count[1]++;
+        if(sels.quadraticCurve === true) count[1]++;
+        if(sels.bezierCurve === true) count[1]++;
+
+        if(sels.dragLastPath === true) count[2]++;
+        if(sels.dragAllPaths === true) count[2]++;
+
+        if(sels.lineWidthSet === true) count[3]++;
+        if(sels.colorSet === true) count[3]++;
+        if(sels.additionalOptionSet === true) count[3]++;
+
+        if(sels.undo === true) count[4]++;
+        if(sels.redo === true) count[4]++;
+        if(sels.zoomIn === true) count[4]++;
+        if(sels.zoomOut === true) count[4]++;
+
+        setCount(count);
+        setCheckedList(sels);
+        setCheckViewShow(false);
+    }
+
+    const openToolCheckView = () => {
+        setCheckViewShow(!checkViewShow);
+    }
+
     return (
+        <div>
         <Draggable 
             handle="strong"
             onStart={ handleOnStart }
@@ -56,7 +136,7 @@ const Toolbox2 = (props) => {
         >
             <div style={{ position: 'absolute', top: "10px", left: '500px', backgroundColor: "#01579b", opacity: 0.75 }}>
                 <strong>
-                    <div style={{ cursor: "move", height: 20, minWidth: 250, display: "flex" }} >
+                    <div style={{ cursor: "move", height: 24, minWidth: 250, display: "flex" }} >
                         <Box sx={{ display: 'flex', flexGrow: 1 }} m={0} pt={ 0 } pl={ 0 }>
                             <Typography sx={{ paddingLeft: 1, fontSize: 14, color: "#FFFFFF" }}>
                                 Drawing Tools
@@ -70,13 +150,28 @@ const Toolbox2 = (props) => {
                                 }}
                                 pr="5px"
                             >
-                                <Tooltip title="Toolbar show or hide">
+                                <Tooltip title="" style={{ padding: 1, margin: 0 }}>
+                                    <IconButton >
+                                        <InfoIcon sx={{ color: "#FFFFFF", width: 16, height: 16 }} />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="" style={{ padding: 1, margin: 0 }}>
+                                    <IconButton >
+                                        <HelpIcon sx={{ color: "#FFFFFF", width: 16, height: 16 }} />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="" style={{ padding: 1, margin: 0 }}>
+                                    <IconButton onClick={ openToolCheckView }>
+                                        <SettingsIcon sx={{ color: "#FFFFFF", width: 16, height: 16 }} />
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Toolbar show or hide" style={{ padding: 1, margin: 0 }}>
                                     <IconButton onClick={ handleToolbarToggle } sx={{ width: "25px" }}>
                                     {
                                         toolbarShow ? 
-                                        <ArrowDropUpIcon   sx={{ color: "#FFFFFF", width: 32, height: 32 }}/> 
+                                        <ArrowDropUpIcon   sx={{ color: "#bdbdbd", width: 32, height: 32 }}/> 
                                         : 
-                                        <ArrowDropDownIcon sx={{ color: "#FFFFFF", width: 32, height: 32 }}/>
+                                        <ArrowDropDownIcon sx={{ color: "#bdbdbd", width: 32, height: 32 }}/>
                                     }
                                     </IconButton>
                                 </Tooltip>
@@ -93,21 +188,62 @@ const Toolbox2 = (props) => {
                     <div style={{ display: "flex" }} >
                         {/* <List sx={{ display: "flex", flexDirection: "row", margin: '3px', padding: "3px", border: '1px solid white' }}> */}
                         <List sx={{ display: "flex", flexDirection: "row", margin: '1px', padding: "1px" }} >
-                            <ToolPencil />
-                            <ToolMarker />
-                            <ToolEraser />
-                            <ToolText />
-                            <Divider style={{ marginLeft: 5, marginRight: 5 }} orientation="vertical"/>
-                            <ToolImage />
-                            <ToolPdf />
+                            <ToolPencil show={ checkedList.pencil } selected={ true } />
+                            <ToolMarker show={ checkedList.marker } selected={ false }/>
+                            <ToolEraser show={ checkedList.eraser } selected={ false }/>
+                            <ToolText show={ checkedList.text } selected={ false }/>
+
+                            <Divider style={{ marginLeft: 5, marginRight: 5, display : count[0] > 0 ? "block" : "none" }} orientation="vertical"/>
+                            <ToolImage show={ checkedList.image } selected={ false }/>
+                            <ToolPdf show={ checkedList.pdf } selected={ false }/>
+
+                            <Divider 
+                                style={{ marginLeft: 5, marginRight: 5, display: expanded && count[1] > 0 ? "block": "none" }} 
+                                orientation="vertical"/>
+                            <ToolLine show={ checkedList.line && expanded } selected={ false }/>
+                            <ToolArrow show={ checkedList.arrow && expanded } selected={ false }/>
+                            <ToolArc show={ checkedList.arc && expanded } selected={ false }/>
+                            <ToolRectangle show={ checkedList.rectangle && expanded } selected={ false }/>
+                            <ToolQuadraticCurve show={ checkedList.quadraticCurve && expanded } selected={ false }/>
+                            <ToolBezierCurve show={ checkedList.bezierCurve && expanded } selected={ false }/>
+
+                            <Divider 
+                                style={{ marginLeft: 5, marginRight: 5, display: expanded && count[2] > 0 ? "block": "none" }} 
+                                orientation="vertical"/>
+                            <ToolDragLastPath show={ checkedList.dragLastPath && expanded } selected={ false }/>
+                            <ToolDragAllPaths show={ checkedList.dragAllPaths && expanded } selected={ false }/>
+
+                            <Divider 
+                                style={{ marginLeft: 5, marginRight: 5, display: expanded && count[3] > 0 ? "block": "none" }} 
+                                orientation="vertical"/>
+                            <OptionLineWidth show={ checkedList.lineWidthSet && expanded } selected={ false }/>
+                            <OptionColorPalette show={ checkedList.colorSet && expanded } selected={ false }/>
+                            <OptionAdditional show={ checkedList.additionalOptionSet && expanded } selected={ false }/>
+
+                            <Divider 
+                                style={{ marginLeft: 5, marginRight: 5, display: expanded && count[4] > 0 ? "block": "none" }} 
+                                orientation="vertical"/>
+                            <ToolZoomIn show={ checkedList.zoomIn && expanded } selected={ false }/>
+                            <ToolZoomOut show={ checkedList.zoomOut && expanded } selected={ false }/>
+                            <ToolRedo show={ checkedList.redo && expanded } selected={ false }/>
+                            <ToolUndo show={ checkedList.undo && expanded } selected={ false }/>
+                            
+
                             <Divider style={{ marginLeft: 5, marginRight: 5 }} orientation="vertical"/>
                             <SaveTool canvasName="main-canvas" />
-                            <ToolShowMoreOrLess />
+                            <ToolShowMoreOrLess 
+                                expanded={ expanded }
+                                toggleExpanded={()=>{
+                                    setExpanded(!expanded);
+                                }}
+                            />
                         </List>
                     </div>
                 </div>              
             </div>
         </Draggable>
+        <ToolSelection show={ checkViewShow } saveChange={ saveChange } selections={ checkedList }/>
+        </div>
     );
 }
 
