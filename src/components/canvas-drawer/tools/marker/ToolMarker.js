@@ -3,18 +3,31 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-import { blue, pink } from '@mui/material/colors';
-import SvgIcon from '@mui/material/SvgIcon';
+import { createStatusDispatcherSingleton, dispatch, MESSAGE_TYPES } from '../../common/StatusDispatcher';
 
 const ToolMarker = (props) => {
     
-    const handleOnClick = (e) => {
+    const [selected, setSelected] = React.useState(props.selected);
 
+    React.useEffect(()=>{
+        createStatusDispatcherSingleton().addListener(MESSAGE_TYPES.SELECTED_SHAPE, (messageType, message) => {
+            if(messageType === MESSAGE_TYPES.SELECTED_SHAPE && message !== 'marker') setSelected(false);
+            else setSelected(true);
+        });
+    }, []);
+    
+    const handleOnClick = (e) => {
+        setSelected(true);
+        dispatch(MESSAGE_TYPES.SELECTED_SHAPE, "marker");
+    }
+
+    const handleOnDoubleClick = (e) => {
+        console.log("double clicked !!");
     }
 
     return (
         <div style={{ margine: "3px", padding: "3px" }}>
-            <Avatar alt="Marker" sx={{ bgcolor: "#FFFFFF", width: 32, height: 32 }} variant="rounded">
+            <Avatar alt="Marker" sx={{ bgcolor: selected ? "#f57f17" : "#FFFFFF", width: 32, height: 32 }} variant="rounded">
             <Tooltip title="Marker">
                 <IconButton onClick={ handleOnClick }>
                     <DriveFileRenameOutlineIcon fontSize="large" />
