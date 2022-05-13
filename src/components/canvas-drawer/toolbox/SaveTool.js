@@ -39,7 +39,7 @@ const SaveTool = (props) => {
 
     return (
         <div id={ "save-as-" + idx }  style={{ margine: "3px", padding: "3px" }}>
-            <Avatar alt="Save as image" sx={{ bgcolor: "#FFFFFF", width: 32, height: 32 }} >
+            <Avatar alt="Save as image" sx={{ bgcolor: "#eeff41", width: 32, height: 32 }} >
                 <Tooltip title="Save as image">
                     <IconButton onClick={ handleSave }>
                         <SaveAsIcon fontSize="large" />
