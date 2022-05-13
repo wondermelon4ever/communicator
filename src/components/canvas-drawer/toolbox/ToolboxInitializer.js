@@ -263,7 +263,7 @@ const initToolbox = (params) => {
         image.src = data_uris.pencil;
     }
 
-    if (tools.pencil === true) decoratePencil();
+    // if (tools.pencil === true) decoratePencil();
 
     function decorateMarker() {
         var context = getContext('marker-icon');
@@ -276,7 +276,7 @@ const initToolbox = (params) => {
         image.src = data_uris.marker;
     }
 
-    if (tools.marker === true) decorateMarker();
+    // if (tools.marker === true) decorateMarker();
 
     function decorateEraser() {
         var context = getContext('eraser-icon');

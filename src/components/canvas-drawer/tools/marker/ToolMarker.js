@@ -3,33 +3,45 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-import { createStatusDispatcherSingleton, dispatch, MESSAGE_TYPES } from '../../common/StatusDispatcher';
+import { createEventDispatcherSingleton, dispatch, EVENT_KINDS } from '../../common/EventDispatcher';
 
 const ToolMarker = (props) => {
     
     const [selected, setSelected] = React.useState(props.selected);
 
     React.useEffect(()=>{
-        createStatusDispatcherSingleton().addListener(MESSAGE_TYPES.SELECTED_SHAPE, (messageType, message) => {
-            if(messageType === MESSAGE_TYPES.SELECTED_SHAPE && message !== 'marker') setSelected(false);
+        createEventDispatcherSingleton().addListener(EVENT_KINDS.SELECTED_SHAPE, (event) => {
+            if(event.kind === EVENT_KINDS.SELECTED_SHAPE && event.value !== 'marker') setSelected(false);
             else setSelected(true);
         });
     }, []);
     
     const handleOnClick = (e) => {
         setSelected(true);
-        dispatch(MESSAGE_TYPES.SELECTED_SHAPE, "marker");
+        dispatch({
+            kind: EVENT_KINDS.SELECTED_SHAPE,
+            name: "",
+            description: "",
+            value: "marker"
+        });
     }
 
     const handleOnDoubleClick = (e) => {
-        console.log("double clicked !!");
+        dispatch({
+            kind: EVENT_KINDS.MARKER_ICON_DOUBLE_CLICKED,
+            name: "",
+            description: "",
+            value: {
+                toolIconId: "marker-icon"
+            }
+        });
     }
 
     return (
-        <div style={{ margine: "3px", padding: "3px" }}>
+        <div id="marker-icon" style={{ margine: "3px", padding: "3px" }}>
             <Avatar alt="Marker" sx={{ bgcolor: selected ? "#f57f17" : "#FFFFFF", width: 32, height: 32 }} variant="rounded">
             <Tooltip title="Marker">
-                <IconButton onClick={ handleOnClick }>
+                <IconButton onClick={ handleOnClick } onDoubleClick={ handleOnDoubleClick }>
                     <DriveFileRenameOutlineIcon fontSize="large" />
                 </IconButton>
             </Tooltip>

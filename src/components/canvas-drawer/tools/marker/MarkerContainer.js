@@ -10,6 +10,7 @@ import {
 } from '../../util/Utils';
 import { onMarkerOptionsChanged } from './MarkerHandler';
 import ColorPaletteAsTable from '../../common/palette/ColorPaletteAsTable';
+import { createEventDispatcherSingleton, dispatch, EVENT_KINDS } from '../../common/EventDispatcher';
 
 const thicknessOptions = [
     { label: 8,  value: 8  },
@@ -44,22 +45,32 @@ const MarkerContainer = (props) => {
         left: "0px"
     });
 
-    const toolIconId = props.toolIconId == undefined ? "marker-icon" : props.toolIconId;
+    // const toolIconId = props.toolIconId == undefined ? "marker-icon" : props.toolIconId;
     var alpha = 0.2;
 
     React.useEffect(()=>{
-        var canvas = document.getElementById(toolIconId);
-        addEvent(canvas, 'dblclick', function() {
+        createEventDispatcherSingleton().addListener(EVENT_KINDS.MARKER_ICON_DOUBLE_CLICKED, (event)=>{
+            var tooldiv = document.getElementById(event.value.toolIconId);
+            var rect = tooldiv.getClientRects()[0];
             setOpen(!open);
             setPosition({
-                top: (canvas.offsetTop + 1) + 'px',
-                left: (canvas.offsetLeft + canvas.clientWidth) + 'px'
+                left: (rect.x + 1) + 'px',
+                top: (rect.y+rect.height+4) + 'px'
             });
             props.controlOpen("markerContainer");
-        });
-        return (()=>{
+        })
+        // var canvas = document.getElementById(toolIconId);
+        // addEvent(canvas, 'dblclick', function() {
+        //     setOpen(!open);
+        //     setPosition({
+        //         top: (canvas.offsetTop + 1) + 'px',
+        //         left: (canvas.offsetLeft + canvas.clientWidth) + 'px'
+        //     });
+        //     props.controlOpen("markerContainer");
+        // });
+        // return (()=>{
 
-        });
+        // });
     }, []);
 
     React.useEffect(()=>{

@@ -35,22 +35,22 @@ const Toolbox = (props) => {
 
     return (
         <section id="tool-box" className="tool-box">
-            <canvas id="pencil-icon" 
+            {/* <canvas id="pencil-icon" 
                     width="40" 
                     height="40" 
                     title="Pancil" 
                     style={{ 
                         display: shows.pencil ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
             {/* <IconPencil id="pencil-icon" show={ true }/> */}
 
-            <canvas id="marker-icon" 
+            {/* <canvas id="marker-icon" 
                     width="40" 
                     height="40" 
                     title="Marker"
                     style={{ 
                         display: shows.marker ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
 
             <canvas id="eraser-icon" 
                     width="40" 

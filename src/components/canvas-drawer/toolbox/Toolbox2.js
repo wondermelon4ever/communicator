@@ -1,40 +1,46 @@
 import React from 'react';
-import Divider from '@mui/material/Divider';
-import List from '@mui/material/List'
-import Draggable from 'react-draggable';
-import SaveTool from './SaveTool';
-import ToolPencil from '../tools/pencil/ToolPencil';
-import ToolMarker from '../tools/marker/ToolMarker';
-import ToolEraser from '../tools/eraser/ToolEraser';
-import ToolText from '../tools/text/ToolText';
-import ToolImage from '../tools/file/ToolImage';
-import ToolPdf from '../tools/pdf/ToolPdf';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List'
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import ToolShowMoreOrLess from './ToolShowMoreOrLess';
+
 import InfoIcon from '@mui/icons-material/Info';
 import HelpIcon from '@mui/icons-material/Help';
 import SettingsIcon from '@mui/icons-material/Settings';
-import ToolSelection from './ToolSelection';
+
+import Draggable from 'react-draggable';
+
+import OptionAdditional from './OptionAdditional';
+import OptionColorPalette from './OptionColorPalette';
+import OptionLineWidth from './OptionLineWidth';
+import SaveTool from './SaveTool';
 import ToolArc from '../tools/arc/ToolArc';
 import ToolArrow from '../tools/arrow/ToolArrow';
-import ToolLine from '../tools/line/ToolLine';
-import ToolRectangle from '../tools/rect/ToolRectangle';
-import ToolQuadraticCurve from '../tools/quadratic/ToolQuadraticCurve';
 import ToolBezierCurve from '../tools/bezier/ToolBezierCurve';
-import OptionColorPalette from './OptionColorPalette';
-import OptionAdditional from './OptionAdditional';
-import OptionLineWidth from './OptionLineWidth';
 import ToolDragLastPath from './ToolDragLastPath';
 import ToolDragAllPaths from './ToolDragAllPaths';
-import ToolUndo from './ToolUndo';
+import ToolEraser from '../tools/eraser/ToolEraser';
+import ToolImage from '../tools/file/ToolImage';
+import ToolLine from '../tools/line/ToolLine';
+import ToolMarker from '../tools/marker/ToolMarker';
+import ToolPdf from '../tools/pdf/ToolPdf';
+import ToolPencil from '../tools/pencil/ToolPencil';
+import ToolQuadraticCurve from '../tools/quadratic/ToolQuadraticCurve';
+import ToolRectangle from '../tools/rect/ToolRectangle';
 import ToolRedo from './ToolRedo';
+import ToolSelection from './ToolSelection';
+import ToolShowMoreOrLess from './ToolShowMoreOrLess';
+import ToolText from '../tools/text/ToolText';
+import ToolUndo from './ToolUndo';
 import ToolZoomIn from '../tools/zoom/ToolZoomIn';
 import ToolZoomOut from '../tools/zoom/ToolZoomOut';
+import { getContext } from '../util/Utils'
+
+import { createEventDispatcherSingleton, dispatch, EVENT_KINDS } from '../common/EventDispatcher';
 
 const Toolbox2 = (props) => {
 
@@ -67,6 +73,22 @@ const Toolbox2 = (props) => {
         saveAs: true
     });
     const [position, setPosition] = React.useState({ x: 0, y: 0 });
+    const [mainContext, setMainContext] = React.useState(undefined);
+    const [tempContext, setTempContext] = React.useState(undefined);
+
+    React.useEffect(()=>{
+        setMainContext(getContext(props.mainCanvasName));
+        setTempContext(getContext(props.tempCanvasName));
+        dispatch({
+            kind: EVENT_KINDS.CANVAS_INITED,
+            name: "",
+            description: "",
+            value: {
+                mainContext: getContext(props.mainCanvasName),
+                tempContext: getContext(props.tempCanvasName)
+            }
+        });
+    }, []);
 
     const trackPos = (e, data) => {
         setPosition({ x: data.x, y: data.y });

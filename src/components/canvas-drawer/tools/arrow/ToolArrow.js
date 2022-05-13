@@ -3,22 +3,27 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import { createStatusDispatcherSingleton, dispatch, MESSAGE_TYPES } from '../../common/StatusDispatcher';
+import { createEventDispatcherSingleton, dispatch, EVENT_KINDS } from '../../common/EventDispatcher';
 
 const ToolArrow = (props) => {
     
     const [selected, setSelected] = React.useState(props.selected);
 
     React.useEffect(()=>{
-        createStatusDispatcherSingleton().addListener(MESSAGE_TYPES.SELECTED_SHAPE, (messageType, message) => {
-            if(messageType === MESSAGE_TYPES.SELECTED_SHAPE && message !== 'arrow') setSelected(false);
+        createEventDispatcherSingleton().addListener(EVENT_KINDS.SELECTED_SHAPE, (event) => {
+            if(event.kind === EVENT_KINDS.SELECTED_SHAPE && event.value !== 'arrow') setSelected(false);
             else setSelected(true);
         });
     }, []);
     
     const handleOnClick = (e) => {
         setSelected(true);
-        dispatch(MESSAGE_TYPES.SELECTED_SHAPE, "arrow");
+        dispatch({
+            kind: EVENT_KINDS.SELECTED_SHAPE,
+            name: "",
+            description: "",
+            value: "arrow"
+        });
     }
 
     return (

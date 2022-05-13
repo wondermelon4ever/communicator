@@ -11,6 +11,7 @@ import {
 
 import { onPencilOptionsChanged } from './PencilHandler';
 import ColorPaletteAsTable from '../../common/palette/ColorPaletteAsTable';
+import { createEventDispatcherSingleton, dispatch, EVENT_KINDS } from '../../common/EventDispatcher';
 
 const thicknessOptions = [
     { label: 1,  value: 1  },
@@ -51,22 +52,30 @@ const PencilContainer = (props) => {
         left: "0px"
     });
     
-    const toolIconId = props.toolIconId == undefined ? "pencil-icon" : props.toolIconId;
+    // const toolIconId = props.toolIconId == undefined ? "pencil-icon" : props.toolIconId;
     var alpha = 0.2;
 
     React.useEffect(()=>{
-        var canvas = document.getElementById(toolIconId);
-        addEvent(canvas, 'dblclick', function() {
+        createEventDispatcherSingleton().addListener(EVENT_KINDS.PENCIL_ICON_DOUBLE_CLICKED, (event)=>{
+            var tooldiv = document.getElementById(event.value.toolIconId);
+            var rect = tooldiv.getClientRects()[0];
             setOpen(!open);
             setPosition({
-                top: (canvas.offsetTop + 1) + 'px',
-                left: (canvas.offsetLeft + canvas.clientWidth) + 'px'
+                left: (rect.x + 1) + 'px',
+                top: (rect.y+rect.height+4) + 'px'
             });
             props.controlOpen("pencilContainer");
-        });
-        return (()=>{
-
-        });
+        })
+        // var tooldiv = document.getElementById(toolIconId);
+        // addEvent(tooldiv, 'dblclick', function() {
+        //     var rect = tooldiv.getClientRects()[0];
+        //     setOpen(!open);
+        //     setPosition({
+        //         left: (rect.x + 1) + 'px',
+        //         top: (rect.y+rect.height+1) + 'px'
+        //     });
+        //     props.controlOpen("pencilContainer");
+        // });
     }, []);
 
     React.useEffect(()=>{

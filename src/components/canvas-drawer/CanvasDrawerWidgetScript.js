@@ -239,8 +239,8 @@ function initWidget (shows) {
         if (!element.className) {
             element.className = '';
         }
-
-        element.className += ' selected-shape';
+        // 얘 때문에 아이콘 영역보다 더 크게 흰색이 그려짐
+        // element.className += ' selected-shape';
     }
 
     /* Default: setting default selected shape!! */

@@ -127,6 +127,9 @@ const CanvasDrawerWidget = (props) => {
         });
     }
 
+    // var mainCanvas = <canvas id="temp-canvas"></canvas>;
+    // var tempCanvas = <canvas id="main-canvas"></canvas>;
+
     return (
         <div>
             <section className="design-surface">
@@ -136,7 +139,7 @@ const CanvasDrawerWidget = (props) => {
 
             <Toolbox shows={ iconShows } />
 
-            <Toolbox2 canvasName="main-canvas" />
+            <Toolbox2 mainCanvasName="main-canvas" tempCanvasName="temp-canvas"/>
 
             <PdfContainer open={ containersShow.pdfContainer } controlOpen={ controlShows } />
             <ArcContainer open={ containersShow.arcContainer } controlOpen={ controlShows }  />
@@ -161,12 +164,10 @@ const CanvasDrawerWidget = (props) => {
             
             <MarkerContainer 
                 open={ containersShow.markerContainer } 
-                controlOpen={ controlShows } 
-                toolIconId="marker-icon" />
+                controlOpen={ controlShows } />
             <PencilContainer 
                 open={ containersShow.pencilContainer } 
-                controlOpen={ controlShows } 
-                toolIconId="pencil-icon" />
+                controlOpen={ controlShows } />
             <EraserContainer 
                 open={ containersShow.eraserContainer } 
                 controlOpen={ controlShows } 

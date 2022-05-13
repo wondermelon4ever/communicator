@@ -3,7 +3,7 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import SvgIcon from '@mui/material/SvgIcon';
-import { createStatusDispatcherSingleton, dispatch, MESSAGE_TYPES } from '../../common/StatusDispatcher';
+import { createEventDispatcherSingleton, dispatch, EVENT_KINDS } from '../../common/EventDispatcher';
 
 function BezierCurveIcon (props) {
     return (
@@ -24,15 +24,20 @@ const ToolBezierCurve = (props) => {
     const [selected, setSelected] = React.useState(props.selected);
 
     React.useEffect(()=>{
-        createStatusDispatcherSingleton().addListener(MESSAGE_TYPES.SELECTED_SHAPE, (messageType, message) => {
-            if(messageType === MESSAGE_TYPES.SELECTED_SHAPE && message !== 'bezier-curve') setSelected(false);
+        createEventDispatcherSingleton().addListener(EVENT_KINDS.SELECTED_SHAPE, (event) => {
+            if(event.kind === EVENT_KINDS.SELECTED_SHAPE && event.value !== 'bezier-curve') setSelected(false);
             else setSelected(true);
         });
     }, []);
     
     const handleOnClick = (e) => {
         setSelected(true);
-        dispatch(MESSAGE_TYPES.SELECTED_SHAPE, "bezier-curve");
+        dispatch({
+            kind: EVENT_KINDS.SELECTED_SHAPE,
+            name: "",
+            description: "",
+            value: "bezier-curve"
+        });
     }
 
     return (
