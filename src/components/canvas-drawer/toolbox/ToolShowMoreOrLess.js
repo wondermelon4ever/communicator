@@ -5,11 +5,15 @@ import IconButton from '@mui/material/IconButton';
 
 const ToolShowMoreOrLess = (props) => {
 
-    const [expanded, setExpanded] = React.useState(false);
+    const [expanded, setExpanded] = React.useState(props.expanded);
 
     const handleOnClick = () => {
-        setExpanded(!expanded);
+        props.toggleExpanded();
     }
+
+    React.useEffect(()=>{
+        setExpanded(props.expanded);
+    }, [props.expanded])
 
     return (
         <div style={{ margine: "3px", padding: "3px" }}>
