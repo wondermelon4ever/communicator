@@ -14,9 +14,9 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 import Draggable from 'react-draggable';
 
-import OptionAdditional from '../tools/toolOptions/OptionAdditional';
-import OptionColorPalette from '../tools/toolOptions/OptionColorPalette';
-import OptionLineWidth from '../tools/toolOptions/OptionLineWidth';
+import OptionAdditional from '../tools/tool-options/OptionAdditional';
+import OptionColorPalette from '../tools/tool-options/OptionColorPalette';
+import OptionLineWidth from '../tools/tool-options/OptionLineWidth';
 import SaveTool from '../tools/save/SaveTool';
 import ToolArc from '../tools/advanced/arc/ToolArc';
 import ToolArrow from '../tools/advanced/arrow/ToolArrow';
