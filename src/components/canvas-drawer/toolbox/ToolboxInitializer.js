@@ -6,7 +6,7 @@ import {
     syncData
 } from '../util/Utils'
 import data_uris from './ToolboxImages';
-import FileSelector from '../tools/file/FileSelector';
+import FileSelector from '../tools/basic/image/FileSelector';
 
 const initToolbox = (params) => {
     var imageHandler= params.imageHandler;
@@ -149,7 +149,7 @@ const initToolbox = (params) => {
         image.src = data_uris.dragSingle;
     }
 
-    decorateDragLastPath();
+    // decorateDragLastPath();
 
     if (tools.dragSingle === true) {
     }
@@ -165,7 +165,7 @@ const initToolbox = (params) => {
         image.src = data_uris.dragMultiple;
     }
 
-    decorateDragAllPaths();
+    // decorateDragAllPaths();
 
     if (tools.dragMultiple === true) {
     }
@@ -252,57 +252,57 @@ const initToolbox = (params) => {
         decorateZoomDown();
     }
 
-    function decoratePencil() {
-        var context = getContext('pencil-icon');
+    // function decoratePencil() {
+    //     var context = getContext('pencil-icon');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-            bindEvent(context, 'Pencil');
-        };
-        image.src = data_uris.pencil;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //         bindEvent(context, 'Pencil');
+    //     };
+    //     image.src = data_uris.pencil;
+    // }
 
     // if (tools.pencil === true) decoratePencil();
 
-    function decorateMarker() {
-        var context = getContext('marker-icon');
+    // function decorateMarker() {
+    //     var context = getContext('marker-icon');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-            bindEvent(context, 'Marker');
-        };
-        image.src = data_uris.marker;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //         bindEvent(context, 'Marker');
+    //     };
+    //     image.src = data_uris.marker;
+    // }
 
     // if (tools.marker === true) decorateMarker();
 
-    function decorateEraser() {
-        var context = getContext('eraser-icon');
+    // function decorateEraser() {
+    //     var context = getContext('eraser-icon');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-            bindEvent(context, 'Eraser');
-        };
-        image.src = data_uris.eraser;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //         bindEvent(context, 'Eraser');
+    //     };
+    //     image.src = data_uris.eraser;
+    // }
 
-    if (tools.eraser === true) decorateEraser();
+    // if (tools.eraser === true) decorateEraser();
 
-    function decorateText() {
-        var context = getContext('text-icon');
+    // function decorateText() {
+    //     var context = getContext('text-icon');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-            bindEvent(context, 'Text');
-        };
-        image.src = data_uris.text;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //         bindEvent(context, 'Text');
+    //     };
+    //     image.src = data_uris.text;
+    // }
 
-    if (tools.text === true) decorateText();
+    // if (tools.text === true) decorateText();
 
     function decorateImage() {
         var context = getContext('image-icon');
@@ -382,41 +382,41 @@ const initToolbox = (params) => {
 
     if (tools.bezier === true) decorateBezier();
 
-    function decorateLineWidth() {
-        var context = getContext('line-width');
+    // function decorateLineWidth() {
+    //     var context = getContext('line-width');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-        };
-        image.src = data_uris.lineWidth;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //     };
+    //     image.src = data_uris.lineWidth;
+    // }
 
-    if (tools.lineWidth === true) decorateLineWidth();
+    // if (tools.lineWidth === true) decorateLineWidth();
 
-    function decorateColors() {
-        var context = getContext('colors');
+    // function decorateColors() {
+    //     var context = getContext('colors');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-        };
-        image.src = data_uris.colorsPicker;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //     };
+    //     image.src = data_uris.colorsPicker;
+    // }
 
-    if (tools.colorsPicker === true) decorateColors();
+    // if (tools.colorsPicker === true) decorateColors();
 
-    function decorateAdditionalOptions() {
-        var context = getContext('additional');
+    // function decorateAdditionalOptions() {
+    //     var context = getContext('additional');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-        };
-        image.src = data_uris.extraOptions;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //     };
+    //     image.src = data_uris.extraOptions;
+    // }
 
-    if (tools.extraOptions === true) decorateAdditionalOptions();
+    // if (tools.extraOptions === true) decorateAdditionalOptions();
 
     var designPreview = find('design-preview'), codePreview = find('code-preview');
 

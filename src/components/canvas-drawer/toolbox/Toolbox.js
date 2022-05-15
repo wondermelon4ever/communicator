@@ -1,6 +1,5 @@
 import React from 'react';
 import '../canvas-drawer-widget.css';
-import IconPencil from './ToolIcon';
 
 const Toolbox = (props) => {
 
@@ -52,21 +51,21 @@ const Toolbox = (props) => {
                         display: shows.marker ? "block" : "none" 
                     }}></canvas> */}
 
-            <canvas id="eraser-icon" 
+            {/* <canvas id="eraser-icon" 
                     width="40" 
                     height="40" 
                     title="Erase drawings"
                     style={{ 
                         display: shows.eraser ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
 
-            <canvas id="text-icon" 
+            {/* <canvas id="text-icon" 
                     width="40" 
                     height="40" 
                     title="Write text"
                     style={{ 
                         display: shows.text ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
 
             <canvas id="image-icon" 
                     width="40" 
@@ -84,20 +83,20 @@ const Toolbox = (props) => {
                         display: shows.pdf ? "block" : "none" 
                     }}></canvas>
 
-            <canvas id="drag-last-path" 
+            {/* <canvas id="drag-last-path" 
                     width="40" 
                     height="40" 
                     title="Drag/move last path"
                     style={{ 
                         display: shows.dragLastPath ? "block" : "none" 
-                    }}></canvas>
-            <canvas id="drag-all-paths" 
+                    }}></canvas> */}
+            {/* <canvas id="drag-all-paths" 
                     width="40" 
                     height="40" 
                     title="Drag/move all paths"
                     style={{ 
                         display: shows.dragAllPath ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
 
             <canvas id="line" 
                     width="40" 
@@ -170,29 +169,29 @@ const Toolbox = (props) => {
                         display: shows.undo ? "block" : "none" 
                     }}></canvas>
 
-            <canvas id="line-width" 
+            {/* <canvas id="line-width" 
                     width="40" 
                     height="40" 
                     title="Set line-width"
                     style={{ 
                         display: shows.lineWidth ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
 
-            <canvas id="colors" 
+            {/* <canvas id="colors" 
                     width="40" 
                     height="40" 
                     title="Set foreground and background colors"
                     style={{ 
                         display: shows.colors ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
 
-            <canvas id="additional" 
+            {/* <canvas id="additional" 
                     width="40" 
                     height="40" 
                     title="Extra options"
                     style={{ 
                         display: shows.additional ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
         </section>
     )
 }

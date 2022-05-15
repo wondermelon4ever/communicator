@@ -1,34 +1,30 @@
 'use strict';
 import * as pdfjsLib from 'pdfjs-dist';
-import PencilHandler, { createPencilHandler } from './tools/pencil/PencilHandler';
-import MarkerHandler, { createMarkerHandler } from './tools/marker/MarkerHandler';
-import EraserHandler, { createEraserHandler } from './tools/eraser/EraserHandler';
-import TextHandler, { createTextHandler } from './tools/text/TextHandler';
-import drawHelper from './common/helpers/DrawHelper';
-import DragHelper from './tools/drag/DragHelper';
+import PencilHandler, { createPencilHandler } from './tools/basic/pencil/PencilHandler';
+import MarkerHandler, { createMarkerHandler } from './tools/basic/marker/MarkerHandler';
+import EraserHandler, { createEraserHandler } from './tools/basic/eraser/EraserHandler';
+import TextHandler, { createTextHandler } from './tools/basic/text/TextHandler';
+import drawHelper from './tools/DrawHelper';
+import DragHelper from './tools/advanced/edit/DragHelper';
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
+import { getPoints } from './views/CanvasTemp';
 
 import {
     addEvent,
-    colors,
-    clone,
     find,
     getContext,
-    hexToRGB,
-    hexToRGBA,
     hideContainers,
-    syncData
 } from './util/Utils'
-import { createArcHandler } from './tools/arc/ArcHandler';
-import { createArrowHandler } from './tools/arrow/ArrowHandler';
-import { createLineHandler } from './tools/line/LineHandler';
-import { createRectHandler } from './tools/rect/RectHandler';
-import { createQuadraticHandler } from './tools/quadratic/QuadraticHandler';
-import { createBezierHandler } from './tools/bezier/BezierHandler';
-import { createZoomHandler } from './tools/zoom/ZoomHandler';
-import { createImageHandler } from './tools/file/ImageHandler';
-import { createPdfHandler } from './tools/pdf/PdfHandler';
-import FileSelector from './tools/file/FileSelector';
+import { createArcHandler } from './tools/advanced/arc/ArcHandler';
+import { createArrowHandler } from './tools/advanced/arrow/ArrowHandler';
+import { createLineHandler } from './tools/advanced/line/LineHandler';
+import { createRectHandler } from './tools/advanced/rect/RectHandler';
+import { createQuadraticHandler } from './tools/advanced/quadratic/QuadraticHandler';
+import { createBezierHandler } from './tools/advanced/bezier/BezierHandler';
+import { createZoomHandler } from './tools/show-control/zoom/ZoomHandler';
+import { createImageHandler } from './tools/basic/image/ImageHandler';
+import { createPdfHandler } from './tools/basic/pdf/PdfHandler';
+import FileSelector from './tools/basic/image/FileSelector';
 import Common from './common/Common';
 import initToolbox from './toolbox/ToolboxInitializer';
 
@@ -57,7 +53,7 @@ function initWidget (shows) {
         }
     };
 
-    var points = [],
+    var points = getPoints(),
         textarea = find('code-text'),
         lineWidth = 2,
         strokeStyle = '#6c96c8',
@@ -288,9 +284,9 @@ function initWidget (shows) {
         syncPoints: syncPoints
     });
 
-    function getPoints () {
-        return points;
-    }
+    // function getPoints () {
+    //     return points;
+    // }
 
     function setTemporaryLine() {
         var arr = ["line", [139, 261, 170, 219],
@@ -322,18 +318,18 @@ function initWidget (shows) {
         else if (cache.isRectangle) rectHandler.mousedown(e, points);
         else if (cache.isQuadraticCurve) quadraticHandler.mousedown(e, points);
         else if (cache.isBezierCurve) bezierHandler.mousedown(e, points);
-        else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousedown(e, points, is.isDragAllPaths, is.isDragLastPath);
-        else if (cache.isPencil) pencilHandler.mousedown(e, points);
-        else if (cache.isEraser) eraserHandler.mousedown(e, points);
-        else if (cache.isText) textHandler.mousedown(e, points, shows.text);
+        // else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousedown(e, points, is.isDragAllPaths, is.isDragLastPath);
+        // else if (cache.isPencil) pencilHandler.mousedown(e, points);
+        // else if (cache.isEraser) eraserHandler.mousedown(e, points);
+        // else if (cache.isText) textHandler.mousedown(e, points, shows.text);
         else if (cache.isImage) imageHandler.mousedown(e, points);
         else if (cache.isPdf) pdfHandler.mousedown(e,points);
         else if (cache.isArrow) arrowHandler.mousedown(e, points);
-        else if (cache.isMarker) markerHandler.mousedown(e, points);
+        // else if (cache.isMarker) markerHandler.mousedown(e, points);
 
-        !cache.isPdf && drawHelper.redraw(context, tempContext, points);
+        // !cache.isPdf && drawHelper.redraw(context, tempContext, points);
 
-        preventStopEvent(e);
+        // preventStopEvent(e);
     });
 
     function preventStopEvent(e) {
@@ -371,20 +367,20 @@ function initWidget (shows) {
         else if (cache.isRectangle) rectHandler.mouseup(e, points);
         else if (cache.isQuadraticCurve) quadraticHandler.mouseup(e, points);
         else if (cache.isBezierCurve) bezierHandler.mouseup(e, points);
-        else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mouseup(e, points, is.isDragLastPath);
-        else if (cache.isPencil) pencilHandler.mouseup(e, points);
-        else if (cache.isEraser) eraserHandler.mouseup(e, points);
-        else if (cache.isText) textHandler.mouseup(e, points);
+        // else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mouseup(e, points, is.isDragLastPath);
+        // else if (cache.isPencil) pencilHandler.mouseup(e, points);
+        // else if (cache.isEraser) eraserHandler.mouseup(e, points);
+        // else if (cache.isText) textHandler.mouseup(e, points);
         else if (cache.isImage) imageHandler.mouseup(e, points);
         else if (cache.isPdf) pdfHandler.mousedown(e, points);
         else if (cache.isArrow) arrowHandler.mouseup(e, points);
-        else if (cache.isMarker) markerHandler.mouseup(e, points);
+        // else if (cache.isMarker) markerHandler.mouseup(e, points);
 
-        !cache.isPdf && drawHelper.redraw(context, tempContext, points);
+        // !cache.isPdf && drawHelper.redraw(context, tempContext, points);
 
-        syncPoints(is.isDragAllPaths || is.isDragLastPath ? true : false);
+        // syncPoints(is.isDragAllPaths || is.isDragLastPath ? true : false);
 
-        preventStopEvent(e);
+        // preventStopEvent(e);
     });
 
     addEvent(canvas, isTouch ? 'touchmove mousemove' : 'mousemove', function(e) {
@@ -400,16 +396,16 @@ function initWidget (shows) {
         else if (cache.isRectangle) rectHandler.mousemove(e, points);
         else if (cache.isQuadraticCurve) quadraticHandler.mousemove(e, points);
         else if (cache.isBezierCurve) bezierHandler.mousemove(e, points);
-        else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousemove(e, points, is.isDragAllPaths, is.isDragLastPath);
-        else if (cache.isPencil) pencilHandler.mousemove(e, points);
-        else if (cache.isEraser) eraserHandler.mousemove(e, points);
-        else if (cache.isText) textHandler.mousemove(e, points);
+        // else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousemove(e, points, is.isDragAllPaths, is.isDragLastPath);
+        // else if (cache.isPencil) pencilHandler.mousemove(e, points);
+        // else if (cache.isEraser) eraserHandler.mousemove(e, points);
+        // else if (cache.isText) textHandler.mousemove(e, points);
         else if (cache.isImage) imageHandler.mousemove(e, points);
         else if (cache.isPdf) pdfHandler.mousedown(e, points);
         else if (cache.isArrow) arrowHandler.mousemove(e, points);
-        else if (cache.isMarker) markerHandler.mousemove(e, points);
+        // else if (cache.isMarker) markerHandler.mousemove(e, points);
 
-        preventStopEvent(e);
+        // preventStopEvent(e);
     });
 
     var keyCode;
@@ -469,20 +465,20 @@ function initWidget (shows) {
         keyCode = e.which || e.keyCode || 0;
 
         if (keyCode === 13 && shows.text) {
-            textHandler.onReturnKeyPressed(points, shows.text);
+            // textHandler.onReturnKeyPressed(points, shows.text);
             return;
         }
 
         if (keyCode == 8 || keyCode == 46) {
             if (isBackKey(e, keyCode)) {
-                textHandler.writeText(textHandler.lastKeyPress, true, shows.text);
+                // textHandler.writeText(textHandler.lastKeyPress, true, shows.text);
             }
             return;
         }
 
         // Ctrl + t
         if (isControlKeyPressed && keyCode === 84 && shows.text) {
-            textHandler.showTextTools();
+            // textHandler.showTextTools();
             return;
         }
 
@@ -539,7 +535,7 @@ function initWidget (shows) {
 
         var inp = String.fromCharCode(keyCode);
         if (/[a-zA-Z0-9-_ !?|\/'",.=:;(){}\[\]`~@#$%^&*+-]/.test(inp)) {
-            textHandler.writeText(String.fromCharCode(keyCode), false, shows.text);
+            // textHandler.writeText(String.fromCharCode(keyCode), false, shows.text);
         }
     }
 
@@ -554,7 +550,7 @@ function initWidget (shows) {
             pastedText = e.clipboardData.getData('text/plain');
         }
         if (pastedText && pastedText.length) {
-            textHandler.writeText(pastedText, false, shows.text);
+            // textHandler.writeText(pastedText, false, shows.text);
         }
     }
 
@@ -704,3 +700,4 @@ function initWidget (shows) {
     }
 }
 export default initWidget;
+

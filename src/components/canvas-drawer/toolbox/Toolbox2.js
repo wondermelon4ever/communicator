@@ -14,33 +14,33 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 import Draggable from 'react-draggable';
 
-import OptionAdditional from './OptionAdditional';
-import OptionColorPalette from './OptionColorPalette';
-import OptionLineWidth from './OptionLineWidth';
-import SaveTool from './SaveTool';
-import ToolArc from '../tools/arc/ToolArc';
-import ToolArrow from '../tools/arrow/ToolArrow';
-import ToolBezierCurve from '../tools/bezier/ToolBezierCurve';
-import ToolDragLastPath from './ToolDragLastPath';
-import ToolDragAllPaths from './ToolDragAllPaths';
-import ToolEraser from '../tools/eraser/ToolEraser';
-import ToolImage from '../tools/file/ToolImage';
-import ToolLine from '../tools/line/ToolLine';
-import ToolMarker from '../tools/marker/ToolMarker';
-import ToolPdf from '../tools/pdf/ToolPdf';
-import ToolPencil from '../tools/pencil/ToolPencil';
-import ToolQuadraticCurve from '../tools/quadratic/ToolQuadraticCurve';
-import ToolRectangle from '../tools/rect/ToolRectangle';
-import ToolRedo from './ToolRedo';
+import OptionAdditional from '../tools/toolOptions/OptionAdditional';
+import OptionColorPalette from '../tools/toolOptions/OptionColorPalette';
+import OptionLineWidth from '../tools/toolOptions/OptionLineWidth';
+import SaveTool from '../tools/save/SaveTool';
+import ToolArc from '../tools/advanced/arc/ToolArc';
+import ToolArrow from '../tools/advanced/arrow/ToolArrow';
+import ToolBezierCurve from '../tools/advanced/bezier/ToolBezierCurve';
+import ToolDragLastPath from '../tools/advanced/edit/ToolDragLastPath';
+import ToolDragAllPaths from '../tools/advanced/edit/ToolDragAllPaths';
+import ToolEraser from '../tools/basic/eraser/ToolEraser';
+import ToolImage from '../tools/basic/image/ToolImage';
+import ToolLine from '../tools/advanced/line/ToolLine';
+import ToolMarker from '../tools/basic/marker/ToolMarker';
+import ToolPdf from '../tools/basic/pdf/ToolPdf';
+import ToolPencil from '../tools/basic/pencil/ToolPencil';
+import ToolQuadraticCurve from '../tools/advanced/quadratic/ToolQuadraticCurve';
+import ToolRectangle from '../tools/advanced/rect/ToolRectangle';
+import ToolRedo from '../tools/show-control/undo-redo/ToolRedo';
 import ToolSelection from './ToolSelection';
 import ToolShowMoreOrLess from './ToolShowMoreOrLess';
-import ToolText from '../tools/text/ToolText';
-import ToolUndo from './ToolUndo';
-import ToolZoomIn from '../tools/zoom/ToolZoomIn';
-import ToolZoomOut from '../tools/zoom/ToolZoomOut';
+import ToolText from '../tools/basic/text/ToolText';
+import ToolUndo from '../tools/show-control/undo-redo/ToolUndo';
+import ToolZoomIn from '../tools/show-control/zoom/ToolZoomIn';
+import ToolZoomOut from '../tools/show-control/zoom/ToolZoomOut';
 import { getContext } from '../util/Utils'
 
-import { createEventDispatcherSingleton, dispatch, EVENT_KINDS } from '../common/EventDispatcher';
+import { dispatch, MEVENT_KINDS } from '../mevent/MeventDispatcher';
 
 const Toolbox2 = (props) => {
 
@@ -80,7 +80,7 @@ const Toolbox2 = (props) => {
         setMainContext(getContext(props.mainCanvasName));
         setTempContext(getContext(props.tempCanvasName));
         dispatch({
-            kind: EVENT_KINDS.CANVAS_INITED,
+            kind: MEVENT_KINDS.CANVAS_INITED,
             name: "",
             description: "",
             value: {
@@ -88,6 +88,7 @@ const Toolbox2 = (props) => {
                 tempContext: getContext(props.tempCanvasName)
             }
         });
+        
     }, []);
 
     const trackPos = (e, data) => {

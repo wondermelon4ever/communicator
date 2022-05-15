@@ -1,35 +1,28 @@
 import React from 'react';
 import './canvas-drawer-widget.css';
-import AdditionalOptionContainier from './common/options/AdditionalOptionContainer';
-import ArcContainer from './tools/arc/ArcContainer';
-import CodeContainer from './CodeContainer';
-import CodeContainerOptionContainer from './CodeContainerOptionContainer';
-import ColorPaletteConatiner from './common/options/ColorPaletteContainer';
-import CopyPathContainer from './CopyPathContainer';
-import EraserContainer from './tools/eraser/EraserContainer';
-import FontSelector from './tools/text/FontSelector';
-import LineWidthContainer from './common/options/LineWidthContainer';
-import MarkerContainer from './tools/marker/MarkerContainer';
-import PencilContainer from './tools/pencil/PencilContainer';
-import PdfContainer from './tools/pdf/PdfContainer';
-import PreviewPanel from './PreviewPanel';
+
+import AdditionalOptionContainier from './tools/toolOptions/AdditionalOptionContainer';
+import ArcContainer from './tools/advanced/arc/ArcContainer';
+import CodeContainer from './views/CodeContainer';
+import CodeContainerOptionContainer from './views/CodeContainerOptionContainer';
+import ColorPaletteConatiner from './tools/toolOptions/ColorPaletteContainer';
+import CopyPathContainer from './views/CopyPathContainer';
+import EraserContainer from './tools/basic/eraser/EraserContainer';
+import FontSelector from './tools/basic/text/FontSelector';
+import LineWidthContainer from './tools/toolOptions/LineWidthContainer';
+import MarkerContainer from './tools/basic/marker/MarkerContainer';
+import PencilContainer from './tools/basic/pencil/PencilContainer';
+import PdfContainer from './tools/basic/pdf/PdfContainer';
+import PreviewPanel from './views/PreviewPanel';
 import Toolbox from './toolbox/Toolbox';
-import FontSizeSelector from './tools/text/FontSizeSelector';
-import TextContainer from './tools/text/TextContainer';
-import TextInfoContainer from './tools/text/TextInfoContainer';
+import FontSizeSelector from './tools/basic/text/FontSizeSelector';
+import TextContainer from './tools/basic/text/TextContainer';
+import TextInfoContainer from './tools/basic/text/TextInfoContainer';
 import Toolbox2 from './toolbox/Toolbox2';
 import initWidget from './CanvasDrawerWidgetScript';
-import {
-    addEvent,
-    colors,
-    clone,
-    find,
-    getContext,
-    hexToRGB,
-    hexToRGBA,
-    hideContainers,
-    syncData
-} from './util/Utils'
+
+import CanvasMain from './views/CanvasMain';
+import CanvasTemp from './views/CanvasTemp';
 
 const CanvasDrawerWidget = (props) => {
 
@@ -133,8 +126,8 @@ const CanvasDrawerWidget = (props) => {
     return (
         <div>
             <section className="design-surface">
-                <canvas id="temp-canvas"></canvas>
-                <canvas id="main-canvas"></canvas>
+                <CanvasTemp name="temp-canvas"/>
+                <CanvasMain name="main-canvas"/>
             </section>
 
             <Toolbox shows={ iconShows } />
