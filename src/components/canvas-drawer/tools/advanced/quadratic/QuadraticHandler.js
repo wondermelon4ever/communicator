@@ -1,4 +1,4 @@
-import drawHelper, { setQuadraticHandler} from "../../DrawHelper";
+import drawHelper from "../../DrawHelper";
 
 var quadraticHandler = undefined;
 export default class QuadraticHandler {
@@ -87,14 +87,13 @@ export default class QuadraticHandler {
     }
 }
 
-const createQuadraticHandler = (context, tempContext) => {
+const createQuadraticHandlerSingleton = (context, tempContext) => {
     if(quadraticHandler === undefined) {
         quadraticHandler = new QuadraticHandler(context, tempContext);
-        setQuadraticHandler(quadraticHandler);
     }
     return quadraticHandler;
 }
 
 export {
-    createQuadraticHandler
+    createQuadraticHandlerSingleton
 }
