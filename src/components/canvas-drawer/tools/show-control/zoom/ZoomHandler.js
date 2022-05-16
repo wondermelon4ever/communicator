@@ -1,4 +1,4 @@
-import drawHelper, { setZoomHandler } from "../../DrawHelper";
+import drawHelper from "../../DrawHelper";
 
 var zoomHandler = undefined;
 export default class ZoomHandler {
@@ -38,14 +38,13 @@ export default class ZoomHandler {
     }
 }
 
-const createZoomHandler = (context, tempContext) => {
+const createZoomHandlerSingleton = (context, tempContext) => {
     if(zoomHandler === undefined) {
         zoomHandler = new ZoomHandler(context, tempContext);
-        setZoomHandler(zoomHandler);
     }
     return zoomHandler;
 }
 
 export {
-    createZoomHandler
+    createZoomHandlerSingleton
 }
