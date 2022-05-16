@@ -1,20 +1,74 @@
-import drawHelper, { setImageHandler } from "../../DrawHelper";
+import { createMeventDispatcherSingleton, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
+
+import { getPoints } from '../../../views/CanvasTemp';
+import drawHelper from "../../DrawHelper";
+import ShapeHandler from '../../ShapeHandler';
+import FileSelector from "./FileSelector";
 
 var imageHandler = undefined;
-export default class ImageHandler {
+export default class ImageHandler extends ShapeHandler {
 
-    constructor (context, tempContext, syncPoints) {
-        this.context = context;
-        this.tempContext = tempContext;
-        this.canvas = tempContext.canvas;
+    constructor (context, tempContext) {
+        super(context, tempContext);
 
+        this.selected = false;
+        this.ismousedown = false;
         this.lastImageURL = null;
         this.lastImageIndex = 0;
         this.images = [];
-        this.ismousedown = false;
         this.prevX = 0;
         this.prevY = 0;
-        this.syncPoints = syncPoints;
+        this.addMeventListener();
+        imageHandler = this;
+    }
+
+    addMeventListener () {
+        var dispatcher = createMeventDispatcherSingleton();
+        dispatcher.addListener(MEVENT_KINDS.SELECTED_SHAPE, (mevent) => {
+            if(mevent.value.shape !== 'image') this.selected = false;
+            else this.selected = true;
+        });
+
+        dispatcher.addListener(MEVENT_KINDS.MOUSE_DOWN, (mevent) => {
+            if(this.selected === false) return;
+            this.mousedown(mevent);
+        });
+
+        dispatcher.addListener(MEVENT_KINDS.MOUSE_MOVE, (mevent) => {
+            if(this.selected === false || this.ismousedown == false) return;
+            this.mousemove(mevent);
+        });
+    
+        dispatcher.addListener(MEVENT_KINDS.MOUSE_UP, (mevent) => {
+            if(this.selected === false) return;
+            this.mouseup(mevent);
+        });
+    }
+
+    onIconClicked = () => {
+        var selector = new FileSelector();
+        selector.accept = 'image/*';
+        selector.selectSingleFile( (file) => {
+            if (!file) return;
+
+            var reader = new FileReader();
+            reader.onload = (event) => {
+                var image = new Image();
+                image.onload =  () => {
+                    var index = this.images.length;
+
+                    this.lastImageURL = image.src;
+                    this.lastImageIndex = index;
+
+                    this.images.push(image);
+                    this.load(image.clientWidth, image.clientHeight, getPoints());
+                };
+                image.style = 'position: absolute; top: -99999999999; left: -999999999;';
+                document.body.appendChild(image);
+                image.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
     }
 
     load = (width, height, points) => {
@@ -26,9 +80,9 @@ export default class ImageHandler {
         this.syncPoints(true);
     }
     
-    mousedown = (e, points) => {
-        var x = e.pageX - this.canvas.offsetLeft,
-            y = e.pageY - this.canvas.offsetTop;
+    mousedown = (mevent) => {
+        var x = mevent.wevt.pageX - this.canvas.offsetLeft,
+            y = mevent.wevt.pageY - this.canvas.offsetTop;
 
         var t = this;
 
@@ -38,10 +92,11 @@ export default class ImageHandler {
         t.ismousedown = true;
     }
 
-    mouseup = (e, points) => {
-        var x = e.pageX - this.canvas.offsetLeft,
-            y = e.pageY - this.canvas.offsetTop;
+    mouseup = (mevent) => {
+        var x = mevent.wevt.pageX - this.canvas.offsetLeft,
+            y = mevent.wevt.pageY - this.canvas.offsetTop;
 
+        var points = mevent.value.points;
         var t = this;
         if (t.ismousedown) {
             points[points.length] = ['image', [this.lastImageURL, t.prevX, t.prevY, x - t.prevX, y - t.prevY, this.lastImageIndex], drawHelper.getOptions()];
@@ -49,10 +104,11 @@ export default class ImageHandler {
         }
     }
 
-    mousemove = (e, points) => {
-        var x = e.pageX - this.canvas.offsetLeft,
-            y = e.pageY - this.canvas.offsetTop;
+    mousemove = (mevent) => {
+        var x = mevent.wevt.pageX - this.canvas.offsetLeft,
+            y = mevent.wevt.pageY - this.canvas.offsetTop;
 
+        var t = this;
         if (this.ismousedown) {
             this.tempContext.clearRect(0, 0, innerWidth, innerHeight);
             drawHelper.image(this.tempContext, [this.lastImageURL, t.prevX, t.prevY, x - t.prevX, y - t.prevY, this.lastImageIndex]);
@@ -60,14 +116,13 @@ export default class ImageHandler {
     }
 }
 
-const createImageHandler = (context, tempContext, syncPoints) => {
+const createImageHandlerSingleton = (context, tempContext) => {
     if(imageHandler === undefined) {
-        imageHandler = new ImageHandler(context, tempContext, syncPoints);
-        setImageHandler(imageHandler);
+        imageHandler = new ImageHandler(context, tempContext);
     }
     return imageHandler;
 }
 
 export {
-    createImageHandler
+    createImageHandlerSingleton
 }
