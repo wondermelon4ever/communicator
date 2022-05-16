@@ -3,7 +3,7 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import EditIcon from '@mui/icons-material/Edit';
-import { createPencilHandler } from './PencilHandler';
+import { createPencilHandlerSingleton } from './PencilHandler';
 import { createMeventDispatcherSingleton, dispatch, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
 
 const ToolPencil = (props) => {
@@ -18,7 +18,7 @@ const ToolPencil = (props) => {
 
     React.useEffect(()=>{
         if(context !== undefined) { 
-            setHandler(createPencilHandler(context.mainContext, context.tempContext, selected));
+            setHandler(createPencilHandlerSingleton(context.mainContext, context.tempContext, selected));
         }
     }, [context]);
 
