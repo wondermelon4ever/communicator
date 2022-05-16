@@ -1,11 +1,11 @@
 'use strict';
 import * as pdfjsLib from 'pdfjs-dist';
-import PencilHandler, { createPencilHandler } from './tools/basic/pencil/PencilHandler';
-import MarkerHandler, { createMarkerHandler } from './tools/basic/marker/MarkerHandler';
-import EraserHandler, { createEraserHandler } from './tools/basic/eraser/EraserHandler';
-import TextHandler, { createTextHandler } from './tools/basic/text/TextHandler';
+// import PencilHandler, { createPencilHandler } from './tools/basic/pencil/PencilHandler';
+// import MarkerHandler, { createMarkerHandler } from './tools/basic/marker/MarkerHandler';
+// import EraserHandler, { createEraserHandler } from './tools/basic/eraser/EraserHandler';
+// import TextHandler, { createTextHandlerSingleton } from './tools/basic/text/TextHandler';
 import drawHelper from './tools/DrawHelper';
-import DragHelper from './tools/advanced/edit/DragHelper';
+// import DragHelper from './tools/advanced/edit/DragHelper';
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
 import { getPoints } from './views/CanvasTemp';
 
@@ -15,16 +15,16 @@ import {
     getContext,
     hideContainers,
 } from './util/Utils'
-import { createArcHandler } from './tools/advanced/arc/ArcHandler';
-import { createArrowHandler } from './tools/advanced/arrow/ArrowHandler';
-import { createLineHandler } from './tools/advanced/line/LineHandler';
-import { createRectHandler } from './tools/advanced/rect/RectHandler';
-import { createQuadraticHandler } from './tools/advanced/quadratic/QuadraticHandler';
-import { createBezierHandler } from './tools/advanced/bezier/BezierHandler';
-import { createZoomHandler } from './tools/show-control/zoom/ZoomHandler';
-import { createImageHandler } from './tools/basic/image/ImageHandler';
-import { createPdfHandler } from './tools/basic/pdf/PdfHandler';
-import FileSelector from './tools/basic/image/FileSelector';
+// import { createArcHandlerSingleton } from './tools/advanced/arc/ArcHandler';
+// import { createArrowHandlerSingleton } from './tools/advanced/arrow/ArrowHandler';
+// import { createLineHandlerSingleton } from './tools/advanced/line/LineHandler';
+// import { createRectHandlerSingleton } from './tools/advanced/rect/RectHandler';
+import { createQuadraticHandlerSingleton } from './tools/advanced/quadratic/QuadraticHandler';
+import { createBezierHandlerSingleton } from './tools/advanced/bezier/BezierHandler';
+import { createZoomHandlerSingleton } from './tools/show-control/zoom/ZoomHandler';
+// import { createImageHandlerSingleton } from './tools/basic/image/ImageHandler';
+// import { createPdfHandlerSingleton } from './tools/basic/pdf/PdfHandler';
+// import FileSelector from './tools/basic/image/FileSelector';
 import Common from './common/Common';
 import initToolbox from './toolbox/ToolboxInitializer';
 
@@ -66,22 +66,23 @@ function initWidget (shows) {
 
     var context = getContext('main-canvas'), tempContext = getContext('temp-canvas');
     var common = new Common(textarea);
-    var dragHelper = new DragHelper(context, tempContext, getIsControlKeyPressed, setIsControlKeypressed, copy, paste, getPoints);
+    // var dragHelper = new DragHelper(context, tempContext, getIsControlKeyPressed, setIsControlKeypressed, copy, paste, getPoints);
 
     function endLastPath() {
-        var cache = is;
+        // var cache = is;
 
-        if (cache.isArc) arcHandler.end(points);
-        else if (cache.isQuadraticCurve) quadraticHandler.end(points);
-        else if (cache.isBezierCurve) bezierHandler.end(points);
+        // if (cache.isArc) arcHandler.end(points);
+        // else if (cache.isQuadraticCurve) quadraticHandler.end(points);
+        // else if (cache.isBezierCurve) bezierHandler.end(points);
 
-        drawHelper.redraw(context, tempContext, points);
+        // drawHelper.redraw(context, tempContext, points);
 
-        if (textHandler.text && textHandler.text.length) {
-            textHandler.appendPoints();
-            textHandler.onShapeUnSelected();
-        }
-        textHandler.showOrHideTextTools('hide');
+        // // text handler의 end 함수에 포함시켜야 함
+        // if (textHandler.text && textHandler.text.length) {
+        //     textHandler.appendPoints();
+        //     textHandler.onShapeUnSelected();
+        // }
+        // textHandler.showOrHideTextTools('hide');
     }
 
     var copiedStuff = [],
@@ -96,89 +97,89 @@ function initWidget (shows) {
     }
 
     function copy() {
-        endLastPath();
+        // endLastPath();
 
-        dragHelper.global.startingIndex = 0;
+        // dragHelper.global.startingIndex = 0;
 
-        if (find('copy-last').checked) {
-            copiedStuff = points[points.length - 1];
-            setSelection(find('drag-last-path'), 'DragLastPath');
-        } else {
-            copiedStuff = points;
-            setSelection(find('drag-all-paths'), 'DragAllPaths');
-        }
+        // if (find('copy-last').checked) {
+        //     copiedStuff = points[points.length - 1];
+        //     setSelection(find('drag-last-path'), 'DragLastPath');
+        // } else {
+        //     copiedStuff = points;
+        //     setSelection(find('drag-all-paths'), 'DragAllPaths');
+        // }
     }
 
     function paste() {
-        endLastPath();
+        // endLastPath();
 
-        dragHelper.global.startingIndex = 0;
+        // dragHelper.global.startingIndex = 0;
 
-        if (find('copy-last').checked) {
-            points[points.length] = copiedStuff;
+        // if (find('copy-last').checked) {
+        //     points[points.length] = copiedStuff;
 
-            dragHelper.global = {
-                prevX: 0,
-                prevY: 0,
-                startingIndex: points.length - 1
-            };
+        //     dragHelper.global = {
+        //         prevX: 0,
+        //         prevY: 0,
+        //         startingIndex: points.length - 1
+        //     };
 
-            dragHelper.dragAllPaths(0, 0, points);
-            setSelection(find('drag-last-path'), 'DragLastPath');
-        } else {
+        //     dragHelper.dragAllPaths(0, 0, points);
+        //     setSelection(find('drag-last-path'), 'DragLastPath');
+        // } else {
 
-            dragHelper.global.startingIndex = points.length;
-            points = points.concat(copiedStuff);
-            setSelection(find('drag-all-paths'), 'DragAllPaths');
-        }
+        //     dragHelper.global.startingIndex = points.length;
+        //     points = points.concat(copiedStuff);
+        //     setSelection(find('drag-all-paths'), 'DragAllPaths');
+        // }
     }
 
-    var pencilHandler = createPencilHandler(context, tempContext);
-    var pencilLineWidth = document.getElementById('pencil-stroke-style').value,
-        pencilStrokeStyle = '#' + document.getElementById('pencil-fill-style').value;
-    var options = {
-        pencilLineWidth: pencilLineWidth,
-        pencilStrokeStyle: pencilStrokeStyle,
-        fillStyle: fillStyle,
-        globalAlpha: globalAlpha,
-        globalCompositeOperation: globalCompositeOperation,
-        lineCap: lineCap,
-        lineJoin: lineJoin,
-        font: font
-    }
-    pencilHandler.updateOptions(options);
+    // var pencilHandler = createPencilHandler(context, tempContext);
+    // var pencilLineWidth = document.getElementById('pencil-stroke-style').value,
+    //     pencilStrokeStyle = '#' + document.getElementById('pencil-fill-style').value;
+    // var options = {
+    //     pencilLineWidth: pencilLineWidth,
+    //     pencilStrokeStyle: pencilStrokeStyle,
+    //     fillStyle: fillStyle,
+    //     globalAlpha: globalAlpha,
+    //     globalCompositeOperation: globalCompositeOperation,
+    //     lineCap: lineCap,
+    //     lineJoin: lineJoin,
+    //     font: font
+    // }
+    // pencilHandler.updateOptions(options);
 
-    var markerLineWidth = document.getElementById('marker-stroke-style').value,
-        markerStrokeStyle = '#' + document.getElementById('marker-fill-style').value,
-        markerGlobalAlpha = 0.7;
+    // var markerLineWidth = document.getElementById('marker-stroke-style').value,
+    //     markerStrokeStyle = '#' + document.getElementById('marker-fill-style').value,
+    //     markerGlobalAlpha = 0.7;
     
-    var markerHandler = createMarkerHandler(context, tempContext);
-    var moptions = {
-        markerLineWidth: markerLineWidth,
-        markerStrokeStyle: markerStrokeStyle,
-        fillStyle: fillStyle,
-        globalAlpha: markerGlobalAlpha,
-        globalCompositeOperation: globalCompositeOperation,
-        lineCap: lineCap,
-        lineJoin: lineJoin,
-        font: font
-    }
-    markerHandler.updateOptionsChanged(moptions);
+    // var markerHandler = createMarkerHandler(context, tempContext);
+    // var moptions = {
+    //     markerLineWidth: markerLineWidth,
+    //     markerStrokeStyle: markerStrokeStyle,
+    //     fillStyle: fillStyle,
+    //     globalAlpha: markerGlobalAlpha,
+    //     globalCompositeOperation: globalCompositeOperation,
+    //     lineCap: lineCap,
+    //     lineJoin: lineJoin,
+    //     font: font
+    // }
+    // markerHandler.updateOptionsChanged(moptions);
 
-    var eraserHandler = createEraserHandler(context, tempContext);
-    var textHandler = createTextHandler(context, tempContext);
+    // var eraserHandler = createEraserHandler(context, tempContext);
+    // var textHandler = createTextHandlerSingleton(context, tempContext);
 
-    var arcHandler = createArcHandler(context, tempContext, getPoints);
-    arcHandler.init(points);
+    // var arcHandler = createArcHandlerSingleton(context, tempContext, getPoints);
+    // arcHandler.init(points);
 
-    var lineHandler = createLineHandler(context, tempContext);
-    var arrowHandler = createArrowHandler(context, tempContext);
-    var rectHandler = createRectHandler(context, tempContext);
-    var quadraticHandler = createQuadraticHandler(context, tempContext);
-    var bezierHandler = createBezierHandler(context, tempContext);
-    var zoomHandler = createZoomHandler(context, tempContext);
-    var imageHandler = createImageHandler(context, tempContext, syncPoints);
-    var pdfHandler = createPdfHandler(context, tempContext, getPoints, syncPoints);
+    // var lineHandler = createLineHandlerSingleton(context, tempContext);
+    // var arrowHandler = createArrowHandlerSingleton(context, tempContext);
+    // var rectHandler = createRectHandlerSingleton(context, tempContext);
+    var quadraticHandler = createQuadraticHandlerSingleton(context, tempContext);
+    var bezierHandler = createBezierHandlerSingleton(context, tempContext);
+    var zoomHandler = createZoomHandlerSingleton(context, tempContext);
+    // var imageHandler = createImageHandlerSingleton(context, tempContext, syncPoints);
+    // var pdfHandler = createPdfHandlerSingleton(context, tempContext, getPoints, syncPoints);
 
     var icons = {};
     if (params.icons) {
@@ -266,11 +267,11 @@ function initWidget (shows) {
     }, false);
 
     initToolbox({
-        imageHandler: imageHandler,
-        pdfHandler: pdfHandler,
-        textHandler: textHandler,
+        // imageHandler: imageHandler,
+        // pdfHandler: pdfHandler,
+        // textHandler: textHandler,
         zoomHandler: zoomHandler,
-        dragHelper: dragHelper,
+        // dragHelper: dragHelper,
         lineCap: lineCap,
         lineJoin: lineJoin,
         strokeStyle: strokeStyle,
@@ -313,18 +314,18 @@ function initWidget (shows) {
 
         var cache = is;
 
-        if (cache.isLine) lineHandler.mousedown(e, points);
-        else if (cache.isArc) arcHandler.mousedown(e, points);
-        else if (cache.isRectangle) rectHandler.mousedown(e, points);
-        else if (cache.isQuadraticCurve) quadraticHandler.mousedown(e, points);
+        // if (cache.isLine) lineHandler.mousedown(e, points);
+        // if (cache.isArc) arcHandler.mousedown(e, points);
+        // else if (cache.isRectangle) rectHandler.mousedown(e, points);
+        if (cache.isQuadraticCurve) quadraticHandler.mousedown(e, points);
         else if (cache.isBezierCurve) bezierHandler.mousedown(e, points);
         // else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousedown(e, points, is.isDragAllPaths, is.isDragLastPath);
         // else if (cache.isPencil) pencilHandler.mousedown(e, points);
         // else if (cache.isEraser) eraserHandler.mousedown(e, points);
         // else if (cache.isText) textHandler.mousedown(e, points, shows.text);
-        else if (cache.isImage) imageHandler.mousedown(e, points);
-        else if (cache.isPdf) pdfHandler.mousedown(e,points);
-        else if (cache.isArrow) arrowHandler.mousedown(e, points);
+        // else if (cache.isImage) imageHandler.mousedown(e, points);
+        // else if (cache.isPdf) pdfHandler.mousedown(e,points);
+        // else if (cache.isArrow) arrowHandler.mousedown(e, points);
         // else if (cache.isMarker) markerHandler.mousedown(e, points);
 
         // !cache.isPdf && drawHelper.redraw(context, tempContext, points);
@@ -362,18 +363,18 @@ function initWidget (shows) {
 
         var cache = is;
 
-        if (cache.isLine) lineHandler.mouseup(e, points);
-        else if (cache.isArc) arcHandler.mouseup(e, points);
-        else if (cache.isRectangle) rectHandler.mouseup(e, points);
-        else if (cache.isQuadraticCurve) quadraticHandler.mouseup(e, points);
+        // if (cache.isLine) lineHandler.mouseup(e, points);
+        // if (cache.isArc) arcHandler.mouseup(e, points);
+        // else if (cache.isRectangle) rectHandler.mouseup(e, points);
+        if (cache.isQuadraticCurve) quadraticHandler.mouseup(e, points);
         else if (cache.isBezierCurve) bezierHandler.mouseup(e, points);
         // else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mouseup(e, points, is.isDragLastPath);
         // else if (cache.isPencil) pencilHandler.mouseup(e, points);
         // else if (cache.isEraser) eraserHandler.mouseup(e, points);
         // else if (cache.isText) textHandler.mouseup(e, points);
-        else if (cache.isImage) imageHandler.mouseup(e, points);
-        else if (cache.isPdf) pdfHandler.mousedown(e, points);
-        else if (cache.isArrow) arrowHandler.mouseup(e, points);
+        // else if (cache.isImage) imageHandler.mouseup(e, points);
+        // else if (cache.isPdf) pdfHandler.mousedown(e, points);
+        // else if (cache.isArrow) arrowHandler.mouseup(e, points);
         // else if (cache.isMarker) markerHandler.mouseup(e, points);
 
         // !cache.isPdf && drawHelper.redraw(context, tempContext, points);
@@ -391,18 +392,18 @@ function initWidget (shows) {
 
         var cache = is;
 
-        if (cache.isLine) lineHandler.mousemove(e, points);
-        else if (cache.isArc) arcHandler.mousemove(e, points);
-        else if (cache.isRectangle) rectHandler.mousemove(e, points);
-        else if (cache.isQuadraticCurve) quadraticHandler.mousemove(e, points);
+        // if (cache.isLine) lineHandler.mousemove(e, points);
+        // if (cache.isArc) arcHandler.mousemove(e, points);
+        // else if (cache.isRectangle) rectHandler.mousemove(e, points);
+        if (cache.isQuadraticCurve) quadraticHandler.mousemove(e, points);
         else if (cache.isBezierCurve) bezierHandler.mousemove(e, points);
         // else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousemove(e, points, is.isDragAllPaths, is.isDragLastPath);
         // else if (cache.isPencil) pencilHandler.mousemove(e, points);
         // else if (cache.isEraser) eraserHandler.mousemove(e, points);
         // else if (cache.isText) textHandler.mousemove(e, points);
-        else if (cache.isImage) imageHandler.mousemove(e, points);
-        else if (cache.isPdf) pdfHandler.mousedown(e, points);
-        else if (cache.isArrow) arrowHandler.mousemove(e, points);
+        // else if (cache.isImage) imageHandler.mousemove(e, points);
+        // else if (cache.isPdf) pdfHandler.mousedown(e, points);
+        // else if (cache.isArrow) arrowHandler.mousemove(e, points);
         // else if (cache.isMarker) markerHandler.mousemove(e, points);
 
         // preventStopEvent(e);
@@ -484,33 +485,33 @@ function initWidget (shows) {
 
         // Ctrl + z
         if (isControlKeyPressed && keyCode === 90) {
-            if (points.length) {
-                points.length = points.length - 1;
-                drawHelper.redraw(context, tempContext, points);
+            //if (points.length) {
+            //    points.length = points.length - 1;
+            //    drawHelper.redraw(context, tempContext, points);
 
-                syncPoints(is.isDragAllPaths || is.isDragLastPath ? true : false);
-            }
+            //    syncPoints(is.isDragAllPaths || is.isDragLastPath ? true : false);
+            //}
         }
 
         // Ctrl + a
         if (isControlKeyPressed && keyCode === 65) {
-            dragHelper.global.startingIndex = 0;
+            //dragHelper.global.startingIndex = 0;
 
-            endLastPath();
+            //endLastPath();
 
-            setSelection(find('drag-all-paths'), 'DragAllPaths');
+            //setSelection(find('drag-all-paths'), 'DragAllPaths');
         }
 
         // Ctrl + c
         if (isControlKeyPressed && keyCode === 67 && points.length) {
-            copy();
+            //copy();
         }
 
         // Ctrl + v
         if (isControlKeyPressed && keyCode === 86 && copiedStuff.length) {
-            paste();
+            //paste();
 
-            syncPoints(is.isDragAllPaths || is.isDragLastPath ? true : false);
+            //syncPoints(is.isDragAllPaths || is.isDragLastPath ? true : false);
         }
 
         // Ending the Control Key
@@ -560,112 +561,112 @@ function initWidget (shows) {
 
     var uid;
 
-    window.addEventListener('message', (event) => {
-        if (!event.data) return;
+    // window.addEventListener('message', (event) => {
+    //     if (!event.data) return;
 
-        if (!uid) {
-            uid = event.data.uid;
-        }
+    //     if (!uid) {
+    //         uid = event.data.uid;
+    //     }
 
-        if (event.data.captureStream) {
-            webrtcHandler.createOffer(function(sdp) {
-                sdp.uid = uid;
-                window.parent.postMessage(sdp, '*');
-            });
-            return;
-        }
+    //     if (event.data.captureStream) {
+    //         webrtcHandler.createOffer(function(sdp) {
+    //             sdp.uid = uid;
+    //             window.parent.postMessage(sdp, '*');
+    //         });
+    //         return;
+    //     }
 
-        if (event.data.renderStream) {
-            setTemporaryLine();
-            return;
-        }
+    //     if (event.data.renderStream) {
+    //         setTemporaryLine();
+    //         return;
+    //     }
 
-        if (event.data.sdp) {
-            webrtcHandler.setRemoteDescription(event.data);
-            return;
-        }
+    //     if (event.data.sdp) {
+    //         webrtcHandler.setRemoteDescription(event.data);
+    //         return;
+    //     }
 
-        if (event.data.genDataURL) {
-            var dataURL = context.canvas.toDataURL(event.data.format, 1);
-            window.parent.postMessage({
-                dataURL: dataURL,
-                uid: uid
-            }, '*');
-            return;
-        }
+    //     if (event.data.genDataURL) {
+    //         var dataURL = context.canvas.toDataURL(event.data.format, 1);
+    //         window.parent.postMessage({
+    //             dataURL: dataURL,
+    //             uid: uid
+    //         }, '*');
+    //         return;
+    //     }
 
-        if (event.data.undo && points.length) {
-            var index = event.data.index;
+    //     if (event.data.undo && points.length) {
+    //         var index = event.data.index;
 
-            if (index === 'all') {
-                points = [];
-                drawHelper.redraw(context, tempContext, points);
-                syncPoints(true);
-                return;
-            }
+    //         if (index === 'all') {
+    //             points = [];
+    //             drawHelper.redraw(context, tempContext, points);
+    //             syncPoints(true);
+    //             return;
+    //         }
 
-            if (index.numberOfLastShapes) {
-                try {
-                    points.length -= index.numberOfLastShapes;
-                } catch (e) {
-                    points = [];
-                }
+    //         if (index.numberOfLastShapes) {
+    //             try {
+    //                 points.length -= index.numberOfLastShapes;
+    //             } catch (e) {
+    //                 points = [];
+    //             }
 
-                drawHelper.redraw(context, tempContext, points);
-                syncPoints(true);
-                return;
-            }
+    //             drawHelper.redraw(context, tempContext, points);
+    //             syncPoints(true);
+    //             return;
+    //         }
 
-            if (index === -1) {
-                points.length = points.length - 1;
-                drawHelper.redraw();
-                syncPoints(true);
-                return;
-            }
+    //         if (index === -1) {
+    //             points.length = points.length - 1;
+    //             drawHelper.redraw();
+    //             syncPoints(true);
+    //             return;
+    //         }
 
-            if (points[index]) {
-                var newPoints = [];
-                for (var i = 0; i < points.length; i++) {
-                    if (i !== index) {
-                        newPoints.push(points[i]);
-                    }
-                }
-                points = newPoints;
-                drawHelper.redraw(context, tempContext, points);
-                syncPoints(true);
-            }
-            return;
-        }
+    //         if (points[index]) {
+    //             var newPoints = [];
+    //             for (var i = 0; i < points.length; i++) {
+    //                 if (i !== index) {
+    //                     newPoints.push(points[i]);
+    //                 }
+    //             }
+    //             points = newPoints;
+    //             drawHelper.redraw(context, tempContext, points);
+    //             syncPoints(true);
+    //         }
+    //         return;
+    //     }
 
-        if (event.data.syncPoints) {
-            syncPoints(true);
-            return;
-        }
+    //     if (event.data.syncPoints) {
+    //         syncPoints(true);
+    //         return;
+    //     }
 
-        if (event.data.clearCanvas) {
-            points = [];
-            drawHelper.redraw(context, tempContext, points);
-            return;
-        }
+    //     if (event.data.clearCanvas) {
+    //         points = [];
+    //         drawHelper.redraw(context, tempContext, points);
+    //         return;
+    //     }
 
-        if (!event.data.canvasDesignerSyncData) return;
+    //     if (!event.data.canvasDesignerSyncData) return;
 
-        // drawing is shared here (array of points)
-        var d = event.data.canvasDesignerSyncData;
+    //     // drawing is shared here (array of points)
+    //     var d = event.data.canvasDesignerSyncData;
 
-        if (d.startIndex !== 0) {
-            for (var i = 0; i < d.points.length; i++) {
-                points[i + d.startIndex] = d.points[i];
-            }
-        } else {
-            points = d.points;
-        }
+    //     if (d.startIndex !== 0) {
+    //         for (var i = 0; i < d.points.length; i++) {
+    //             points[i + d.startIndex] = d.points[i];
+    //         }
+    //     } else {
+    //         points = d.points;
+    //     }
 
-        lastPointIndex = points.length;
+    //     lastPointIndex = points.length;
 
-        // redraw the <canvas> surfaces
-        drawHelper.redraw(context, tempContext, points);
-    }, false);
+    //     // redraw the <canvas> surfaces
+    //     drawHelper.redraw(context, tempContext, points);
+    // }, false);
 
     function syncPoints(isSyncAll) {
         
