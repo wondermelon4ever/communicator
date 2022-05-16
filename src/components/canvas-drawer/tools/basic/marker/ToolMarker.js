@@ -3,7 +3,7 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
-import { createMarkerHandler } from './MarkerHandler';
+import { createMarkerHandlerSingleton } from './MarkerHandler';
 import { createMeventDispatcherSingleton, dispatch, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
 
 const ToolMarker = (props) => {
@@ -18,7 +18,7 @@ const ToolMarker = (props) => {
 
     React.useEffect(()=>{
         if(context !== undefined) { 
-            setHandler(createMarkerHandler(context.mainContext, context.tempContext, selected));
+            setHandler(createMarkerHandlerSingleton(context.mainContext, context.tempContext, selected));
         }
     }, [context]);
 
