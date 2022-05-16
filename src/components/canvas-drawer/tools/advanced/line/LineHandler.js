@@ -1,20 +1,48 @@
-import drawHelper, { setLineHandler } from "../../DrawHelper";
+import { createMeventDispatcherSingleton, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
+import drawHelper from "../../DrawHelper";
+import ShapeHandler from '../../ShapeHandler';
+import { getPoints } from '../../../views/CanvasTemp';
 
 var lineHandler = undefined;
-export default class LineHandler {
+export default class LineHandler extends ShapeHandler {
+
     constructor(context, tempContext) {
-        this.context = context;
-        this.tempContext = tempContext;
-        this.canvas = tempContext.canvas;
+        super(context, tempContext);
+
         this.prevX = 0;
         this.prevY = 0;
         this.ismousedown = false;
+
+        this.addMeventListener();
         lineHandler = this;
     }
 
-    mousedown = (e, points) => {
-        var x = e.pageX - this.canvas.offsetLeft,
-            y = e.pageY - this.canvas.offsetTop;
+    addMeventListener () {
+        var dispatcher = createMeventDispatcherSingleton();
+        dispatcher.addListener(MEVENT_KINDS.SELECTED_SHAPE, (mevent) => {
+            if(mevent.value.shape !== 'line') this.selected = false;
+            else this.selected = true;
+        });
+          
+        dispatcher.addListener(MEVENT_KINDS.MOUSE_DOWN, (mevent) => {
+            if(this.selected === false) return;
+            this.mousedown(mevent);
+        });
+    
+        dispatcher.addListener(MEVENT_KINDS.MOUSE_MOVE, (mevent) => {
+            if(this.selected === false || !this.ismousedown) return;
+            this.mousemove(mevent);
+        });
+    
+        dispatcher.addListener(MEVENT_KINDS.MOUSE_UP, (mevent) => {
+            if(this.selected === false) return;
+            this.mouseup(mevent);
+        });
+    }
+
+    mousedown = (mevent) => {
+        var x = mevent.wevt.pageX - this.canvas.offsetLeft,
+            y = mevent.wevt.pageY - this.canvas.offsetTop;
 
         var t = this;
 
@@ -22,23 +50,24 @@ export default class LineHandler {
         t.prevY = y;
 
         t.ismousedown = true;
+        drawHelper.redraw(this.context, this.tempContext, getPoints());
     }
         
-    mouseup = (e, points) => {
-        var x = e.pageX - this.canvas.offsetLeft,
-            y = e.pageY - this.canvas.offsetTop;
-
+    mouseup = (mevent) => {
+        var x = mevent.wevt.pageX - this.canvas.offsetLeft,
+            y = mevent.wevt.pageY - this.canvas.offsetTop;
+        var points = getPoints();
         var t = this;
         if (t.ismousedown) {
             points[points.length] = ['line', [t.prevX, t.prevY, x, y], drawHelper.getOptions()];
-
             t.ismousedown = false;
+            drawHelper.redraw(this.context, this.tempContext, points);
         }
     }
 
-    mousemove = (e, points) => {
-        var x = e.pageX - this.canvas.offsetLeft,
-            y = e.pageY - this.canvas.offsetTop;
+    mousemove = (mevent) => {
+        var x = mevent.wevt.pageX - this.canvas.offsetLeft,
+            y = mevent.wevt.pageY - this.canvas.offsetTop;
 
         var t = this;
 
@@ -50,14 +79,13 @@ export default class LineHandler {
     }
 }
 
-const createLineHandler = (context, tempContext) => {
+const createLineHandlerSingleton = (context, tempContext) => {
     if(lineHandler === undefined) {
         lineHandler = new LineHandler(context, tempContext);
-        setLineHandler(lineHandler);
     }
     return lineHandler;
 }
 
 export {
-    createLineHandler
+    createLineHandlerSingleton
 }
