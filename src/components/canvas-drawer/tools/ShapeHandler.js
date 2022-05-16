@@ -1,3 +1,4 @@
+import { ThreeGMobiledataSharp } from '@mui/icons-material';
 import { getPoints } from '../views/CanvasTemp';
 import drawHelper from './DrawHelper';
 
@@ -5,6 +6,7 @@ export default class ShapeHandler {
 
     static lastPointIndex = 0;
     static uid;
+    static inited = false;
 
     constructor(context, tempContext) {
         this.context = context;
@@ -14,6 +16,9 @@ export default class ShapeHandler {
     }
 
     init () {
+        if(ShapeHandler.inited == true) return;
+        ShapeHandler.inited = true;
+
         window.addEventListener('message', (event) => {
             if (!event.data) return;
             if (!ShapeHandler.uid) ShapeHandler.uid = event.data.uid;
