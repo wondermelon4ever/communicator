@@ -4,7 +4,8 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import SvgIcon from '@mui/material/SvgIcon';
 import { createMeventDispatcherSingleton, dispatch, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
-import { createEditHandler } from './EditHandler';
+import { createEditHandlerSingleton } from './EditHandler';
+import { find } from "../../../util/Utils";
 
 function DragLastPathIcon (props) {
     return (
@@ -27,7 +28,7 @@ const ToolDragLastPath = (props) => {
 
     React.useEffect(()=>{
         if(context !== undefined) { 
-            setHandler(createEditHandler(context.mainContext, context.tempContext, selected));
+            setHandler(createEditHandlerSingleton(context.mainContext, context.tempContext, selected));
         }
     }, [context]);
 
@@ -47,6 +48,11 @@ const ToolDragLastPath = (props) => {
     }
 
     addMeventListener();
+
+    // const handleOnClickByProgram = (e) => {
+    //     find('copy-last').checked = true;
+    //     find('copy-all').checked  = false;
+    // }
     
     const handleOnClick = (e) => {
         setSelected(true);
@@ -59,10 +65,15 @@ const ToolDragLastPath = (props) => {
                 shape: "dragLastPath"
             }
         });
+        find('copy-last').checked = true;
+        find('copy-all').checked  = false;
     }
 
     return (
-        <div id="drag-last-path" style={{ display: props.show ? "block" : "none", margine: "3px", padding: "3px" }}>
+        <div id="drag-last-path" 
+            style={{ display: props.show ? "block" : "none", margine: "3px", padding: "3px" }}
+            onClick={ handleOnClick }
+        >
             <Avatar alt="Drag Last Path" sx={{ bgcolor: selected ? "#f57f17" : "#FFFFFF", width: 32, height: 32 }} variant="rounded">
             <Tooltip title="Drag and move last path">
                 <IconButton onClick={ handleOnClick }>
