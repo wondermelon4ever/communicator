@@ -9,11 +9,11 @@ import data_uris from './ToolboxImages';
 import FileSelector from '../tools/basic/image/FileSelector';
 
 const initToolbox = (params) => {
-    var imageHandler= params.imageHandler;
-    var pdfHandler  = params.pdfHandler;
-    var textHandler = params.textHandler;
+    // var imageHandler= params.imageHandler;
+    // var pdfHandler  = params.pdfHandler;
+    // var textHandler = params.textHandler;
     var zoomHandler = params.zoomHandler;
-    var dragHelper  = params.dragHelper;
+    // var dragHelper  = params.dragHelper;
     var lineCap     = params.lineCap;
     var lineJoin    = params.lineJoin;
     var strokeStyle = params.strokeStyle;
@@ -41,73 +41,73 @@ const initToolbox = (params) => {
         }
 
         addEvent(context.canvas, 'click', function() {
-            if (textHandler.text.length) {
-                textHandler.appendPoints(getPoints());
-            }
+            // if (textHandler.text.length) {
+            //     textHandler.appendPoints(getPoints());
+            // }
 
-            if (shape === 'Text') {
-                textHandler.onShapeSelected();
-            } else {
-                textHandler.onShapeUnSelected();
-            }
+            // if (shape === 'Text') {
+            //     textHandler.onShapeSelected();
+            // } else {
+            //     textHandler.onShapeUnSelected();
+            // }
 
-            if (shape === 'Pencil' || shape === 'Marker') {
-                lineCap = lineJoin = 'round';
-            }
+            // if (shape === 'Pencil' || shape === 'Marker') {
+            //     lineCap = lineJoin = 'round';
+            // }
 
-            dragHelper.global.startingIndex = 0;
+            // dragHelper.global.startingIndex = 0;
             setSelection(this, shape);
 
-            if (this.id === 'drag-last-path') {
-                find('copy-last').checked = true;
-                find('copy-all').checked = false;
-            } else if (this.id === 'drag-all-paths') {
-                find('copy-all').checked = true;
-                find('copy-last').checked = false;
-            }
+            // if (this.id === 'drag-last-path') {
+            //     find('copy-last').checked = true;
+            //     find('copy-all').checked = false;
+            // } else if (this.id === 'drag-all-paths') {
+            //     find('copy-all').checked = true;
+            //     find('copy-last').checked = false;
+            // }
 
             if (this.id === 'image-icon') {
-                var selector = new FileSelector();
-                selector.accept = 'image/*';
-                selector.selectSingleFile(function(file) {
-                    if (!file) return;
+                // var selector = new FileSelector();
+                // selector.accept = 'image/*';
+                // selector.selectSingleFile(function(file) {
+                //     if (!file) return;
 
-                    var reader = new FileReader();
-                    reader.onload = function(event) {
-                        var image = new Image();
-                        image.onload = function() {
-                            var index = imageHandler.images.length;
+                //     var reader = new FileReader();
+                //     reader.onload = function(event) {
+                //         var image = new Image();
+                //         image.onload = function() {
+                //             var index = imageHandler.images.length;
 
-                            imageHandler.lastImageURL = image.src;
-                            imageHandler.lastImageIndex = index;
+                //             imageHandler.lastImageURL = image.src;
+                //             imageHandler.lastImageIndex = index;
 
-                            imageHandler.images.push(image);
-                            imageHandler.load(image.clientWidth, image.clientHeight, getPoints());
-                        };
-                        image.style = 'position: absolute; top: -99999999999; left: -999999999;';
-                        document.body.appendChild(image);
-                        image.src = event.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                });
+                //             imageHandler.images.push(image);
+                //             imageHandler.load(image.clientWidth, image.clientHeight, getPoints());
+                //         };
+                //         image.style = 'position: absolute; top: -99999999999; left: -999999999;';
+                //         document.body.appendChild(image);
+                //         image.src = event.target.result;
+                //     };
+                //     reader.readAsDataURL(file);
+                // });
             }
 
-            if (this.id === 'pdf-icon') {
-                var selector = new FileSelector();
-                selector.selectSingleFile(function(file) {
-                    if (!file) return;
+            // if (this.id === 'pdf-icon') {
+            //     var selector = new FileSelector();
+            //     selector.selectSingleFile(function(file) {
+            //         if (!file) return;
 
-                    function onGettingPdf() {
-                        var reader = new FileReader();
-                        reader.onload = function(event) {
-                            pdfHandler.pdf = null; // to make sure we call "getDocument" again
-                            pdfHandler.load(event.target.result);
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                    onGettingPdf();
-                }, null, 'application/pdf');
-            }
+            //         function onGettingPdf() {
+            //             var reader = new FileReader();
+            //             reader.onload = function(event) {
+            //                 pdfHandler.pdf = null; // to make sure we call "getDocument" again
+            //                 pdfHandler.load(event.target.result);
+            //             };
+            //             reader.readAsDataURL(file);
+            //         }
+            //         onGettingPdf();
+            //     }, null, 'application/pdf');
+            // }
 
             if (this.id === 'pencil-icon' || this.id === 'eraser-icon' || this.id === 'marker-icon') {
                 cache.lineCap = lineCap;
@@ -138,52 +138,52 @@ const initToolbox = (params) => {
     var toolBox = find('tool-box');
     toolBox.style.height = (innerHeight) + 'px'; // -toolBox.offsetTop - 77
 
-    function decorateDragLastPath() {
-        var context = getContext('drag-last-path');
+    // function decorateDragLastPath() {
+    //     var context = getContext('drag-last-path');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-            bindEvent(context, 'DragLastPath');
-        };
-        image.src = data_uris.dragSingle;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //         bindEvent(context, 'DragLastPath');
+    //     };
+    //     image.src = data_uris.dragSingle;
+    // }
 
     // decorateDragLastPath();
 
-    if (tools.dragSingle === true) {
-    }
+    // if (tools.dragSingle === true) {
+    // }
 
-    function decorateDragAllPaths() {
-        var context = getContext('drag-all-paths');
+    // function decorateDragAllPaths() {
+    //     var context = getContext('drag-all-paths');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-            bindEvent(context, 'DragAllPaths');
-        };
-        image.src = data_uris.dragMultiple;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //         bindEvent(context, 'DragAllPaths');
+    //     };
+    //     image.src = data_uris.dragMultiple;
+    // }
 
     // decorateDragAllPaths();
 
-    if (tools.dragMultiple === true) {
-    }
+    // if (tools.dragMultiple === true) {
+    // }
 
-    function decorateLine() {
-        var context = getContext('line');
+    // function decorateLine() {
+    //     var context = getContext('line');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-            bindEvent(context, 'Line');
-        };
-        image.src = data_uris.line;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //         bindEvent(context, 'Line');
+    //     };
+    //     image.src = data_uris.line;
+    // }
 
-    if (tools.line === true) {
-        decorateLine();
-    }
+    // if (tools.line === true) {
+    //     decorateLine();
+    // }
 
     function decorateUndo() {
         var contextUndo = getContext('undo');
@@ -208,18 +208,18 @@ const initToolbox = (params) => {
         decorateUndo();
     }
 
-    function decorateArrow() {
-        var context = getContext('arrow');
+    // function decorateArrow() {
+    //     var context = getContext('arrow');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-            bindEvent(context, 'Arrow');
-        };
-        image.src = data_uris.arrow;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //         bindEvent(context, 'Arrow');
+    //     };
+    //     image.src = data_uris.arrow;
+    // }
 
-    if (tools.arrow === true) decorateArrow();
+    // if (tools.arrow === true) decorateArrow();
 
     function decorateZoomUp() {
         var context = getContext('zoom-up');
@@ -315,7 +315,7 @@ const initToolbox = (params) => {
         image.src = data_uris.image;
     }
 
-    if (tools.image === true) decorateImage();
+    // if (tools.image === true) decorateImage();
 
     function decoratePDF() {
         var context = getContext('pdf-icon');
@@ -328,33 +328,33 @@ const initToolbox = (params) => {
         image.src = data_uris.pdf;
     }
 
-    if (tools.pdf === true) decoratePDF();
+    // if (tools.pdf === true) decoratePDF();
 
-    function decorateArc() {
-        var context = getContext('arc');
+    // function decorateArc() {
+    //     var context = getContext('arc');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-            bindEvent(context, 'Arc');
-        };
-        image.src = data_uris.arc;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //         bindEvent(context, 'Arc');
+    //     };
+    //     image.src = data_uris.arc;
+    // }
 
-    if (tools.arc === true) decorateArc();
+    // if (tools.arc === true) decorateArc();
 
-    function decorateRect() {
-        var context = getContext('rectangle');
+    // function decorateRect() {
+    //     var context = getContext('rectangle');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-            bindEvent(context, 'Rectangle');
-        };
-        image.src = data_uris.rectangle;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //         bindEvent(context, 'Rectangle');
+    //     };
+    //     image.src = data_uris.rectangle;
+    // }
 
-    if (tools.rectangle === true) decorateRect();
+    // if (tools.rectangle === true) decorateRect();
 
     function decorateQuadratic() {
         var context = getContext('quadratic-curve');
