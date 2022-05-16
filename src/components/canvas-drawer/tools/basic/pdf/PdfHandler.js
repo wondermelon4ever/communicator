@@ -1,14 +1,17 @@
+import { createMeventDispatcherSingleton, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
 import * as pdfjsLib from 'pdfjs-dist';
-import drawHelper, { setPdfHandler } from "../../DrawHelper";
+import drawHelper from "../../DrawHelper";
 import data_uris from '../../../toolbox/ToolboxImages';
 
+import { getPoints } from '../../../views/CanvasTemp';
+import ShapeHandler from '../../ShapeHandler';
+import FileSelector from "../image/FileSelector";
+
 var pdfHandler = undefined;
-export default class PdfHandler {
+export default class PdfHandler extends ShapeHandler {
 
     constructor(context, tempContext, getPoints, syncPoints) {
-        this.context = context;
-        this.tempContext = tempContext;
-        this.canvas = tempContext.canvas;
+        super(context, tempContext);
 
         this.lastPdfURL = null;
         this.lastIndex = 0;
@@ -28,7 +31,48 @@ export default class PdfHandler {
         this.pdf = undefined;
 
         this.getPoints = getPoints;
-        this.syncPoints = syncPoints;
+        this.addMeventListener();
+        pdfHandler = this;
+    }
+
+    onIconClicked () {
+        var selector = new FileSelector();
+        selector.selectSingleFile((file) => {
+            if (!file) return;
+
+            function onGettingPdf() {
+                var reader = new FileReader();
+                reader.onload =  (event) => {
+                    this.pdf = null; // to make sure we call "getDocument" again
+                    this.load(event.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+            onGettingPdf();
+        }, null, 'application/pdf');
+    }
+
+    addMeventListener () {
+        var dispatcher = createMeventDispatcherSingleton();
+        dispatcher.addListener(MEVENT_KINDS.SELECTED_SHAPE, (mevent) => {
+            if(mevent.value.shape !== 'pdf') this.selected = false;
+            else this.selected = true;
+        });
+
+        dispatcher.addListener(MEVENT_KINDS.MOUSE_DOWN, (mevent) => {
+            if(this.selected === false) return;
+            this.mousedown(mevent);
+        });
+
+        dispatcher.addListener(MEVENT_KINDS.MOUSE_MOVE, (mevent) => {
+            if(this.selected === false || this.ismousedown == false) return;
+            this.mousemove(mevent);
+        });
+    
+        dispatcher.addListener(MEVENT_KINDS.MOUSE_UP, (mevent) => {
+            if(this.selected === false) return;
+            this.mouseup(mevent);
+        });
     }
 
     getPage = (pageNumber, callback) => {
@@ -203,14 +247,13 @@ export default class PdfHandler {
     }
 }
 
-const createPdfHandler = (context, tempContext, getPoints, syncPoints) => {
+const createPdfHandlerSingleton = (context, tempContext, getPoints, syncPoints) => {
     if(pdfHandler === undefined) {
         pdfHandler = new PdfHandler(context, tempContext, getPoints, syncPoints);
-        setPdfHandler(pdfHandler);
     }
     return pdfHandler;
 }
 
 export {
-    createPdfHandler
+    createPdfHandlerSingleton
 }
