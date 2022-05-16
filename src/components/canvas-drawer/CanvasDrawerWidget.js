@@ -130,7 +130,7 @@ const CanvasDrawerWidget = (props) => {
                 <CanvasMain name="main-canvas"/>
             </section>
 
-            <Toolbox shows={ iconShows } />
+            {/* <Toolbox shows={ iconShows } /> */}
 
             <Toolbox2 mainCanvasName="main-canvas" tempCanvasName="temp-canvas"/>
 

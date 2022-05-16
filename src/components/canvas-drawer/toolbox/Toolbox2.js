@@ -157,7 +157,7 @@ const Toolbox2 = (props) => {
                 y: position.y
             }}
         >
-            <div style={{ position: 'absolute', top: "10px", left: '500px', backgroundColor: "#01579b", opacity: 0.75 }}>
+            <div style={{ position: 'absolute', top: "5px", left: '5px', backgroundColor: "#01579b", opacity: 0.75 }}>
                 <strong>
                     <div style={{ cursor: "move", height: 24, minWidth: 250, display: "flex" }} >
                         <Box sx={{ display: 'flex', flexGrow: 1 }} m={0} pt={ 0 } pl={ 0 }>

@@ -263,7 +263,7 @@ function initWidget (shows) {
     }
 
     window.addEventListener('load', function() {
-        setDefaultSelectedIcon();
+        // setDefaultSelectedIcon();
     }, false);
 
     initToolbox({

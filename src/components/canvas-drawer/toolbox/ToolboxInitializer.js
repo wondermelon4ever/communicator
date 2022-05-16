@@ -135,8 +135,8 @@ const initToolbox = (params) => {
         });
     }
 
-    var toolBox = find('tool-box');
-    toolBox.style.height = (innerHeight) + 'px'; // -toolBox.offsetTop - 77
+    // var toolBox = find('tool-box');
+    // toolBox.style.height = (innerHeight) + 'px'; // -toolBox.offsetTop - 77
 
     // function decorateDragLastPath() {
     //     var context = getContext('drag-last-path');
