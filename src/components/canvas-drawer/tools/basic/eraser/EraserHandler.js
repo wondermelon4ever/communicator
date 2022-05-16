@@ -1,4 +1,3 @@
-import { setEraserHandler } from "../../DrawHelper";
 import { createMeventDispatcherSingleton, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
 
 import eraserDrawHelper from "./EraserDrawHelper";
@@ -127,10 +126,9 @@ export default class EraserHandler extends ShapeHandler {
      }
 }
 
-const createEraserHandler = (context, tempContext) => {
+const createEraserHandlerSingleton = (context, tempContext) => {
     if(eraserHandler === undefined) {
         eraserHandler = new EraserHandler(context, tempContext);
-        setEraserHandler(eraserHandler);
     }
 
     return eraserHandler;
@@ -142,6 +140,6 @@ const listenEraserOptionsChanged = (options) => {
 }
 
 export {
-    createEraserHandler,
+    createEraserHandlerSingleton,
     listenEraserOptionsChanged
 }
