@@ -1,10 +1,13 @@
 import { getPoints } from '../../../views/CanvasTemp';
 import drawHelper from '../../DrawHelper';
 import ShapeHandler from '../../ShapeHandler';
-import { createMeventDispatcherSingleton, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
+import { createMeventDispatcherSingleton, dispatch, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
 import { createDragHelper } from './DragHelper';
 
 var editHandler = undefined;
+const SHAPE_DRAG_LAST_PATH = "dragLastPath";
+const SHAPE_DRAG_ALL_PATHS = "dragAllPaths";
+
 export default class EditHandler extends ShapeHandler{
 
     constructor(context, tempContext) {
@@ -13,9 +16,9 @@ export default class EditHandler extends ShapeHandler{
         this.selected = false;
         this.selectedShape = "";
         this.isControlKeyPressed = false;
-        this.dragHelper = 
-            createDragHelper(context, tempContext, this.getIsControlKeyPressed, this.setIsControlKeyPressed, this.copy, this.paste, getPoints);
+        var copiedStuff = [];
         this.addMeventListener();
+        this.dragHelper = createDragHelper(context, tempContext, this, getPoints);
     }
 
     getIsControlKeyPressed () {
@@ -27,15 +30,48 @@ export default class EditHandler extends ShapeHandler{
     }
 
     copy() {
-
+        this.endLastPath();
+        var points = getPoints();
+        this.dragHelper.global.startingIndex = 0;
+        if(this.selectedShape === SHAPE_DRAG_LAST_PATH) {
+            this.copiedStuff = points[points.length - 1];
+        } else {
+            this.copiedStuff = points;
+        }
     }
 
     paste() {
+        this.endLastPath();
+        var points = getPoints();
+        this.dragHelper.global.startingIndex = 0;
+        if(this.selectedShape === SHAPE_DRAG_LAST_PATH) {
+            points[points.length] = this.copiedStuff;
 
+            this.dragHelper.global = {
+                prevX: 0,
+                prevY: 0,
+                startingIndex: points.length - 1
+            };
+            this.dragHelper.dragAllPaths(0, 0, points);
+        } else {
+            this.dragHelper.global.startingIndex = points.length;
+            points = points.concat(this.copiedStuff);
+        }
     }
 
     endLastPath() {
+        var points = getPoints();
+        dispatch({
+            kind: MEVENT_KINDS.DRAWING_END,
+            name: "",
+            description: "",
+            wevt: undefined,
+            value: {
+                points: points
+            }
+        });
 
+        drawHelper.redraw(this.context, this.tempContext, points);
     }
 
     addMeventListener () {
@@ -50,7 +86,7 @@ export default class EditHandler extends ShapeHandler{
 
         dispatcher.addListener(MEVENT_KINDS.MOUSE_DOWN, (mevent) => {
             if(this.selected === false) return;
-            console.log("mouse down in the drag handler !!!");
+            console.log("mouse down in the edit handler !!!");
             this.dragHelper.mousedown(
                 mevent.wevt, 
                 mevent.value.points, 
@@ -60,7 +96,7 @@ export default class EditHandler extends ShapeHandler{
 
         dispatcher.addListener(MEVENT_KINDS.MOUSE_MOVE, (mevent) => {
             if(this.selected === false) return;
-            // console.log("mouse move in the drag handler !!!");
+            console.log("mouse move in the drag handler !!! control key=> " + this.isControlKeyPressed);
             this.dragHelper.mousemove(
                 mevent.wevt,
                 mevent.value.points,
@@ -75,13 +111,13 @@ export default class EditHandler extends ShapeHandler{
         });
 
         dispatcher.addListener(MEVENT_KINDS.CONTROL_KEY_PRESSED, (mevent) => {
-            if(this.selected === false) return;
+            // if(this.selected === false) return;
             this.isControlKeyPressed = true;
             console.log("control key pressed in the drag handler !!!");
         });
 
         dispatcher.addListener(MEVENT_KINDS.CONTROL_KEY_RELEASED, (mevent) => {
-            if(this.selected === false) return;
+            // if(this.selected === false) return;
             this.isControlKeyPressed = false;
             console.log("control key released in the drag handler !!!");
         });
@@ -104,7 +140,7 @@ export default class EditHandler extends ShapeHandler{
             if(this.selected === false) return;
             console.log("control + v key pressed in the drag handler !!!");
             this.paste();
-            this.sharePoints(this.selected);
+            this.syncPoints(this.selected);
         });
 
         dispatcher.addListener(MEVENT_KINDS.CNTL_y_PRESSED, (mevent) => {
@@ -126,10 +162,10 @@ export default class EditHandler extends ShapeHandler{
     }
 }
 
-const createEditHandler = (context, tempContext, selected) => {
+const createEditHandlerSingleton = (context, tempContext, selected) => {
     if(editHandler === undefined) editHandler = new EditHandler(context, tempContext);
     editHandler.selected = selected;
     return editHandler;
 } 
 
-export { createEditHandler };
+export { createEditHandlerSingleton };
