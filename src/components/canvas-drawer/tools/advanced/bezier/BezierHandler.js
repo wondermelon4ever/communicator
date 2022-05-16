@@ -1,4 +1,4 @@
-import drawHelper, { setBezierHandler } from "../../DrawHelper";
+import drawHelper from "../../DrawHelper";
 
 var bezierHandler = undefined;
 export default class BezierHandler {
@@ -107,15 +107,14 @@ export default class BezierHandler {
     }
 }
 
-const createBezierHandler = (context, tempContext) => {
+const createBezierHandlerSingleton = (context, tempContext) => {
     if(bezierHandler === undefined) {
         bezierHandler = new BezierHandler(context, tempContext);
-        setBezierHandler(bezierHandler);
     }
     return bezierHandler;
 }
 
 export {
-    createBezierHandler
+    createBezierHandlerSingleton
 }
 
