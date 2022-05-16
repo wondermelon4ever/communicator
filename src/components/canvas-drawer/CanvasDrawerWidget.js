@@ -1,15 +1,15 @@
 import React from 'react';
 import './canvas-drawer-widget.css';
 
-import AdditionalOptionContainier from './tools/toolOptions/AdditionalOptionContainer';
+import AdditionalOptionContainier from './tools/tool-options/AdditionalOptionContainer';
 import ArcContainer from './tools/advanced/arc/ArcContainer';
 import CodeContainer from './views/CodeContainer';
 import CodeContainerOptionContainer from './views/CodeContainerOptionContainer';
-import ColorPaletteConatiner from './tools/toolOptions/ColorPaletteContainer';
+import ColorPaletteConatiner from './tools/tool-options/ColorPaletteContainer';
 import CopyPathContainer from './views/CopyPathContainer';
 import EraserContainer from './tools/basic/eraser/EraserContainer';
 import FontSelector from './tools/basic/text/FontSelector';
-import LineWidthContainer from './tools/toolOptions/LineWidthContainer';
+import LineWidthContainer from './tools/tool-options/LineWidthContainer';
 import MarkerContainer from './tools/basic/marker/MarkerContainer';
 import PencilContainer from './tools/basic/pencil/PencilContainer';
 import PdfContainer from './tools/basic/pdf/PdfContainer';
