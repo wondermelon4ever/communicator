@@ -67,21 +67,21 @@ const Toolbox = (props) => {
                         display: shows.text ? "block" : "none" 
                     }}></canvas> */}
 
-            <canvas id="image-icon" 
+            {/* <canvas id="image-icon" 
                     width="40" 
                     height="40" 
                     title="Add image"
                     style={{ 
                         display: shows.image ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
 
-            <canvas id="pdf-icon" 
+            {/* <canvas id="pdf-icon" 
                     width="40" 
                     height="40" 
                     title="Add pdf"
                     style={{ 
                         display: shows.pdf ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
 
             {/* <canvas id="drag-last-path" 
                     width="40" 
@@ -98,20 +98,20 @@ const Toolbox = (props) => {
                         display: shows.dragAllPath ? "block" : "none" 
                     }}></canvas> */}
 
-            <canvas id="line" 
+            {/* <canvas id="line" 
                     width="40" 
                     height="40" 
                     title="Draw Lines"
                     style={{ 
                         display: shows.line ? "block" : "none" 
-                    }}></canvas>
-            <canvas id="arrow" 
+                    }}></canvas> */}
+            {/* <canvas id="arrow" 
                     width="40" 
                     height="40" 
                     title="Draw Arrows"
                     style={{ 
                         display: shows.arrow ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
 
             <canvas id="zoom-up" 
                     width="40" 
@@ -129,21 +129,21 @@ const Toolbox = (props) => {
                         display: shows.zoomOut ? "block" : "none" 
                     }}></canvas>
 
-            <canvas id="arc" 
+            {/* <canvas id="arc" 
                     width="40" 
                     height="40" 
                     title="Arc"
                     style={{ 
                         display: shows.arc ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
 
-            <canvas id="rectangle" 
+            {/* <canvas id="rectangle" 
                     width="40" 
                     height="40" 
                     title="Rectangle"
                     style={{ 
                         display: shows.rectangle ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
 
             <canvas id="quadratic-curve" 
                     width="40" 
