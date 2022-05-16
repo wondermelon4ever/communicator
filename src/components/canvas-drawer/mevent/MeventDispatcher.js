@@ -39,7 +39,8 @@ const meventKinds = [
     "CNTL_c_PRESSED",
     "CNTL_v_PRESSED",
     "CNTL_y_PRESSED",
-    "TEXT_PASTED"
+    "TEXT_PASTED",
+    "DRAWING_END"
 ]
 
 const MEVENT_KINDS = {
@@ -71,7 +72,8 @@ const MEVENT_KINDS = {
     CNTL_c_PRESSED: "CNTL_c_PRESSED",
     CNTL_v_PRESSED: "CNTL_v_PRESSED",
     CNTL_y_PRESSED: "CNTL_y_PRESSED",
-    TEXT_PASTED: "TEXT_PASTED"
+    TEXT_PASTED: "TEXT_PASTED",
+    DRAWING_END: "DRAWING_END"
 }
 
 class MeventDispatcher {
