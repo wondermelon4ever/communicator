@@ -7,9 +7,10 @@ import { getPoints } from '../../../views/CanvasTemp';
 var arcHandler = undefined;
 export default class ArcHandler extends ShapeHandler {
 
-    constructor(context, tempContext) {
+    constructor(context, tempContext, selected) {
         super(context, tempContext);
 
+        this.selected = selected;
         this.ismousedown = false;
         this.prevX = 0, this.prevY = 0;
         this.prevRadius = 0;
@@ -186,9 +187,9 @@ export default class ArcHandler extends ShapeHandler {
     }
 }
 
-const createArcHandlerSingleton = (context, tempContext) => {
+const createArcHandlerSingleton = (context, tempContext, selected) => {
     if(arcHandler === undefined) {
-        arcHandler = new ArcHandler(context, tempContext);
+        arcHandler = new ArcHandler(context, tempContext, selected);
     }
     return arcHandler;
 }

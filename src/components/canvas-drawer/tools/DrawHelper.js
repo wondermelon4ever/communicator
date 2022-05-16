@@ -189,18 +189,19 @@ var drawHelper = {
 
     pdf : function(context, point, options) {
         var pdfHandler = createPdfHandlerSingleton(this.ctx, this.tempCtx);
+        var imageHandler = createImageHandlerSingleton(this.ctx, this.tempCtx);
         this.handleOptions(context, options, true);
 
         var image = pdfHandler.images[point[5]];
         if (!image) {
             var image = new Image();
             image.onload = function() {
-                // var index = imageHandler.images.length;
+                var index = imageHandler.images.length;
 
-                // pdfHandler.lastPage = image.src;
-                // pdfHandler.lastIndex = index;
+                pdfHandler.lastPage = image.src;
+                pdfHandler.lastIndex = index;
 
-                // pdfHandler.images.push(image);
+                pdfHandler.images.push(image);
                 context.drawImage(image, point[1], point[2], point[3], point[4]);
             };
             image.src = point[0];

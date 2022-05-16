@@ -7,10 +7,10 @@ var eraserHandler = undefined;
 
 export default class EraserHandler extends ShapeHandler {
 
-    constructor (context, tempContext) {
+    constructor (context, tempContext, selected) {
         super(context, tempContext);
 
-        this.selected = false;
+        this.selected = selected;
         this.ismousedown = false;
         this.prevX = 0;
         this.prevY = 0;
@@ -126,9 +126,9 @@ export default class EraserHandler extends ShapeHandler {
      }
 }
 
-const createEraserHandlerSingleton = (context, tempContext) => {
+const createEraserHandlerSingleton = (context, tempContext, selected) => {
     if(eraserHandler === undefined) {
-        eraserHandler = new EraserHandler(context, tempContext);
+        eraserHandler = new EraserHandler(context, tempContext, selected);
     }
 
     return eraserHandler;

@@ -7,10 +7,10 @@ import { createMeventDispatcherSingleton, MEVENT_KINDS } from '../../../mevent/M
 var textHandler = undefined;
 
 export default class TextHandler extends ShapeHandler {
-    constructor(context, tempContext) {
+    constructor(context, tempContext, selected) {
         super(context, tempContext);
         
-        this.selected = false;
+        this.selected = selected;
         this.controlKeyPressed = false;
         this.infoboxOpen = false;
 
@@ -321,9 +321,9 @@ export default class TextHandler extends ShapeHandler {
     }
 }
 
-const createTextHandlerSingleton = (context, tempContext) => {
+const createTextHandlerSingleton = (context, tempContext, selected) => {
     if(textHandler === undefined) {
-        textHandler = new TextHandler(context, tempContext);
+        textHandler = new TextHandler(context, tempContext, selected);
     }
     return textHandler;
 }

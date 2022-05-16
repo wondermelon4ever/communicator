@@ -19,8 +19,8 @@ import {
 // import { createArrowHandlerSingleton } from './tools/advanced/arrow/ArrowHandler';
 // import { createLineHandlerSingleton } from './tools/advanced/line/LineHandler';
 // import { createRectHandlerSingleton } from './tools/advanced/rect/RectHandler';
-import { createQuadraticHandlerSingleton } from './tools/advanced/quadratic/QuadraticHandler';
-import { createBezierHandlerSingleton } from './tools/advanced/bezier/BezierHandler';
+// import { createQuadraticHandlerSingleton } from './tools/advanced/quadratic/QuadraticHandler';
+// import { createBezierHandlerSingleton } from './tools/advanced/bezier/BezierHandler';
 import { createZoomHandlerSingleton } from './tools/show-control/zoom/ZoomHandler';
 // import { createImageHandlerSingleton } from './tools/basic/image/ImageHandler';
 // import { createPdfHandlerSingleton } from './tools/basic/pdf/PdfHandler';
@@ -175,8 +175,8 @@ function initWidget (shows) {
     // var lineHandler = createLineHandlerSingleton(context, tempContext);
     // var arrowHandler = createArrowHandlerSingleton(context, tempContext);
     // var rectHandler = createRectHandlerSingleton(context, tempContext);
-    var quadraticHandler = createQuadraticHandlerSingleton(context, tempContext);
-    var bezierHandler = createBezierHandlerSingleton(context, tempContext);
+    // var quadraticHandler = createQuadraticHandlerSingleton(context, tempContext);
+    // var bezierHandler = createBezierHandlerSingleton(context, tempContext);
     var zoomHandler = createZoomHandlerSingleton(context, tempContext);
     // var imageHandler = createImageHandlerSingleton(context, tempContext, syncPoints);
     // var pdfHandler = createPdfHandlerSingleton(context, tempContext, getPoints, syncPoints);
@@ -270,7 +270,7 @@ function initWidget (shows) {
         // imageHandler: imageHandler,
         // pdfHandler: pdfHandler,
         // textHandler: textHandler,
-        zoomHandler: zoomHandler,
+        // zoomHandler: zoomHandler,
         // dragHelper: dragHelper,
         lineCap: lineCap,
         lineJoin: lineJoin,
@@ -317,8 +317,8 @@ function initWidget (shows) {
         // if (cache.isLine) lineHandler.mousedown(e, points);
         // if (cache.isArc) arcHandler.mousedown(e, points);
         // else if (cache.isRectangle) rectHandler.mousedown(e, points);
-        if (cache.isQuadraticCurve) quadraticHandler.mousedown(e, points);
-        else if (cache.isBezierCurve) bezierHandler.mousedown(e, points);
+        // if (cache.isQuadraticCurve) quadraticHandler.mousedown(e, points);
+        // if (cache.isBezierCurve) bezierHandler.mousedown(e, points);
         // else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousedown(e, points, is.isDragAllPaths, is.isDragLastPath);
         // else if (cache.isPencil) pencilHandler.mousedown(e, points);
         // else if (cache.isEraser) eraserHandler.mousedown(e, points);
@@ -366,8 +366,8 @@ function initWidget (shows) {
         // if (cache.isLine) lineHandler.mouseup(e, points);
         // if (cache.isArc) arcHandler.mouseup(e, points);
         // else if (cache.isRectangle) rectHandler.mouseup(e, points);
-        if (cache.isQuadraticCurve) quadraticHandler.mouseup(e, points);
-        else if (cache.isBezierCurve) bezierHandler.mouseup(e, points);
+        // if (cache.isQuadraticCurve) quadraticHandler.mouseup(e, points);
+        // if (cache.isBezierCurve) bezierHandler.mouseup(e, points);
         // else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mouseup(e, points, is.isDragLastPath);
         // else if (cache.isPencil) pencilHandler.mouseup(e, points);
         // else if (cache.isEraser) eraserHandler.mouseup(e, points);
@@ -395,8 +395,8 @@ function initWidget (shows) {
         // if (cache.isLine) lineHandler.mousemove(e, points);
         // if (cache.isArc) arcHandler.mousemove(e, points);
         // else if (cache.isRectangle) rectHandler.mousemove(e, points);
-        if (cache.isQuadraticCurve) quadraticHandler.mousemove(e, points);
-        else if (cache.isBezierCurve) bezierHandler.mousemove(e, points);
+        // if (cache.isQuadraticCurve) quadraticHandler.mousemove(e, points);
+        // if (cache.isBezierCurve) bezierHandler.mousemove(e, points);
         // else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousemove(e, points, is.isDragAllPaths, is.isDragLastPath);
         // else if (cache.isPencil) pencilHandler.mousemove(e, points);
         // else if (cache.isEraser) eraserHandler.mousemove(e, points);

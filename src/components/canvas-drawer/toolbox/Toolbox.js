@@ -113,7 +113,7 @@ const Toolbox = (props) => {
                         display: shows.arrow ? "block" : "none" 
                     }}></canvas> */}
 
-            <canvas id="zoom-up" 
+            {/* <canvas id="zoom-up" 
                     width="40" 
                     height="40" 
                     title="Zoon-In"
@@ -127,7 +127,7 @@ const Toolbox = (props) => {
                     title="Zoom-Out"
                     style={{ 
                         display: shows.zoomOut ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
 
             {/* <canvas id="arc" 
                     width="40" 
@@ -145,29 +145,29 @@ const Toolbox = (props) => {
                         display: shows.rectangle ? "block" : "none" 
                     }}></canvas> */}
 
-            <canvas id="quadratic-curve" 
+            {/* <canvas id="quadratic-curve" 
                     width="40" 
                     height="40" 
                     title="Quadratic curve"
                     style={{ 
                         display: shows.quadraticCurve ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
 
-            <canvas id="bezier-curve" 
+            {/* <canvas id="bezier-curve" 
                     width="40" 
                     height="40" 
                     title="Bezier curve"
                     style={{ 
                         display: shows.bezierCurve ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
 
-            <canvas id="undo" 
+            {/* <canvas id="undo" 
                     width="40" 
                     height="40" 
                     title="Undo: Remove recent shapes"
                     style={{ 
                         display: shows.undo ? "block" : "none" 
-                    }}></canvas>
+                    }}></canvas> */}
 
             {/* <canvas id="line-width" 
                     width="40" 

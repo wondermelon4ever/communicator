@@ -174,6 +174,7 @@ export default class DragHelper {
         var x = e.pageX - this.canvas.offsetLeft,
             y = e.pageY - this.canvas.offsetTop,
             g = this.global;
+        
         drawHelper.redraw(this.context, this.tempContext, points);
 
         if (g.ismousedown) {

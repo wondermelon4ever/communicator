@@ -8,10 +8,10 @@ import FileSelector from "./FileSelector";
 var imageHandler = undefined;
 export default class ImageHandler extends ShapeHandler {
 
-    constructor (context, tempContext) {
+    constructor (context, tempContext, selected) {
         super(context, tempContext);
 
-        this.selected = false;
+        this.selected = selected;
         this.ismousedown = false;
         this.lastImageURL = null;
         this.lastImageIndex = 0;
@@ -116,9 +116,9 @@ export default class ImageHandler extends ShapeHandler {
     }
 }
 
-const createImageHandlerSingleton = (context, tempContext) => {
+const createImageHandlerSingleton = (context, tempContext, selected) => {
     if(imageHandler === undefined) {
-        imageHandler = new ImageHandler(context, tempContext);
+        imageHandler = new ImageHandler(context, tempContext, selected);
     }
     return imageHandler;
 }

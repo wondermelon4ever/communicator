@@ -7,10 +7,10 @@ var markerHandler = undefined;
 
 export default class MarkerHandler extends ShapeHandler {
 
-    constructor(context, tempContext) {
+    constructor(context, tempContext, selected) {
         super(context, tempContext);
 
-        this.selected = false;
+        this.selected = selected;
         this.ismousedown = false;
         this.prevX = 0;
         this.prevY = 0;
@@ -127,9 +127,9 @@ export default class MarkerHandler extends ShapeHandler {
      }
 }
 
-const createMarkerHandlerSingleton = (context, tempContext) => {
+const createMarkerHandlerSingleton = (context, tempContext, selected) => {
     if(markerHandler === undefined) {
-        markerHandler = new MarkerHandler(context, tempContext);
+        markerHandler = new MarkerHandler(context, tempContext, selected);
     }
 
     return markerHandler;

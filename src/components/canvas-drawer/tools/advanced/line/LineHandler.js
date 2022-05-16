@@ -6,9 +6,10 @@ import { getPoints } from '../../../views/CanvasTemp';
 var lineHandler = undefined;
 export default class LineHandler extends ShapeHandler {
 
-    constructor(context, tempContext) {
+    constructor(context, tempContext, selected) {
         super(context, tempContext);
 
+        this.selected = selected;
         this.prevX = 0;
         this.prevY = 0;
         this.ismousedown = false;
@@ -79,9 +80,9 @@ export default class LineHandler extends ShapeHandler {
     }
 }
 
-const createLineHandlerSingleton = (context, tempContext) => {
+const createLineHandlerSingleton = (context, tempContext, selected) => {
     if(lineHandler === undefined) {
-        lineHandler = new LineHandler(context, tempContext);
+        lineHandler = new LineHandler(context, tempContext, selected);
     }
     return lineHandler;
 }

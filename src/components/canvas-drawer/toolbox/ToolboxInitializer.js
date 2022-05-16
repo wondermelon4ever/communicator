@@ -6,13 +6,13 @@ import {
     syncData
 } from '../util/Utils'
 import data_uris from './ToolboxImages';
-import FileSelector from '../tools/basic/image/FileSelector';
+// import FileSelector from '../tools/basic/image/FileSelector';
 
 const initToolbox = (params) => {
     // var imageHandler= params.imageHandler;
     // var pdfHandler  = params.pdfHandler;
     // var textHandler = params.textHandler;
-    var zoomHandler = params.zoomHandler;
+    // var zoomHandler = params.zoomHandler;
     // var dragHelper  = params.dragHelper;
     var lineCap     = params.lineCap;
     var lineJoin    = params.lineJoin;
@@ -205,7 +205,7 @@ const initToolbox = (params) => {
     }
 
     if (tools.undo === true) {
-        decorateUndo();
+        // decorateUndo();
     }
 
     // function decorateArrow() {
@@ -221,36 +221,36 @@ const initToolbox = (params) => {
 
     // if (tools.arrow === true) decorateArrow();
 
-    function decorateZoomUp() {
-        var context = getContext('zoom-up');
-        addEvent(context.canvas, 'click', function(e) {
-            zoomHandler.up(e, getPoints());
-        });
+    // function decorateZoomUp() {
+    //     var context = getContext('zoom-up');
+    //     addEvent(context.canvas, 'click', function(e) {
+    //         zoomHandler.up(e, getPoints());
+    //     });
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-        };
-        image.src = data_uris.zoom_in;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //     };
+    //     image.src = data_uris.zoom_in;
+    // }
 
-    function decorateZoomDown() {
-        var context = getContext('zoom-down');
-        addEvent(context.canvas, 'click', function(e) {
-            zoomHandler.down(e, getPoints());
-        });
+    // function decorateZoomDown() {
+    //     var context = getContext('zoom-down');
+    //     addEvent(context.canvas, 'click', function(e) {
+    //         zoomHandler.down(e, getPoints());
+    //     });
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-        };
-        image.src = data_uris.zoom_out;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //     };
+    //     image.src = data_uris.zoom_out;
+    // }
 
-    if (tools.zoom === true) {
-        decorateZoomUp();
-        decorateZoomDown();
-    }
+    // if (tools.zoom === true) {
+    //     decorateZoomUp();
+    //     decorateZoomDown();
+    // }
 
     // function decoratePencil() {
     //     var context = getContext('pencil-icon');
@@ -304,29 +304,29 @@ const initToolbox = (params) => {
 
     // if (tools.text === true) decorateText();
 
-    function decorateImage() {
-        var context = getContext('image-icon');
+    // function decorateImage() {
+    //     var context = getContext('image-icon');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-            bindEvent(context, 'Image');
-        };
-        image.src = data_uris.image;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //         bindEvent(context, 'Image');
+    //     };
+    //     image.src = data_uris.image;
+    // }
 
     // if (tools.image === true) decorateImage();
 
-    function decoratePDF() {
-        var context = getContext('pdf-icon');
+    // function decoratePDF() {
+    //     var context = getContext('pdf-icon');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-            bindEvent(context, 'Pdf');
-        };
-        image.src = data_uris.pdf;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //         bindEvent(context, 'Pdf');
+    //     };
+    //     image.src = data_uris.pdf;
+    // }
 
     // if (tools.pdf === true) decoratePDF();
 
@@ -356,31 +356,31 @@ const initToolbox = (params) => {
 
     // if (tools.rectangle === true) decorateRect();
 
-    function decorateQuadratic() {
-        var context = getContext('quadratic-curve');
+    // function decorateQuadratic() {
+    //     var context = getContext('quadratic-curve');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-            bindEvent(context, 'QuadraticCurve');
-        };
-        image.src = data_uris.quadratic;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //         bindEvent(context, 'QuadraticCurve');
+    //     };
+    //     image.src = data_uris.quadratic;
+    // }
 
-    if (tools.quadratic === true) decorateQuadratic();
+    // if (tools.quadratic === true) decorateQuadratic();
 
-    function decorateBezier() {
-        var context = getContext('bezier-curve');
+    // function decorateBezier() {
+    //     var context = getContext('bezier-curve');
 
-        var image = new Image();
-        image.onload = function() {
-            context.drawImage(image, 4, 4, 32, 32);
-            bindEvent(context, 'Bezier');
-        };
-        image.src = data_uris.bezier;
-    }
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         context.drawImage(image, 4, 4, 32, 32);
+    //         bindEvent(context, 'Bezier');
+    //     };
+    //     image.src = data_uris.bezier;
+    // }
 
-    if (tools.bezier === true) decorateBezier();
+    // if (tools.bezier === true) decorateBezier();
 
     // function decorateLineWidth() {
     //     var context = getContext('line-width');

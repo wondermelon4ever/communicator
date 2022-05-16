@@ -7,10 +7,10 @@ var pencilHandler = undefined;
 
 export default class PencilHandler extends ShapeHandler {
 
-    constructor(context, tempContext) {
+    constructor(context, tempContext, selected) {
         super(context, tempContext);
         
-        this.selected = false;
+        this.selected = selected;
         this.ismousedown = false;
         this.prevX = 0;
         this.prevY = 0;
@@ -128,7 +128,7 @@ export default class PencilHandler extends ShapeHandler {
 
 const createPencilHandlerSingleton = (context, tempContext, selected) => {
     if(pencilHandler === undefined) {
-        pencilHandler = new PencilHandler(context, tempContext);
+        pencilHandler = new PencilHandler(context, tempContext, selected);
         pencilHandler.selected = selected;
     }
 

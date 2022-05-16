@@ -10,10 +10,10 @@ const SHAPE_DRAG_ALL_PATHS = "dragAllPaths";
 
 export default class EditHandler extends ShapeHandler{
 
-    constructor(context, tempContext) {
+    constructor(context, tempContext, selected) {
         super(context, tempContext);
 
-        this.selected = false;
+        this.selected = selected;
         this.selectedShape = "";
         this.isControlKeyPressed = false;
         var copiedStuff = [];
@@ -96,7 +96,6 @@ export default class EditHandler extends ShapeHandler{
 
         dispatcher.addListener(MEVENT_KINDS.MOUSE_MOVE, (mevent) => {
             if(this.selected === false) return;
-            console.log("mouse move in the drag handler !!! control key=> " + this.isControlKeyPressed);
             this.dragHelper.mousemove(
                 mevent.wevt,
                 mevent.value.points,
@@ -106,7 +105,7 @@ export default class EditHandler extends ShapeHandler{
 
         dispatcher.addListener(MEVENT_KINDS.MOUSE_UP, (mevent) => {
             if(this.selected === false) return;
-            console.log("mouse up in the drag handler !!!");
+            console.log("mouse up in the edit handler !!!");
             this.dragHelper.mouseup(mevent.wevt, mevent.value.points, this.selectedShape === "dragLastPath" ? true : false);
         });
 
@@ -163,7 +162,7 @@ export default class EditHandler extends ShapeHandler{
 }
 
 const createEditHandlerSingleton = (context, tempContext, selected) => {
-    if(editHandler === undefined) editHandler = new EditHandler(context, tempContext);
+    if(editHandler === undefined) editHandler = new EditHandler(context, tempContext, selected);
     editHandler.selected = selected;
     return editHandler;
 } 

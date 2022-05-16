@@ -10,9 +10,10 @@ import FileSelector from "../image/FileSelector";
 var pdfHandler = undefined;
 export default class PdfHandler extends ShapeHandler {
 
-    constructor(context, tempContext, getPoints, syncPoints) {
+    constructor(context, tempContext, selected) {
         super(context, tempContext);
 
+        this.selected = selected;
         this.lastPdfURL = null;
         this.lastIndex = 0;
         this.lastPointIndex = 0;
@@ -30,7 +31,6 @@ export default class PdfHandler extends ShapeHandler {
         this.prevY = 0;
         this.pdf = undefined;
 
-        this.getPoints = getPoints;
         this.addMeventListener();
         pdfHandler = this;
     }
@@ -39,16 +39,13 @@ export default class PdfHandler extends ShapeHandler {
         var selector = new FileSelector();
         selector.selectSingleFile((file) => {
             if (!file) return;
-
-            function onGettingPdf() {
-                var reader = new FileReader();
-                reader.onload =  (event) => {
-                    this.pdf = null; // to make sure we call "getDocument" again
-                    this.load(event.target.result);
-                };
-                reader.readAsDataURL(file);
-            }
-            onGettingPdf();
+            
+            var reader = new FileReader();
+            reader.onload =  (event) => {
+                this.pdf = null; // to make sure we call "getDocument" again
+                this.load(event.target.result);
+            };
+            reader.readAsDataURL(file);
         }, null, 'application/pdf');
     }
 
@@ -145,7 +142,7 @@ export default class PdfHandler extends ShapeHandler {
         this.getPage(parseInt(this.pdfPagesList.value || 1), (lastPage, width, height, numPages) => {
             this.prevX = this.canvas.width - width - parseInt(width / 2);
 
-            var points = this.getPoints();
+            var points = getPoints();
             this.lastIndex = this.images.length;
             var point = [lastPage, 60, 20, width, height, this.lastIndex];
 
@@ -197,9 +194,9 @@ export default class PdfHandler extends ShapeHandler {
         });
     }
 
-    mousedown = (e, points) => {
-        var x = e.pageX - this.canvas.offsetLeft,
-            y = e.pageY - this.canvas.offsetTop;
+    mousedown = (mevent) => {
+        var x = mevent.wevt.pageX - this.canvas.offsetLeft,
+            y = mevent.wevt.pageY - this.canvas.offsetTop;
 
         var t = this;
 
@@ -209,10 +206,11 @@ export default class PdfHandler extends ShapeHandler {
         t.ismousedown = true;
     }
 
-    mouseup = (e, points) => {
-        var x = e.pageX - this.canvas.offsetLeft,
-            y = e.pageY - this.canvas.offsetTop;
+    mouseup = (mevent) => {
+        var x = mevent.wevt.pageX - this.canvas.offsetLeft,
+            y = mevent.wevt.pageY - this.canvas.offsetTop;
 
+        var points = getPoints();
         var t = this;
         if (t.ismousedown) {
             if (points[this.lastPointIndex]) {
@@ -223,19 +221,19 @@ export default class PdfHandler extends ShapeHandler {
         }
     }
 
-    mousemove = (e, points) => {
-        var x = e.pageX - canvas.offsetLeft,
-            y = e.pageY - canvas.offsetTop;
+    mousemove = (mevent) => {
+        var x = mevent.wevt.pageX - this.canvas.offsetLeft,
+            y = mevent.wevt.pageY - this.canvas.offsetTop;
 
         var t = this;
         if (t.ismousedown) {
             this.tempContext.clearRect(0, 0, innerWidth, innerHeight);
-            drawHelper.pdf(tempContext, [this.lastPage, t.prevX, t.prevY, x - t.prevX, y - t.prevY, this.lastIndex]);
+            drawHelper.pdf(this.tempContext, [this.lastPage, t.prevX, t.prevY, x - t.prevX, y - t.prevY, this.lastIndex]);
         }
     }
 
     reset_pos = (x, y) => {
-        var points = this.getPoints();
+        var points = getPoints();
         this.pdfPageContainer.style.top = y + 'px';
         if (!points[this.lastPointIndex]) return;
         var point = points[this.lastPointIndex][1];
@@ -247,9 +245,9 @@ export default class PdfHandler extends ShapeHandler {
     }
 }
 
-const createPdfHandlerSingleton = (context, tempContext, getPoints, syncPoints) => {
+const createPdfHandlerSingleton = (context, tempContext, selected) => {
     if(pdfHandler === undefined) {
-        pdfHandler = new PdfHandler(context, tempContext, getPoints, syncPoints);
+        pdfHandler = new PdfHandler(context, tempContext, selected);
     }
     return pdfHandler;
 }

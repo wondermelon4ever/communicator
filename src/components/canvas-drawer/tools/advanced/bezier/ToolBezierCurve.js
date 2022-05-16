@@ -5,6 +5,7 @@ import Tooltip from '@mui/material/Tooltip';
 import SvgIcon from '@mui/material/SvgIcon';
 
 import { createMeventDispatcherSingleton, dispatch, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
+import { createBezierHandlerSingleton } from './BezierHandler';
 
 function BezierCurveIcon (props) {
     return (
@@ -23,13 +24,35 @@ function BezierCurveIcon (props) {
 const ToolBezierCurve = (props) => {
     
     const [selected, setSelected] = React.useState(props.selected);
+    const [context, setContext] = React.useState(undefined);
+    const [handler, setHandler] = React.useState(undefined);
 
     React.useEffect(()=>{
-        createMeventDispatcherSingleton().addListener(MEVENT_KINDS.SELECTED_SHAPE, (mevent) => {
-            if(mevent.kind === MEVENT_KINDS.SELECTED_SHAPE && mevent.value.shape !== 'bezier-curve') setSelected(false);
+        console.log("Tool quadratic-curve was loaded successfully.");
+    }, []);
+
+    React.useEffect(()=>{
+        if(context !== undefined) { 
+            setHandler(createBezierHandlerSingleton(context.mainContext, context.tempContext, selected));
+        }
+    }, [context]);
+
+    const addMeventListener = () => {
+        var dispatcher = createMeventDispatcherSingleton();
+        dispatcher.addListener(MEVENT_KINDS.CANVAS_INITED, (mevent) => {
+            setContext({
+                mainContext: mevent.value.mainContext,
+                tempContext: mevent.value.tempContext
+            });
+        });
+        
+        dispatcher.addListener(MEVENT_KINDS.SELECTED_SHAPE, (mevent) => {
+            if(mevent.value.shape !== 'bezier-curve') setSelected(false);
             else setSelected(true);
         });
-    }, []);
+    }
+
+    addMeventListener();
     
     const handleOnClick = (e) => {
         setSelected(true);

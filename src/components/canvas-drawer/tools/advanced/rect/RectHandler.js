@@ -6,9 +6,10 @@ import { getPoints } from '../../../views/CanvasTemp';
 var rectHandler = undefined;
 export default class RectHandler extends ShapeHandler {
     
-    constructor(context, tempContext) {
+    constructor(context, tempContext, selected) {
         super(context, tempContext);
 
+        this.selected = selected;
         this.ismousedown = false;
         this.prevX = 0;
         this.prevY = 0;
@@ -78,9 +79,9 @@ export default class RectHandler extends ShapeHandler {
     }
 }
 
-const createRectHandlerSingleton = (context, tempContext) => {
+const createRectHandlerSingleton = (context, tempContext, selected) => {
     if(rectHandler === undefined) {
-        rectHandler = new RectHandler(context, tempContext);
+        rectHandler = new RectHandler(context, tempContext, selected);
     }
     return rectHandler;
 }

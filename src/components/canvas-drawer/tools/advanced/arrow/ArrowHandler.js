@@ -6,9 +6,10 @@ import { getPoints } from '../../../views/CanvasTemp';
 var arrowHandler = undefined;
 export default class ArrowHandler extends ShapeHandler {
 
-    constructor(context, tempContext) {
+    constructor(context, tempContext, selected) {
         super(context, tempContext);
 
+        this.selected = selected;
         this.ismousedown = false;
         this.prevX = 0;
         this.prevY = 0;
@@ -79,9 +80,9 @@ export default class ArrowHandler extends ShapeHandler {
     }
 }
 
-const createArrowHandlerSingleton = (context, tempContext) => {
+const createArrowHandlerSingleton = (context, tempContext, selected) => {
     if(arrowHandler === undefined) {
-        arrowHandler = new ArrowHandler(context, tempContext);
+        arrowHandler = new ArrowHandler(context, tempContext, selected);
     }
 
     return arrowHandler;

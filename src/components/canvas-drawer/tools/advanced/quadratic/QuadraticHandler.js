@@ -1,7 +1,10 @@
+import { createMeventDispatcherSingleton, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
 import drawHelper from "../../DrawHelper";
+import ShapeHandler from '../../ShapeHandler';
+import { getPoints } from '../../../views/CanvasTemp';
 
 var quadraticHandler = undefined;
-export default class QuadraticHandler {
+export default class QuadraticHandler extends ShapeHandler {
 
     global = {
         ismousedown: false,
@@ -13,18 +16,42 @@ export default class QuadraticHandler {
         isLastStep: false
     }
 
-    constructor(context, tempContext) {
-        this.context = context;
-        this.tempContext = tempContext;
-        this.canvas = tempContext.canvas;
+    constructor(context, tempContext, selected) {
+        super(context, tempContext);
+
+        this.selected = selected;
+        this.addMeventListener();
         quadraticHandler = this;
     }
 
-    mousedown = (e, points) => {
+    addMeventListener () {
+        var dispatcher = createMeventDispatcherSingleton();
+        dispatcher.addListener(MEVENT_KINDS.SELECTED_SHAPE, (mevent) => {
+            if(mevent.value.shape !== 'quadratic-curve') this.selected = false;
+            else this.selected = true;
+        });
+          
+        dispatcher.addListener(MEVENT_KINDS.MOUSE_DOWN, (mevent) => {
+            if(this.selected === false) return;
+            this.mousedown(mevent);
+        });
+    
+        dispatcher.addListener(MEVENT_KINDS.MOUSE_MOVE, (mevent) => {
+            if(this.selected === false || !this.global.ismousedown) return;
+            this.mousemove(mevent);
+        });
+    
+        dispatcher.addListener(MEVENT_KINDS.MOUSE_UP, (mevent) => {
+            if(this.selected === false) return;
+            this.mouseup(mevent);
+        });
+    }
+
+    mousedown = (mevent) => {
         var g = this.global;
 
-        var x = e.pageX - this.canvas.offsetLeft,
-            y = e.pageY - this.canvas.offsetTop;
+        var x = mevent.wevt.pageX - this.canvas.offsetLeft,
+            y = mevent.wevt.pageY - this.canvas.offsetTop;
 
         if (!g.isLastStep) {
             g.prevX = x;
@@ -32,17 +59,19 @@ export default class QuadraticHandler {
         }
 
         g.ismousedown = true;
-
+        var points = getPoints();
+        
         if (g.isLastStep && g.ismousedown) {
             this.end(x, y, points);
         }
+        drawHelper.redraw(this.context, this.tempContext, points);
     }
 
-    mouseup = (e, points) => {
+    mouseup = (mevent) => {
         var g = this.global;
 
-        var x = e.pageX - this.canvas.offsetLeft,
-            y = e.pageY - this.canvas.offsetTop;
+        var x = mevent.wevt.pageX - this.canvas.offsetLeft,
+            y = mevent.wevt.pageY - this.canvas.offsetTop;
 
         if (g.ismousedown && g.isFirstStep) {
             g.controlPointX = x;
@@ -51,11 +80,13 @@ export default class QuadraticHandler {
             g.isFirstStep = false;
             g.isLastStep = true;
         }
+        drawHelper.redraw(this.context, this.tempContext, getPoints());
+        this.syncPoints(false);
     }
 
-    mousemove = (e, points) => {
-        var x = e.pageX - this.canvas.offsetLeft,
-            y = e.pageY - this.canvas.offsetTop;
+    mousemove = (mevent) => {
+        var x = mevent.wevt.pageX - this.canvas.offsetLeft,
+            y = mevent.wevt.pageY - this.canvas.offsetTop;
 
         var g = this.global;
 
@@ -87,9 +118,9 @@ export default class QuadraticHandler {
     }
 }
 
-const createQuadraticHandlerSingleton = (context, tempContext) => {
+const createQuadraticHandlerSingleton = (context, tempContext, selected) => {
     if(quadraticHandler === undefined) {
-        quadraticHandler = new QuadraticHandler(context, tempContext);
+        quadraticHandler = new QuadraticHandler(context, tempContext, selected);
     }
     return quadraticHandler;
 }
