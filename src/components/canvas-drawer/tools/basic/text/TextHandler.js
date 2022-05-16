@@ -1,6 +1,6 @@
 import { getPoints } from '../../../views/CanvasTemp';
 
-import drawHelper, { setTextHandler} from "../../DrawHelper";
+import drawHelper from "../../DrawHelper";
 import ShapeHandler from '../../ShapeHandler';
 import { createMeventDispatcherSingleton, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
 
@@ -25,7 +25,7 @@ export default class TextHandler extends ShapeHandler {
 
         this.x = 0, this.y = 0, this.pageX = 0, this.pageY = 0;
         this.addMeventListener();
-        textHandler = this;
+        textHandler = this;        
     }
 
     addMeventListener () {
@@ -38,6 +38,7 @@ export default class TextHandler extends ShapeHandler {
         });
 
         dispatcher.addListener(MEVENT_KINDS.MOUSE_DOWN, (mevent) => {
+            console.log("mouse down !!!");
             if(this.selected === false) return;
             this.mousedown(mevent);
         });
@@ -85,6 +86,12 @@ export default class TextHandler extends ShapeHandler {
         dispatcher.addListener(MEVENT_KINDS.TEXT_PASTED, (mevent) => {
             if(this.selected === false) return;
             this.writeText(mevent.value.pastedText, false, this.selected);
+        });
+
+        dispatcher.addListener(MEVENT_KINDS.DRAWING_END, (mevent) => {
+            if(this.selected === false) return;
+            this.appendPoints(mevent.vlaue.points);
+            this.onShapeUnSelected();
         });
     }
 
@@ -184,8 +191,10 @@ export default class TextHandler extends ShapeHandler {
     }
 
     appendPoints = (points) => {
-        var options = this.getOptions();
-        points[points.length] = ['text', ['"' + this.text + '"', this.x, this.y], drawHelper.getOptions(options)];
+        if(this.text && this.text.length) {
+            var options = this.getOptions();
+            points[points.length] = ['text', ['"' + this.text + '"', this.x, this.y], drawHelper.getOptions(options)];
+        }
     }
 
     mousedown = (mevent) => {
@@ -312,10 +321,9 @@ export default class TextHandler extends ShapeHandler {
     }
 }
 
-const createTextHandler = (context, tempContext) => {
+const createTextHandlerSingleton = (context, tempContext) => {
     if(textHandler === undefined) {
         textHandler = new TextHandler(context, tempContext);
-        setTextHandler(textHandler);
     }
     return textHandler;
 }
@@ -337,7 +345,7 @@ const onTextOptionsChanged = (options) => {
 }
 
 export {
-    createTextHandler,
+    createTextHandlerSingleton,
     onFontChanged,
     onFontSizeChanged,
     onTextColorChanged,
