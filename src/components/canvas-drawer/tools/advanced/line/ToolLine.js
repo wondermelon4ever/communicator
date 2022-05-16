@@ -4,6 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import SvgIcon from '@mui/material/SvgIcon';
 import { createMeventDispatcherSingleton, dispatch, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
+import { createLineHandlerSingleton } from './LineHandler';
 
 function LineIcon (props) {
     return (
@@ -20,13 +21,35 @@ function LineIcon (props) {
 const ToolLine = (props) => {
     
     const [selected, setSelected] = React.useState(props.selected);
+    const [context, setContext] = React.useState(undefined);
+    const [handler, setHandler] = React.useState(undefined);
 
     React.useEffect(()=>{
-        createMeventDispatcherSingleton().addListener(MEVENT_KINDS.SELECTED_SHAPE, (mevent) => {
-            if(mevent.kind === MEVENT_KINDS.SELECTED_SHAPE && mevent.value.shape !== 'line') setSelected(false);
+        console.log("Tool line was loaded successfully.");
+    }, []);
+
+    React.useEffect(()=>{
+        if(context !== undefined) { 
+            setHandler(createLineHandlerSingleton(context.mainContext, context.tempContext, selected));
+        }
+    }, [context]);
+
+    const addMeventListener = () => {
+        var dispatcher = createMeventDispatcherSingleton();
+        dispatcher.addListener(MEVENT_KINDS.CANVAS_INITED, (mevent) => {
+            setContext({
+                mainContext: mevent.value.mainContext,
+                tempContext: mevent.value.tempContext
+            });
+        });
+        
+        dispatcher.addListener(MEVENT_KINDS.SELECTED_SHAPE, (mevent) => {
+            if(mevent.value.shape !== 'line') setSelected(false);
             else setSelected(true);
         });
-    }, []);
+    }
+
+    addMeventListener();
     
     const handleOnClick = (e) => {
         setSelected(true);
