@@ -3,14 +3,11 @@ import drawHelper from "../../DrawHelper";
 var dragHelper = undefined;
 export default class DragHelper {
 
-    constructor(context, tempContext, getIsControlKeyPressed, setIsControlKeypressed, copy, paste, getPoints) {
+    constructor(context, tempContext, editHandler, getPoints) {
         this.context = context;
         this.tempContext = tempContext;
         this.canvas = tempContext.canvas;
-        this.getIsControlKeyPressed = getIsControlKeyPressed;
-        this.setIsControlKeypressed = setIsControlKeypressed;
-        this.copy = copy;
-        this.paste= paste;
+        this.editHandler = editHandler;
         this.getPoints = getPoints
     }
 
@@ -23,10 +20,11 @@ export default class DragHelper {
     }
 
     mousedown = (e, points, isDragAllPaths, isDragLastPath) => {
-        if (this.getIsControlKeyPressed()) {
-            this.copy();
-            this.paste();
-            this.setIsControlKeypressed(false);
+        this.global.ismousedown = true;
+        if (this.editHandler.getIsControlKeyPressed()) {
+            this.editHandler.copy();
+            this.editHandler.paste();
+            this.editHandler.setIsControlKeyPressed(false);
         }
 
         var g = this.global;
@@ -85,7 +83,7 @@ export default class DragHelper {
             }
 
             if (p[0] === 'image') {
-
+                
                 if (this.isPointInPath(x, y, point[1], point[2])) {
                     g.pointsToMove = 'stretch-first';
                 }
@@ -746,7 +744,7 @@ export default class DragHelper {
             }
 
             if (g.pointsToMove === 'stretch-last') {
-                point[3] = getPoint(x, prevX, point[3]);
+                point[3] = this.getPoint(x, prevX, point[3]);
                 point[4] = getPoint(y, prevY, point[4]);
             }
 
@@ -800,9 +798,9 @@ export default class DragHelper {
     }
 }
 
-const createDragHelper = (context, tempContext, getIsControlKeyPressed, setIsControlKeypressed, copy, paste, getPoints) => {
+const createDragHelper = (context, tempContext, editHandler, getPoints) => {
     if(dragHelper === undefined) 
-        dragHelper = new DragHelper(context, tempContext, getIsControlKeyPressed, setIsControlKeypressed, copy, paste, getPoints);
+        dragHelper = new DragHelper(context, tempContext, editHandler, getPoints);
     return dragHelper;
 }
 
