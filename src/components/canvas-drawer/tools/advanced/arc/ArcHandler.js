@@ -1,45 +1,66 @@
-import drawHelper, { setArcHandler } from "../../DrawHelper";
-
-import {
-    addEvent,
-    colors,
-    find,
-    getContext,
-    hexToRGBA,
-    hideContainers
-} from '../../../util/Utils';
+import { createMeventDispatcherSingleton, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
+import drawHelper from "../../DrawHelper";
+import { addEvent, find } from '../../../util/Utils';
+import ShapeHandler from '../../ShapeHandler';
+import { getPoints } from '../../../views/CanvasTemp';
 
 var arcHandler = undefined;
-export default class ArcHandler  {
+export default class ArcHandler extends ShapeHandler {
 
-    constructor(context, tempContext, getPoints) {
-        this.context = context;
-        this.tempContext = tempContext;
-        this.canvas = tempContext.canvas;
+    constructor(context, tempContext) {
+        super(context, tempContext);
 
         this.ismousedown = false;
         this.prevX = 0, this.prevY = 0;
         this.prevRadius = 0;
         this.isCircleDrawn = false;
-        this.isCircleEnded = false;
+        this.isCircleEnded = true;
         this.isClockwise = false;
         this.arcRangeContainer = null;
         this.arcRange = null;
-        this.getPoints = getPoints;
+        
+        this.addMeventListener();
+        this.init();
+        arcHandler = this;
     }
 
-    mousedown = (e, points) => {
-        var x = e.pageX - this.canvas.offsetLeft,
-            y = e.pageY - this.canvas.offsetTop;
+    addMeventListener () {
+        var dispatcher = createMeventDispatcherSingleton();
+        dispatcher.addListener(MEVENT_KINDS.SELECTED_SHAPE, (mevent) => {
+            if(mevent.value.shape !== 'arc') this.selected = false;
+            else this.selected = true;
+        });
+          
+        dispatcher.addListener(MEVENT_KINDS.MOUSE_DOWN, (mevent) => {
+            if(this.selected === false) return;
+            this.mousedown(mevent);
+        });
+    
+        dispatcher.addListener(MEVENT_KINDS.MOUSE_MOVE, (mevent) => {
+            if(this.selected === false || !this.ismousedown) return;
+            this.mousemove(mevent);
+        });
+    
+        dispatcher.addListener(MEVENT_KINDS.MOUSE_UP, (mevent) => {
+            if(this.selected === false) return;
+            this.mouseup(mevent);
+        });
+    }
+
+    mousedown = (mevent) => {
+        var x = mevent.wevt.pageX - this.canvas.offsetLeft,
+            y = mevent.wevt.pageY - this.canvas.offsetTop;
 
         this.prevX = x, this.prevY = y;
         this.ismousedown = true;
+        drawHelper.redraw(this.context, this.tempContext, getPoints());
     }
     
-    mouseup = (e, points) => {
-        var x = e.pageX - this.canvas.offsetLeft, 
-            y = e.pageY - this.canvas.offsetTop;
+    mouseup = (mevent) => {
+        var x = mevent.wevt.pageX - this.canvas.offsetLeft, 
+            y = mevent.wevt.pageY - this.canvas.offsetTop;
 
+        var points = getPoints();
         if (this.ismousedown) {
             if (!this.isCircleDrawn && this.isCircleEnded) {
                 var prevX = this.prevX,
@@ -68,14 +89,16 @@ export default class ArcHandler  {
             } else if (this.isCircleDrawn && !this.isCircleEnded) {
                 this.end(points);
             }
+            drawHelper.redraw(this.context, this.tempContext, getPoints());
         }
         this.ismousedown = false;
         this.fixAllPoints(points);
+        this.syncPoints(false);
     }
     
-    mousemove = (e, points) => {
-        var x = e.pageX - this.canvas.offsetLeft,
-            y = e.pageY - this.canvas.offsetTop;
+    mousemove = (mevent) => {
+        var x = mevent.wevt.pageX - this.canvas.offsetLeft,
+            y = mevent.wevt.pageY - this.canvas.offsetTop;
 
         if (this.ismousedown) {
             if (!this.isCircleDrawn && this.isCircleEnded) {
@@ -102,7 +125,7 @@ export default class ArcHandler  {
         }
     }
     
-    init = (points) => {
+    init = () => {
         var markIsClockwise = find('is-clockwise');
 
         this.arcRangeContainer = find('arc-range-container');
@@ -110,10 +133,9 @@ export default class ArcHandler  {
 
         addEvent(markIsClockwise, 'change', (e) => {
             this.isClockwise = markIsClockwise.checked;
-
             this.arcRange.value = this.toFixed(this.arcRange.value);
             this.arcRange.focus();
-            var points = this.getPoints();
+            var points = getPoints();
             this.handleArcRange(e, points);
 
             if (!points.length) return;
@@ -125,8 +147,8 @@ export default class ArcHandler  {
             drawHelper.arc(this.tempContext, [point[0], point[1], point[2], point[3], point[4]]);
         });
 
-        addEvent(this.arcRange, 'keydown', (e) => this.handleArcRange(e, this.getPoints()));
-        addEvent(this.arcRange, 'focus',   (e) => this.handleArcRange(e, this.getPoints()));
+        addEvent(this.arcRange, 'keydown', (e) => this.handleArcRange(e, getPoints()));
+        addEvent(this.arcRange, 'focus',   (e) => this.handleArcRange(e, getPoints()));
     }
         
     handleArcRange = (e, points) => {
@@ -144,7 +166,7 @@ export default class ArcHandler  {
             if (p[0] === 'arc') {
                 var point = p[1];
                 points[points.length - 1] = ['arc', [point[0], point[1], point[2], range, this.isClockwise ? 1 : 0], p[2]];
-                drawHelper.redraw(this.context, this.tempContext, points);
+                drawHelper.redraw(this.context, this.tempContext, points, this);
             }
         }
     }
@@ -160,14 +182,13 @@ export default class ArcHandler  {
         this.isCircleDrawn = false;
         this.isCircleEnded = true;
 
-        drawHelper.redraw(this.context, this.tempContext, points);
+        drawHelper.redraw(this.context, this.tempContext, points, this);
     }
 }
 
-const createArcHandler = (context, tempContext, getPoints) => {
+const createArcHandlerSingleton = (context, tempContext) => {
     if(arcHandler === undefined) {
-        arcHandler = new ArcHandler(context, tempContext, getPoints);
-        setArcHandler(arcHandler);
+        arcHandler = new ArcHandler(context, tempContext);
     }
     return arcHandler;
 }
@@ -183,7 +204,7 @@ const onIsClockwiseChanged = (isClockwise) => {
 }
 
 export {
-    createArcHandler,
+    createArcHandlerSingleton,
     onArcRangeKeyDowned,
     onIsClockwiseChanged
 }
