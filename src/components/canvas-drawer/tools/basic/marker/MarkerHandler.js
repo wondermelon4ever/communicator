@@ -1,4 +1,3 @@
-import { setMarkerHandler } from "../../DrawHelper";
 import { createMeventDispatcherSingleton, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
 
 import markerDrawHelper from "./MarkerDrawHelper";
@@ -128,10 +127,9 @@ export default class MarkerHandler extends ShapeHandler {
      }
 }
 
-const createMarkerHandler = (context, tempContext) => {
+const createMarkerHandlerSingleton = (context, tempContext) => {
     if(markerHandler === undefined) {
         markerHandler = new MarkerHandler(context, tempContext);
-        setMarkerHandler(markerHandler);
     }
 
     return markerHandler;
@@ -149,7 +147,7 @@ const onMarkerOptionsChanged = (options) => {
 }
 
 export {
-    createMarkerHandler,
+    createMarkerHandlerSingleton,
     initMarkerOptions,
     onMarkerOptionsChanged
 }
