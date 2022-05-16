@@ -1,4 +1,3 @@
-import { setPencilHandler } from "../../DrawHelper";
 import { createMeventDispatcherSingleton, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
 
 import pencilDrawHelper from "./PencilDrawHelper";
@@ -127,11 +126,10 @@ export default class PencilHandler extends ShapeHandler {
     }
 }
 
-const createPencilHandler = (context, tempContext, selected) => {
+const createPencilHandlerSingleton = (context, tempContext, selected) => {
     if(pencilHandler === undefined) {
         pencilHandler = new PencilHandler(context, tempContext);
         pencilHandler.selected = selected;
-        setPencilHandler(pencilHandler);
     }
 
     return pencilHandler;
@@ -149,7 +147,7 @@ const onPencilOptionsChanged = (options) => {
 }
 
 export {
-    createPencilHandler,
+    createPencilHandlerSingleton,
     initPencilOptions,
     onPencilOptionsChanged
 }
