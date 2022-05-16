@@ -1,17 +1,7 @@
-
-var arcHandler   = undefined;
-var arrowHandler = undefined;
-var bezierHandler= undefined;
-var eraserHandler= undefined;
-var imageHandler = undefined;
-var lineHandler  = undefined;
-var markerHandler= undefined;
-var pdfHandler   = undefined;
-var pencilHandler= undefined;
-var quadraticHandler = undefined;
-var rectHandler  = undefined;
-var textHandler  = undefined;
-var zoomHandler  = undefined;
+import { createArrowHandlerSingleton } from "./advanced/arrow/ArrowHandler";
+import { createImageHandlerSingleton } from "./basic/image/ImageHandler";
+import { createPdfHandlerSingleton   } from "./basic/pdf/PdfHandler";
+import { createTextHandlerSingleton  } from "./basic/text/TextHandler";
 
 var drawHelper = {
 
@@ -23,8 +13,13 @@ var drawHelper = {
     _lineCap: "round",
     _lineJoin: "round",
     _font: "15px Arial",
+    ctx: undefined,
+    tempCtx: undefined,
 
     redraw : function (context, tempContext, points) {
+        if(this.ctx === undefined) this.ctx = context;
+        if(this.tempCtx === undefined) this.tempCtx = tempContext;
+
         tempContext.clearRect(0, 0, innerWidth, innerHeight);
         context.clearRect(0, 0, innerWidth, innerHeight);
         var i, point, length = points.length;
@@ -117,6 +112,8 @@ var drawHelper = {
     },
 
     arrow : function(context, point, options) {
+        var arrowHandler = createArrowHandlerSingleton(this.ctx, this.tempCtx);
+        
         var mx = point[0];
         var my = point[1];
 
@@ -148,6 +145,8 @@ var drawHelper = {
     },
 
     text : function(context, point, options) {
+        var textHandler = createTextHandlerSingleton(this.ctx, this.tempCtx);
+
         this.handleOptions(context, options);
         if(textHandler) context.fillStyle = textHandler.getFillColor(options[2]);
         context.fillText(point[0].substr(1, point[0].length - 2), point[1], point[2]);
@@ -167,17 +166,18 @@ var drawHelper = {
 
     image : function(context, point, options) {
         this.handleOptions(context, options, true);
+        var imageHandler = createImageHandlerSingleton(this.ctx, this.tempCtx);
 
         var image = imageHandler.images[point[5]];
         if (!image) {
             var image = new Image();
-            image.onload = function() {
-                // var index = imageHandler.images.length;
+            image.onload = () => {
+                var index = imageHandler.images.length;
 
-                // imageHandler.lastImageURL = image.src;
-                // imageHandler.lastImageIndex = index;
+                imageHandler.lastImageURL = image.src;
+                imageHandler.lastImageIndex = index;
 
-                // imageHandler.images.push(image);
+                imageHandler.images.push(image);
                 context.drawImage(image, point[1], point[2], point[3], point[4]);
             };
             image.src = point[0];
@@ -188,6 +188,7 @@ var drawHelper = {
     },
 
     pdf : function(context, point, options) {
+        var pdfHandler = createPdfHandlerSingleton(this.ctx, this.tempCtx);
         this.handleOptions(context, options, true);
 
         var image = pdfHandler.images[point[5]];
@@ -237,72 +238,72 @@ const onOptionsChanged = (options) => {
     if(options.fillStyle) drawHelper.setFillStyle(options.fillStyle);
 }
 
-const setArcHandler = (handler) => {
-    arcHandler = handler;
-}
+// const setArcHandler = (handler) => {
+//     arcHandler = handler;
+// }
 
-const setArrowHandler = (handler) => {
-    arrowHandler = handler;
-}
+// const setArrowHandler = (handler) => {
+//     arrowHandler = handler;
+// }
 
-const setBezierHandler = (handler) => {
-    bezierHandler = handler;
-}
+// const setBezierHandler = (handler) => {
+//     bezierHandler = handler;
+// }
 
-const setEraserHandler = (handler) => {
-    eraserHandler = handler;
-}
+// const setEraserHandler = (handler) => {
+//     eraserHandler = handler;
+// }
 
-const setImageHandler = (handler) => {
-    imageHandler = handler;
-}
+// const setImageHandler = (handler) => {
+//     imageHandler = handler;
+// }
 
-const setLineHandler = (handler) => {
-    lineHandler = handler;
-}
+// const setLineHandler = (handler) => {
+//     lineHandler = handler;
+// }
 
-const setMarkerHandler = (handler) => {
-    markerHandler = handler;
-}
+// const setMarkerHandler = (handler) => {
+//     markerHandler = handler;
+// }
 
-const setPdfHandler = (handler) => {
-    pdfHandler = handler;
-}
+// const setPdfHandler = (handler) => {
+//     pdfHandler = handler;
+// }
 
-const setPencilHandler = (handler) => {
-    pencilHandler = handler;
-}
+// const setPencilHandler = (handler) => {
+//     pencilHandler = handler;
+// }
 
-const setQuadraticHandler = (handler) => {
-    quadraticHandler = handler;
-}
+// const setQuadraticHandler = (handler) => {
+//     quadraticHandler = handler;
+// }
 
-const setRectHandler = (handler) => {
-    rectHandler = handler;
-}
+// const setRectHandler = (handler) => {
+//     rectHandler = handler;
+// }
 
-const setTextHandler = (handler) => {
-    textHandler = handler;
-}
+// const setTextHandler = (handler) => {
+//     textHandler = handler;
+// }
 
-const setZoomHandler = (handler) => {
-    zoomHandler = handler;
-}
+// const setZoomHandler = (handler) => {
+//     zoomHandler = handler;
+// }
 
 export default drawHelper;
 export {
     onOptionsChanged,
-    setArcHandler,
-    setArrowHandler,
-    setBezierHandler,
-    setEraserHandler,
-    setImageHandler,
-    setLineHandler,
-    setMarkerHandler,
-    setPdfHandler,
-    setPencilHandler,
-    setQuadraticHandler,
-    setRectHandler,
-    setTextHandler,
-    setZoomHandler
+    // setArcHandler,
+    // setArrowHandler,
+    // setBezierHandler,
+    // setEraserHandler,
+    // setImageHandler,
+    // setLineHandler,
+    // setMarkerHandler,
+    // setPdfHandler,
+    // setPencilHandler,
+    // setQuadraticHandler,
+    // setRectHandler,
+    // setTextHandler,
+    // setZoomHandler
 }
