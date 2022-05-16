@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import SvgIcon from '@mui/material/SvgIcon';
 
-import { createEraserHandler } from './EraserHandler';
+import { createEraserHandlerSingleton } from './EraserHandler';
 import { createMeventDispatcherSingleton, dispatch, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
 
 function EraserIcon (props) {
@@ -29,7 +29,7 @@ const ToolEraser = (props) => {
 
     React.useEffect(()=>{
         if(context !== undefined) { 
-            setHandler(createEraserHandler(context.mainContext, context.tempContext, selected));
+            setHandler(createEraserHandlerSingleton(context.mainContext, context.tempContext, selected));
         }
     }, [context]);
 
