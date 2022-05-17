@@ -48,9 +48,7 @@ const PencilContainer = (props) => {
         left: "0px"
     });
     
-    // const toolIconId = props.toolIconId == undefined ? "pencil-icon" : props.toolIconId;
-    var alpha = 0.2;
-
+    var alpha = 1;
     React.useEffect(()=>{
         createMeventDispatcherSingleton().addListener(MEVENT_KINDS.PENCIL_ICON_DOUBLE_CLICKED, (mevent)=>{
             var tooldiv = document.getElementById(mevent.value.toolIconId);
@@ -61,17 +59,20 @@ const PencilContainer = (props) => {
                 top: (rect.y+rect.height+4) + 'px'
             });
             props.controlOpen("pencilContainer");
+        });
+
+        createMeventDispatcherSingleton().addListener(MEVENT_KINDS.PENCIL_TOOL_INITED, (mevent)=>{
+            onPencilOptionsChanged({
+                pencilLineWidth: info.thickness,
+                pencilStrokeStyle: hexToRGBA(info.color, alpha),
+                fillStyle: 'rgba(0,0,0,0)',
+                globalAlpha: alpha,
+                globalCompositeOperation: 'source-over',
+                lineCap: 'round',
+                font: '15px "Arial',
+                lineJoin: 'round'
+            });
         })
-        // var tooldiv = document.getElementById(toolIconId);
-        // addEvent(tooldiv, 'dblclick', function() {
-        //     var rect = tooldiv.getClientRects()[0];
-        //     setOpen(!open);
-        //     setPosition({
-        //         left: (rect.x + 1) + 'px',
-        //         top: (rect.y+rect.height+1) + 'px'
-        //     });
-        //     props.controlOpen("pencilContainer");
-        // });
     }, []);
 
     React.useEffect(()=>{
