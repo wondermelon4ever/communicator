@@ -1,145 +1,129 @@
-import { createMeventDispatcherSingleton, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
+import React from 'react';
+import '../../../canvas-drawer-widget.css';
 
-import eraserDrawHelper from "./EraserDrawHelper";
-import ShapeHandler from '../../ShapeHandler';
+import { onEraserOptionsChanged } from './EraserHandler';
+import { createMeventDispatcherSingleton, dispatch, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
 
-var eraserHandler = undefined;
+const thicknessOptions = [
+    { label: 8,  value: 8  },
+    { label: 9,  value: 9  },
+    { label: 10, value: 10 },
+    { label: 11, value: 11 },
+    { label: 12, value: 12 },
+    { label: 14, value: 14 },
+    { label: 16, value: 16 },
+    { label: 18, value: 18 },
+    { label: 20, value: 20 },
+    { label: 22, value: 22 },
+    { label: 24, value: 24 },
+    { label: 26, value: 26 },
+    { label: 28, value: 28 },
+    { label: 30, value: 30 },
+    { label: 36, value: 36 },
+    { label: 48, value: 48 },
+    { label: 72, value: 72 },
+];
 
-export default class EraserHandler extends ShapeHandler {
+const EraserContainer = (props) => {
 
-    constructor (context, tempContext, selected) {
-        super(context, tempContext);
+    const [open, setOpen] = React.useState(props.open);
+    const [thicknessOpen, setThicknessOpen] = React.useState(true);
+    const [thickness, setThickness] = React.useState(28);
+    const [manner, setManner] = React.useState("free");
+    const [position, setPosition] = React.useState({
+        top: "0px",
+        left: "0px"
+    });
 
-        this.selected = selected;
-        this.ismousedown = false;
-        this.prevX = 0;
-        this.prevY = 0;
-        this.opts = [];
-
-        this.addMeventListener();
-        eraserHandler = this;
-    }
-
-    addMeventListener () {
-        var dispatcher = createMeventDispatcherSingleton();
-        dispatcher.addListener(MEVENT_KINDS.SELECTED_SHAPE, (mevent) => {
-            if(mevent.value.shape !== 'eraser') this.selected = false;
-            else this.selected = true;
+    React.useEffect(()=>{
+        createMeventDispatcherSingleton().addListener(MEVENT_KINDS.ERASER_ICON_DOUBLE_CLICKED, (mevent)=>{
+            var tooldiv = document.getElementById(mevent.value.toolIconId);
+            var rect = tooldiv.getClientRects()[0];
+            setOpen(!open);
+            setPosition({
+                left: (rect.x + 1) + 'px',
+                top: (rect.y+rect.height+4) + 'px'
+            });
+            props.controlOpen("eraserContainer");
         });
-          
-        dispatcher.addListener(MEVENT_KINDS.MOUSE_DOWN, (mevent) => {
-            if(this.selected === false) return;
-            this.mousedown(mevent);
+
+        createMeventDispatcherSingleton().addListener(MEVENT_KINDS.ERASER_TOOL_INITED, (mevent)=>{
+            onEraserOptionsChanged({
+                eraserLineWidth: thickness
+            });
         });
-    
-        dispatcher.addListener(MEVENT_KINDS.MOUSE_MOVE, (mevent) => {
-            if(this.selected === false || !this.ismousedown) return;
-            this.mousemove(mevent);
+    }, []);
+
+    React.useEffect(()=>{
+        setOpen(props.open);
+    }, [props.open]);
+
+    const handleThicknessChanged = (e) => {
+        setThickness(e.target.value);
+    }
+
+    const handleMannerChanged = (e) => {
+        if("scope" === e.target.value) {
+            setManner("scope");
+            setThicknessOpen(false);
+        } else {
+            setManner("free");
+            setThicknessOpen(true);
+        }
+    }
+
+    const applyChange = () => {
+        setOpen(false);
+        onEraserOptionsChanged({
+            eraserLineWidth: thickness
         });
-    
-        dispatcher.addListener(MEVENT_KINDS.MOUSE_UP, (mevent) => {
-            if(this.selected === false) return;
-            this.mouseup(mevent);
-        });
     }
 
-    mousedown (mevent) {
-        var x = mevent.wevt.pageX - this.canvas.offsetLeft,
-            y = mevent.wevt.pageY - this.canvas.offsetTop;
-
-        var points = mevent.value.points;
-
-        var t = this;
-        t.prevX = x;
-        t.prevY = y;
-
-        t.ismousedown = true;
-
-        this.tempContext.lineCap = 'round';
-        eraserDrawHelper.line(this.tempContext, [t.prevX, t.prevY, x, y]);
-
-        points[points.length] = ['line', [t.prevX, t.prevY, x, y], eraserDrawHelper.getOptions()];
-
-        t.prevX = x;
-        t.prevY = y;
-
-        eraserDrawHelper.redraw(this.context, this.tempContext, points);
-    }
-
-    mousemove (mevent) {
-        var x = mevent.wevt.pageX - this.canvas.offsetLeft,
-            y = mevent.wevt.pageY - this.canvas.offsetTop;
-        
-            var points = mevent.value.points;
-        var t = this;
-
-        if (t.ismousedown) {
-            this.tempContext.lineCap = 'round';
-            eraserDrawHelper.line(this.tempContext, [t.prevX, t.prevY, x, y]);
-
-            points[points.length] = ['line', [t.prevX, t.prevY, x, y], eraserDrawHelper.getOptions()];
-
-            t.prevX = x;
-            t.prevY = y;
-        }
-    }
-
-    mouseup (mevent) {
-        this.ismousedown = false;
-        eraserDrawHelper.redraw(this.context, this.tempContext, mevent.value.points);
-        this.syncPoints(false);
-    }
-
-    updateOptionsChanged (options) {
-        if(options.eraserLineWidth) {
-            this.opts[0] = options.eraserLineWidth;
-            eraserDrawHelper.setLineWidth(options.eraserLineWidth);
-        }
-        if(options.eraserStrokeStyle) {
-            this.opts[1] = options.eraserStrokeStyle;
-            eraserDrawHelper.setStrokeStyle(options.eraserStrokeStyle);
-        }
-        if(options.fillStyle) {
-            this.opts[2] = options.fillStyle;
-            eraserDrawHelper.setFillStyle(options.fillStyle);
-        }
-        if(options.globalAlpha) {
-            this.opts[3] = options.globalAlpha;
-            eraserDrawHelper.setGlobalAlpha(options.globalAlpha);
-        }
-        if(options.globalCompositeOperation) {
-            this.opts[4] = options.globalCompositeOperation;
-            eraserDrawHelper.setGlobalCompositeOperation(options.globalCompositeOperation)
-        }
-        if(options.lineCap) {
-            this.opts[5] = options.lineCap;
-            eraserDrawHelper.setLineCap(options.lineCap);
-        }
-        if(options.lineJoin) {
-            this.opts[6] = options.lineJoin;
-            eraserDrawHelper.setLineJoin(options.lineJoin);
-        }
-        if(options.font) {
-            this.opts[7] = options.font;
-            eraserDrawHelper.setFont(options.font);
-        }
-     }
+    return (
+        <section 
+            id="eraser-container" 
+            className="context-popup colors-container" 
+            style={{ 
+                display: open ? "block" : "none",
+                top: position.top,
+                left: position.left  
+            }}
+        >
+            <div style={{ width: 143, margin: 0, padding: 0 }}>
+                <fieldset style={{ margin: 1, padding: 1, border: '1px solid #E5E5E5' }}>
+                    <legend>&nbsp;&nbsp;Select manner:</legend>
+                    <div>
+                        <label htmlFor="free">&nbsp;&nbsp;By free</label>
+                        <input 
+                            style={{ margin: 0, padding: 0, width: 30 }} 
+                            type="radio" id="free" name="erase-manner" value="free" defaultChecked
+                            onChange={ handleMannerChanged }
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="scope">&nbsp;&nbsp;By scope</label>
+                        <input 
+                            style={{ margin: 0, padding: 0, width: 30 }} 
+                            type="radio" id="scope" name="erase-manner" value="scope"
+                            onChange={ handleMannerChanged }
+                        />
+                    </div>
+                </fieldset>
+            </div>
+            
+            <div className="input-div" style={{ display: thicknessOpen ? "block" : "none", paddingTop: 5 }}>
+                <label htmlFor="eraser-stroke-style">Thickness:</label>
+                <select id="eraser-stroke-style" value={ thickness } onChange={ handleThicknessChanged }>
+                {
+                    thicknessOptions.map(opt => 
+                        <option key={ opt.value } value={ opt.value }>{ opt.label }</option>
+                    )
+                }
+                </select>
+            </div>
+            <div id="marker-done" className="btn-007" onClick={ applyChange }>Done</div>
+        </section>
+    );
 }
 
-const createEraserHandlerSingleton = (context, tempContext, selected) => {
-    if(eraserHandler === undefined) {
-        eraserHandler = new EraserHandler(context, tempContext, selected);
-    }
-
-    return eraserHandler;
-}
-
-const listenEraserOptionsChanged = (options) => {
-    if(eraserHandler === undefined) return;
-    eraserHandler.updateOptionsChanged(options);
-}
-
-export {
-    createEraserHandlerSingleton,
-    listenEraserOptionsChanged
-}
+export default EraserContainer;
