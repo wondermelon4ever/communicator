@@ -50,6 +50,11 @@ export default class BezierHandler extends ShapeHandler {
             if(this.selected === false) return;
             this.mouseup(mevent);
         });
+
+        dispatcher.addListener(MEVENT_KINDS.DRAWING_END, (mevent) => {
+            if(this.selected === false) return;
+            this.end(mevent.wevt.pageX - this.canvas.offsetLeft, mevent.wevt.pageY - this.canvas.offsetTop, mevent.value.points);
+        });
     }
 
     mousedown = (mevent) => {
