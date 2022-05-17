@@ -79,8 +79,13 @@ const getPoints = () => {
     return points;
 }
 
+const setPoints = (pts) => {
+    points = pts;
+}
+
 export default CanvasTemp;
 
 export {
-    getPoints
+    getPoints,
+    setPoints
 }
