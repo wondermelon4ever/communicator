@@ -31,6 +31,13 @@ const ToolEraser = (props) => {
         if(context !== undefined) { 
             setHandler(createEraserHandlerSingleton(context.mainContext, context.tempContext, selected));
         }
+        dispatch({
+            kind: MEVENT_KINDS.ERASER_TOOL_INITED,
+            name: "",
+            description: "",
+            wevt: undefined,
+            value: { }
+        });
     }, [context]);
 
     const addMeventListener = () => {
