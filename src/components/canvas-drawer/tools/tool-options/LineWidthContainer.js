@@ -5,7 +5,7 @@ import { createMeventDispatcherSingleton, MEVENT_KINDS } from '../../mevent/Meve
 
 const LineWidthContainer = (props) => {
 
-    const [lineWidth, setLineWidth] = React.useState(2);
+    const [lineWidth, setLineWidth] = React.useState(5);
     const [open, setOpen] = React.useState(false);
     const [position, setPosition] = React.useState({
         top: "0px",
@@ -23,18 +23,7 @@ const LineWidthContainer = (props) => {
             });
             props.controlOpen("lineWidthContainer");
         });
-        // var canvas = document.getElementById(toolIconId);
-        // addEvent(canvas, 'click', function() {
-        //     setOpen(!open);
-        //     setPosition({
-        //         top: (canvas.offsetTop + 1) + 'px',
-        //         left: (canvas.offsetLeft + canvas.clientWidth) + 'px'
-        //     });
-        //     props.controlOpen("lineWidthContainer");
-        // });
-        // return (()=>{
-
-        // });
+        apply();
     }, []);
 
     React.useEffect(()=>{
