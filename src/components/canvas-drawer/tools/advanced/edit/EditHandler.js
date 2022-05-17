@@ -1,4 +1,4 @@
-import { getPoints } from '../../../views/CanvasTemp';
+import { getPoints, setPoints } from '../../../views/CanvasTemp';
 import drawHelper from '../../DrawHelper';
 import ShapeHandler from '../../ShapeHandler';
 import { createMeventDispatcherSingleton, dispatch, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
@@ -44,7 +44,8 @@ export default class EditHandler extends ShapeHandler{
         this.endLastPath();
         var points = getPoints();
         this.dragHelper.global.startingIndex = 0;
-        if(this.selectedShape === SHAPE_DRAG_LAST_PATH) {
+
+        if(this.selectedShape === SHAPE_DRAG_LAST_PATH) {            
             points[points.length] = this.copiedStuff;
 
             this.dragHelper.global = {
@@ -55,7 +56,15 @@ export default class EditHandler extends ShapeHandler{
             this.dragHelper.dragAllPaths(0, 0, points);
         } else {
             this.dragHelper.global.startingIndex = points.length;
+            // var point;
+            // var length = points.length;
+            // for(var i = 0; i < length; i++) {
+            //     point = points[i];
+            //     points.push(point);
+            // }
+            // concat를 하면 전혀 다른 객체가 생성됨. setPoints를 해 줘야 하는 이유
             points = points.concat(this.copiedStuff);
+            setPoints(points);
         }
     }
 
@@ -126,7 +135,7 @@ export default class EditHandler extends ShapeHandler{
             if(this.selected === false || "dragAllPaths" !== this.selectedShape) return;
             console.log("control + a key pressed in the drag handler !!!");
             this.dragHelper.global.startingIndex = 0;
-            endLastPath();
+            this.endLastPath();
         });
 
         dispatcher.addListener(MEVENT_KINDS.CNTL_c_PRESSED, (mevent) => {
