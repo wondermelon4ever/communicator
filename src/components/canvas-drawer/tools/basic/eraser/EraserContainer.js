@@ -1,7 +1,7 @@
 import React from 'react';
 import '../../../canvas-drawer-widget.css';
 
-import { listenEraserOptionsChanged } from './EraserHandler';
+import { onEraserOptionsChanged } from './EraserHandler';
 import { createMeventDispatcherSingleton, dispatch, MEVENT_KINDS } from '../../../mevent/MeventDispatcher';
 
 const thicknessOptions = [
@@ -28,14 +28,13 @@ const EraserContainer = (props) => {
 
     const [open, setOpen] = React.useState(props.open);
     const [thicknessOpen, setThicknessOpen] = React.useState(true);
-    const [thickness, setThickness] = React.useState(20);
+    const [thickness, setThickness] = React.useState(28);
     const [manner, setManner] = React.useState("free");
     const [position, setPosition] = React.useState({
         top: "0px",
         left: "0px"
     });
 
-    var alpha = 0.2;
     React.useEffect(()=>{
         createMeventDispatcherSingleton().addListener(MEVENT_KINDS.ERASER_ICON_DOUBLE_CLICKED, (mevent)=>{
             var tooldiv = document.getElementById(mevent.value.toolIconId);
@@ -46,6 +45,12 @@ const EraserContainer = (props) => {
                 top: (rect.y+rect.height+4) + 'px'
             });
             props.controlOpen("eraserContainer");
+        });
+
+        createMeventDispatcherSingleton().addListener(MEVENT_KINDS.ERASER_TOOL_INITED, (mevent)=>{
+            onEraserOptionsChanged({
+                eraserLineWidth: thickness
+            });
         });
     }, []);
 
@@ -69,7 +74,7 @@ const EraserContainer = (props) => {
 
     const applyChange = () => {
         setOpen(false);
-        listenEraserOptionsChanged({
+        onEraserOptionsChanged({
             eraserLineWidth: thickness
         });
     }
