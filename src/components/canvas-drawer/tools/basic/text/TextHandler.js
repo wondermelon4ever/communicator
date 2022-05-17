@@ -38,7 +38,6 @@ export default class TextHandler extends ShapeHandler {
         });
 
         dispatcher.addListener(MEVENT_KINDS.MOUSE_DOWN, (mevent) => {
-            console.log("mouse down !!!");
             if(this.selected === false) return;
             this.mousedown(mevent);
         });
@@ -90,8 +89,11 @@ export default class TextHandler extends ShapeHandler {
 
         dispatcher.addListener(MEVENT_KINDS.DRAWING_END, (mevent) => {
             if(this.selected === false) return;
-            this.appendPoints(mevent.vlaue.points);
-            this.onShapeUnSelected();
+            if (textHandler.text && textHandler.text.length) {
+                this.appendPoints(mevent.vlaue.points);
+                this.onShapeUnSelected();
+            }
+            this.showOrHideTextTools('hide');
         });
     }
 
