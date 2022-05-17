@@ -185,28 +185,28 @@ const initToolbox = (params) => {
     //     decorateLine();
     // }
 
-    function decorateUndo() {
-        var contextUndo = getContext('undo');
+    // function decorateUndo() {
+    //     var contextUndo = getContext('undo');
 
-        var image = new Image();
-        image.onload = function() {
-            contextUndo.drawImage(image, 4, 4, 32, 32);
+    //     var image = new Image();
+    //     image.onload = function() {
+    //         contextUndo.drawImage(image, 4, 4, 32, 32);
 
-            document.querySelector('#undo').onclick = function() {
-                var points = getPoint();
-                if (points.length) {
-                    points.length = points.length - 1;
-                    drawHelper.redraw(context, tempContext, points);
-                }
-                syncPoints(true);
-            };
-        };
-        image.src = data_uris.undo;
-    }
+    //         document.querySelector('#undo').onclick = function() {
+    //             var points = getPoint();
+    //             if (points.length) {
+    //                 points.length = points.length - 1;
+    //                 drawHelper.redraw(context, tempContext, points);
+    //             }
+    //             syncPoints(true);
+    //         };
+    //     };
+    //     image.src = data_uris.undo;
+    // }
 
-    if (tools.undo === true) {
-        // decorateUndo();
-    }
+    // if (tools.undo === true) {
+    //     decorateUndo();
+    // }
 
     // function decorateArrow() {
     //     var context = getContext('arrow');
