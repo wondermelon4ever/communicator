@@ -20,6 +20,13 @@ const ToolMarker = (props) => {
         if(context !== undefined) { 
             setHandler(createMarkerHandlerSingleton(context.mainContext, context.tempContext, selected));
         }
+        dispatch({
+            kind: MEVENT_KINDS.MARKER_TOOL_INITED,
+            name: "",
+            description: "",
+            wevt: undefined,
+            value: { }
+        });
     }, [context]);
 
     const addMeventListener = () => {
