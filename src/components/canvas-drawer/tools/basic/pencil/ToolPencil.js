@@ -20,6 +20,13 @@ const ToolPencil = (props) => {
         if(context !== undefined) { 
             setHandler(createPencilHandlerSingleton(context.mainContext, context.tempContext, selected));
         }
+        dispatch({
+            kind: MEVENT_KINDS.PENCIL_TOOL_INITED,
+            name: "",
+            description: "",
+            wevt: undefined,
+            value: { }
+        });
     }, [context]);
 
     const addMeventListener = () => {
