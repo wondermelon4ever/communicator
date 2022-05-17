@@ -64,6 +64,7 @@ export default class LineHandler extends ShapeHandler {
             t.ismousedown = false;
             drawHelper.redraw(this.context, this.tempContext, points);
         }
+        this.syncPoints(false);
     }
 
     mousemove = (mevent) => {
