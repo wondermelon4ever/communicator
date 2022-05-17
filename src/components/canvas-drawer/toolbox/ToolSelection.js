@@ -95,7 +95,6 @@ const ToolSelection = (props) => {
     }
 
     const handleChange = (event) => {
-      console.log("selection.pencil=>" + selections.pencil);
       setSelections({
         ...selections,
         [event.target.name]: event.target.checked
@@ -116,7 +115,7 @@ const ToolSelection = (props) => {
               <FormGroup>
                 <FormControlLabel 
                   control={ <Switch onChange={ handleChange } checked={selections.pencil} disabled name="pencil"/> } 
-                  label={ <Typography style={{ fontSize: 16 }}>Peicil</Typography> } />
+                  label={ <Typography style={{ fontSize: 16 }}>Pencil</Typography> } />
                 <FormControlLabel 
                   control={ <Switch onChange={ handleChange } checked={selections.marker} disabled name="marker"/> } 
                   label={ <Typography style={{ fontSize: 16 }}>Marker</Typography> } />
