@@ -46,6 +46,11 @@ export default class ArcHandler extends ShapeHandler {
             if(this.selected === false) return;
             this.mouseup(mevent);
         });
+
+        dispatcher.addListener(MEVENT_KINDS.DRAWING_END, (mevent) => {
+            if(this.selected === false) return;
+            this.end(mevent.value.points);
+        });
     }
 
     mousedown = (mevent) => {
