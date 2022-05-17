@@ -36,7 +36,7 @@ const MarkerContainer = (props) => {
 
     const [open, setOpen] = React.useState(props.open);
     const [info, setInfo] = React.useState({
-       thickness: 8,
+       thickness: 12,
        color: "FF0000" 
     });
     const [paletteOpen, setPaletteOpen] = React.useState(false);
@@ -45,9 +45,7 @@ const MarkerContainer = (props) => {
         left: "0px"
     });
 
-    // const toolIconId = props.toolIconId == undefined ? "marker-icon" : props.toolIconId;
-    var alpha = 0.2;
-
+    var alpha = 0.7;
     React.useEffect(()=>{
         createMeventDispatcherSingleton().addListener(MEVENT_KINDS.MARKER_ICON_DOUBLE_CLICKED, (mevent)=>{
             var tooldiv = document.getElementById(mevent.value.toolIconId);
@@ -58,19 +56,20 @@ const MarkerContainer = (props) => {
                 top: (rect.y+rect.height+4) + 'px'
             });
             props.controlOpen("markerContainer");
-        })
-        // var canvas = document.getElementById(toolIconId);
-        // addEvent(canvas, 'dblclick', function() {
-        //     setOpen(!open);
-        //     setPosition({
-        //         top: (canvas.offsetTop + 1) + 'px',
-        //         left: (canvas.offsetLeft + canvas.clientWidth) + 'px'
-        //     });
-        //     props.controlOpen("markerContainer");
-        // });
-        // return (()=>{
+        });
 
-        // });
+        createMeventDispatcherSingleton().addListener(MEVENT_KINDS.MARKER_TOOL_INITED, (mevent)=>{
+            onMarkerOptionsChanged({
+                markerLineWidth: info.thickness,
+                markerStrokeStyle: hexToRGBA(info.color, alpha),
+                fillStyle: 'rgba(0,0,0,0)',
+                globalAlpha: alpha,
+                globalCompositeOperation: 'source-over',
+                lineCap: 'round',
+                font: '15px "Arial',
+                lineJoin: 'round'
+            });
+        });
     }, []);
 
     React.useEffect(()=>{
