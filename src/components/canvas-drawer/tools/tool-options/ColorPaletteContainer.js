@@ -13,7 +13,6 @@ const ColorPaletteConatiner = (props) => {
     const [strokeStyle, setStrokeStyle] = React.useState("#6c96c8");
     const [fillStyle, setFillStyle] = React.useState("#ffffff");
 
-    // const toolIconId = props.toolIconId == undefined ? "colors" : props.toolIconId;
     React.useEffect(()=>{
         createMeventDispatcherSingleton().addListener(MEVENT_KINDS.COLOR_PALETTE_ICON_CLICKED, (mevent)=>{
             var tooldiv = document.getElementById(mevent.value.toolIconId);
@@ -25,18 +24,7 @@ const ColorPaletteConatiner = (props) => {
             });
             props.controlOpen("colorPaletteContainer");
         });
-        // var canvas = document.getElementById(toolIconId);
-        // addEvent(canvas, 'click', function() {
-        //     setOpen(!open);
-        //     setPosition({
-        //         top: (canvas.offsetTop + 1) + 'px',
-        //         left: (canvas.offsetLeft + canvas.clientWidth) + 'px'
-        //     });
-        //     props.controlOpen("colorPaletteContainer");
-        // });
-        // return (()=>{
-
-        // });
+        apply();
     }, []);
 
     React.useEffect(()=>{
