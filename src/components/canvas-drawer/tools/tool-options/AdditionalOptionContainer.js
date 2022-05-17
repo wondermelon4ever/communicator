@@ -14,7 +14,7 @@ const AdditionalOptionContainier = (props) => {
 
     const [lineCap, setLineCap] = React.useState("round");
     const [lineJoin, setLineJoin] = React.useState("round");
-    const [globalAlpha, setGlobalAlpha] = React.useState("0.7");
+    const [globalAlpha, setGlobalAlpha] = React.useState("1");
     const [globalCompositeOperation, setGlobalCompositeOperation] = React.useState("source-over");
 
     React.useEffect(()=>{
@@ -28,18 +28,7 @@ const AdditionalOptionContainier = (props) => {
             });
             props.controlOpen("additionalOptionContainer");
         });
-        // var canvas = document.getElementById(toolIconId);
-        // addEvent(canvas, 'click', function() {
-        //     setOpen(!open);
-        //     setPosition({
-        //         top: (canvas.offsetTop + 1) + 'px',
-        //         left: (canvas.offsetLeft + canvas.clientWidth) + 'px'
-        //     });
-        //     props.controlOpen("additionalOptionContainer");
-        // });
-        // return (()=>{
-
-        // });
+        apply();
     }, []);
 
     React.useEffect(()=>{
