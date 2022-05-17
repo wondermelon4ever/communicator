@@ -65,6 +65,7 @@ export default class ArrowHandler extends ShapeHandler {
             points[points.length] = ['arrow', [t.prevX, t.prevY, x, y], drawHelper.getOptions()];
             t.ismousedown = false;
             drawHelper.redraw(this.context, this.tempContext, points);
+            this.syncPoints(false);
         }
     }
 
