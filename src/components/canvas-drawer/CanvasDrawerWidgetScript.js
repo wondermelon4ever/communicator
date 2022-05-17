@@ -21,7 +21,7 @@ import {
 // import { createRectHandlerSingleton } from './tools/advanced/rect/RectHandler';
 // import { createQuadraticHandlerSingleton } from './tools/advanced/quadratic/QuadraticHandler';
 // import { createBezierHandlerSingleton } from './tools/advanced/bezier/BezierHandler';
-import { createZoomHandlerSingleton } from './tools/show-control/zoom/ZoomHandler';
+// import { createZoomHandlerSingleton } from './tools/show-control/zoom/ZoomHandler';
 // import { createImageHandlerSingleton } from './tools/basic/image/ImageHandler';
 // import { createPdfHandlerSingleton } from './tools/basic/pdf/PdfHandler';
 // import FileSelector from './tools/basic/image/FileSelector';
@@ -177,7 +177,7 @@ function initWidget (shows) {
     // var rectHandler = createRectHandlerSingleton(context, tempContext);
     // var quadraticHandler = createQuadraticHandlerSingleton(context, tempContext);
     // var bezierHandler = createBezierHandlerSingleton(context, tempContext);
-    var zoomHandler = createZoomHandlerSingleton(context, tempContext);
+    // var zoomHandler = createZoomHandlerSingleton(context, tempContext);
     // var imageHandler = createImageHandlerSingleton(context, tempContext, syncPoints);
     // var pdfHandler = createPdfHandlerSingleton(context, tempContext, getPoints, syncPoints);
 
@@ -289,147 +289,147 @@ function initWidget (shows) {
     //     return points;
     // }
 
-    function setTemporaryLine() {
-        var arr = ["line", [139, 261, 170, 219],
-            [1, "rgba(0,0,0,0)", "rgba(0,0,0,0)", 1, "source-over", "round", "round", "15px \"Arial\""]
-        ];
-        points.push(arr);
-        drawHelper.redraw(context, tempContext, points);
+    // function setTemporaryLine() {
+    //     var arr = ["line", [139, 261, 170, 219],
+    //         [1, "rgba(0,0,0,0)", "rgba(0,0,0,0)", 1, "source-over", "round", "round", "15px \"Arial\""]
+    //     ];
+    //     points.push(arr);
+    //     drawHelper.redraw(context, tempContext, points);
 
-        setTimeout(function() {
-            setSelection(document.getElementById('line'), 'Line');
-        }, 1000);
+    //     setTimeout(function() {
+    //         setSelection(document.getElementById('line'), 'Line');
+    //     }, 1000);
 
-        setTimeout(setDefaultSelectedIcon, 2000);
-    }
+    //     setTimeout(setDefaultSelectedIcon, 2000);
+    // }
 
-    var canvas = tempContext.canvas,
-        isTouch = 'createTouch' in document;
+    // var canvas = tempContext.canvas,
+    //     isTouch = 'createTouch' in document;
 
-    addEvent(canvas, isTouch ? 'touchstart mousedown' : 'mousedown', function(e) {
-        if (isTouch) e = e.pageX ? e : e.touches.length ? e.touches[0] : {
-            pageX: 0,
-            pageY: 0
-        };
+    // addEvent(canvas, isTouch ? 'touchstart mousedown' : 'mousedown', function(e) {
+    //     if (isTouch) e = e.pageX ? e : e.touches.length ? e.touches[0] : {
+    //         pageX: 0,
+    //         pageY: 0
+    //     };
 
-        var cache = is;
+    //     var cache = is;
 
-        // if (cache.isLine) lineHandler.mousedown(e, points);
-        // if (cache.isArc) arcHandler.mousedown(e, points);
-        // else if (cache.isRectangle) rectHandler.mousedown(e, points);
-        // if (cache.isQuadraticCurve) quadraticHandler.mousedown(e, points);
-        // if (cache.isBezierCurve) bezierHandler.mousedown(e, points);
-        // else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousedown(e, points, is.isDragAllPaths, is.isDragLastPath);
-        // else if (cache.isPencil) pencilHandler.mousedown(e, points);
-        // else if (cache.isEraser) eraserHandler.mousedown(e, points);
-        // else if (cache.isText) textHandler.mousedown(e, points, shows.text);
-        // else if (cache.isImage) imageHandler.mousedown(e, points);
-        // else if (cache.isPdf) pdfHandler.mousedown(e,points);
-        // else if (cache.isArrow) arrowHandler.mousedown(e, points);
-        // else if (cache.isMarker) markerHandler.mousedown(e, points);
+    //     // if (cache.isLine) lineHandler.mousedown(e, points);
+    //     // if (cache.isArc) arcHandler.mousedown(e, points);
+    //     // else if (cache.isRectangle) rectHandler.mousedown(e, points);
+    //     // if (cache.isQuadraticCurve) quadraticHandler.mousedown(e, points);
+    //     // if (cache.isBezierCurve) bezierHandler.mousedown(e, points);
+    //     // else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousedown(e, points, is.isDragAllPaths, is.isDragLastPath);
+    //     // else if (cache.isPencil) pencilHandler.mousedown(e, points);
+    //     // else if (cache.isEraser) eraserHandler.mousedown(e, points);
+    //     // else if (cache.isText) textHandler.mousedown(e, points, shows.text);
+    //     // else if (cache.isImage) imageHandler.mousedown(e, points);
+    //     // else if (cache.isPdf) pdfHandler.mousedown(e,points);
+    //     // else if (cache.isArrow) arrowHandler.mousedown(e, points);
+    //     // else if (cache.isMarker) markerHandler.mousedown(e, points);
 
-        // !cache.isPdf && drawHelper.redraw(context, tempContext, points);
+    //     // !cache.isPdf && drawHelper.redraw(context, tempContext, points);
 
-        // preventStopEvent(e);
-    });
+    //     // preventStopEvent(e);
+    // });
 
-    function preventStopEvent(e) {
-        if (!e) {
-            return;
-        }
+    // function preventStopEvent(e) {
+    //     if (!e) {
+    //         return;
+    //     }
 
-        if (typeof e.preventDefault === 'function') {
-            e.preventDefault();
-        }
+    //     if (typeof e.preventDefault === 'function') {
+    //         e.preventDefault();
+    //     }
 
-        if (typeof e.stopPropagation === 'function') {
-            e.stopPropagation();
-        }
-    }
+    //     if (typeof e.stopPropagation === 'function') {
+    //         e.stopPropagation();
+    //     }
+    // }
 
-    addEvent(canvas, isTouch ? 'touchend touchcancel mouseup' : 'mouseup', function(e) {
-        if (isTouch && (!e || !('pageX' in e))) {
-            if (e && e.touches && e.touches.length) {
-                e = e.touches[0];
-            } else if (e && e.changedTouches && e.changedTouches.length) {
-                e = e.changedTouches[0];
-            } else {
-                e = {
-                    pageX: 0,
-                    pageY: 0
-                }
-            }
-        }
+    // addEvent(canvas, isTouch ? 'touchend touchcancel mouseup' : 'mouseup', function(e) {
+    //     if (isTouch && (!e || !('pageX' in e))) {
+    //         if (e && e.touches && e.touches.length) {
+    //             e = e.touches[0];
+    //         } else if (e && e.changedTouches && e.changedTouches.length) {
+    //             e = e.changedTouches[0];
+    //         } else {
+    //             e = {
+    //                 pageX: 0,
+    //                 pageY: 0
+    //             }
+    //         }
+    //     }
 
-        var cache = is;
+    //     var cache = is;
 
-        // if (cache.isLine) lineHandler.mouseup(e, points);
-        // if (cache.isArc) arcHandler.mouseup(e, points);
-        // else if (cache.isRectangle) rectHandler.mouseup(e, points);
-        // if (cache.isQuadraticCurve) quadraticHandler.mouseup(e, points);
-        // if (cache.isBezierCurve) bezierHandler.mouseup(e, points);
-        // else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mouseup(e, points, is.isDragLastPath);
-        // else if (cache.isPencil) pencilHandler.mouseup(e, points);
-        // else if (cache.isEraser) eraserHandler.mouseup(e, points);
-        // else if (cache.isText) textHandler.mouseup(e, points);
-        // else if (cache.isImage) imageHandler.mouseup(e, points);
-        // else if (cache.isPdf) pdfHandler.mousedown(e, points);
-        // else if (cache.isArrow) arrowHandler.mouseup(e, points);
-        // else if (cache.isMarker) markerHandler.mouseup(e, points);
+    //     // if (cache.isLine) lineHandler.mouseup(e, points);
+    //     // if (cache.isArc) arcHandler.mouseup(e, points);
+    //     // else if (cache.isRectangle) rectHandler.mouseup(e, points);
+    //     // if (cache.isQuadraticCurve) quadraticHandler.mouseup(e, points);
+    //     // if (cache.isBezierCurve) bezierHandler.mouseup(e, points);
+    //     // else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mouseup(e, points, is.isDragLastPath);
+    //     // else if (cache.isPencil) pencilHandler.mouseup(e, points);
+    //     // else if (cache.isEraser) eraserHandler.mouseup(e, points);
+    //     // else if (cache.isText) textHandler.mouseup(e, points);
+    //     // else if (cache.isImage) imageHandler.mouseup(e, points);
+    //     // else if (cache.isPdf) pdfHandler.mousedown(e, points);
+    //     // else if (cache.isArrow) arrowHandler.mouseup(e, points);
+    //     // else if (cache.isMarker) markerHandler.mouseup(e, points);
 
-        // !cache.isPdf && drawHelper.redraw(context, tempContext, points);
+    //     // !cache.isPdf && drawHelper.redraw(context, tempContext, points);
 
-        // syncPoints(is.isDragAllPaths || is.isDragLastPath ? true : false);
+    //     // syncPoints(is.isDragAllPaths || is.isDragLastPath ? true : false);
 
-        // preventStopEvent(e);
-    });
+    //     // preventStopEvent(e);
+    // });
 
-    addEvent(canvas, isTouch ? 'touchmove mousemove' : 'mousemove', function(e) {
-        if (isTouch) e = e.pageX ? e : e.touches.length ? e.touches[0] : {
-            pageX: 0,
-            pageY: 0
-        };
+    // addEvent(canvas, isTouch ? 'touchmove mousemove' : 'mousemove', function(e) {
+    //     if (isTouch) e = e.pageX ? e : e.touches.length ? e.touches[0] : {
+    //         pageX: 0,
+    //         pageY: 0
+    //     };
 
-        var cache = is;
+    //     var cache = is;
 
-        // if (cache.isLine) lineHandler.mousemove(e, points);
-        // if (cache.isArc) arcHandler.mousemove(e, points);
-        // else if (cache.isRectangle) rectHandler.mousemove(e, points);
-        // if (cache.isQuadraticCurve) quadraticHandler.mousemove(e, points);
-        // if (cache.isBezierCurve) bezierHandler.mousemove(e, points);
-        // else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousemove(e, points, is.isDragAllPaths, is.isDragLastPath);
-        // else if (cache.isPencil) pencilHandler.mousemove(e, points);
-        // else if (cache.isEraser) eraserHandler.mousemove(e, points);
-        // else if (cache.isText) textHandler.mousemove(e, points);
-        // else if (cache.isImage) imageHandler.mousemove(e, points);
-        // else if (cache.isPdf) pdfHandler.mousedown(e, points);
-        // else if (cache.isArrow) arrowHandler.mousemove(e, points);
-        // else if (cache.isMarker) markerHandler.mousemove(e, points);
+    //     // if (cache.isLine) lineHandler.mousemove(e, points);
+    //     // if (cache.isArc) arcHandler.mousemove(e, points);
+    //     // else if (cache.isRectangle) rectHandler.mousemove(e, points);
+    //     // if (cache.isQuadraticCurve) quadraticHandler.mousemove(e, points);
+    //     // if (cache.isBezierCurve) bezierHandler.mousemove(e, points);
+    //     // else if (cache.isDragLastPath || cache.isDragAllPaths) dragHelper.mousemove(e, points, is.isDragAllPaths, is.isDragLastPath);
+    //     // else if (cache.isPencil) pencilHandler.mousemove(e, points);
+    //     // else if (cache.isEraser) eraserHandler.mousemove(e, points);
+    //     // else if (cache.isText) textHandler.mousemove(e, points);
+    //     // else if (cache.isImage) imageHandler.mousemove(e, points);
+    //     // else if (cache.isPdf) pdfHandler.mousedown(e, points);
+    //     // else if (cache.isArrow) arrowHandler.mousemove(e, points);
+    //     // else if (cache.isMarker) markerHandler.mousemove(e, points);
 
-        // preventStopEvent(e);
-    });
+    //     // preventStopEvent(e);
+    // });
 
     var keyCode;
 
-    function onkeydown(e) {
-        keyCode = e.which || e.keyCode || 0;
+    // function onkeydown(e) {
+    //     keyCode = e.which || e.keyCode || 0;
 
-        if (keyCode == 8 || keyCode == 46) {
-            if (isBackKey(e, keyCode)) {
-                // back key pressed
-            }
-            return;
-        }
+    //     if (keyCode == 8 || keyCode == 46) {
+    //         if (isBackKey(e, keyCode)) {
+    //             // back key pressed
+    //         }
+    //         return;
+    //     }
 
-        if (e.metaKey) {
-            isControlKeyPressed = true;
-            keyCode = 17;
-        }
+    //     if (e.metaKey) {
+    //         isControlKeyPressed = true;
+    //         keyCode = 17;
+    //     }
 
-        if (!isControlKeyPressed && keyCode === 17) {
-            isControlKeyPressed = true;
-        }
-    }
+    //     if (!isControlKeyPressed && keyCode === 17) {
+    //         isControlKeyPressed = true;
+    //     }
+    // }
 
     function isBackKey(e, keyCode) {
         var doPrevent = false;
@@ -456,7 +456,7 @@ function initWidget (shows) {
         return doPrevent;
     }
 
-    addEvent(document, 'keydown', onkeydown);
+    // addEvent(document, 'keydown', onkeydown);
 
     function onkeyup(e) {
         if (e.which == null && (e.charCode != null || e.keyCode != null)) {
@@ -525,37 +525,37 @@ function initWidget (shows) {
         }
     }
 
-    addEvent(document, 'keyup', onkeyup);
+    // addEvent(document, 'keyup', onkeyup);
 
-    function onkeypress(e) {
-        if (e.which == null && (e.charCode != null || e.keyCode != null)) {
-            e.which = e.charCode != null ? e.charCode : e.keyCode;
-        }
+    // function onkeypress(e) {
+    //     if (e.which == null && (e.charCode != null || e.keyCode != null)) {
+    //         e.which = e.charCode != null ? e.charCode : e.keyCode;
+    //     }
 
-        keyCode = e.which || e.keyCode || 0;
+    //     keyCode = e.which || e.keyCode || 0;
 
-        var inp = String.fromCharCode(keyCode);
-        if (/[a-zA-Z0-9-_ !?|\/'",.=:;(){}\[\]`~@#$%^&*+-]/.test(inp)) {
-            // textHandler.writeText(String.fromCharCode(keyCode), false, shows.text);
-        }
-    }
+    //     var inp = String.fromCharCode(keyCode);
+    //     if (/[a-zA-Z0-9-_ !?|\/'",.=:;(){}\[\]`~@#$%^&*+-]/.test(inp)) {
+    //         // textHandler.writeText(String.fromCharCode(keyCode), false, shows.text);
+    //     }
+    // }
 
-    addEvent(document, 'keypress', onkeypress);
+    // addEvent(document, 'keypress', onkeypress);
 
-    function onTextFromClipboard(e) {
-        if (!is.isText) return;
-        var pastedText = undefined;
-        if (window.clipboardData && window.clipboardData.getData) { // IE
-            pastedText = window.clipboardData.getData('Text');
-        } else if (e.clipboardData && e.clipboardData.getData) {
-            pastedText = e.clipboardData.getData('text/plain');
-        }
-        if (pastedText && pastedText.length) {
-            // textHandler.writeText(pastedText, false, shows.text);
-        }
-    }
+    // function onTextFromClipboard(e) {
+    //     if (!is.isText) return;
+    //     var pastedText = undefined;
+    //     if (window.clipboardData && window.clipboardData.getData) { // IE
+    //         pastedText = window.clipboardData.getData('Text');
+    //     } else if (e.clipboardData && e.clipboardData.getData) {
+    //         pastedText = e.clipboardData.getData('text/plain');
+    //     }
+    //     if (pastedText && pastedText.length) {
+    //         // textHandler.writeText(pastedText, false, shows.text);
+    //     }
+    // }
 
-    addEvent(document, 'paste', onTextFromClipboard);
+    // addEvent(document, 'paste', onTextFromClipboard);
 
     var lastPointIndex = 0;
 
