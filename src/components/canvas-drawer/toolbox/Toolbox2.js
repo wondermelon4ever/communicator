@@ -14,6 +14,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 import Draggable from 'react-draggable';
 
+import About from './About';
 import OptionAdditional from '../tools/tool-options/OptionAdditional';
 import OptionColorPalette from '../tools/tool-options/OptionColorPalette';
 import OptionLineWidth from '../tools/tool-options/OptionLineWidth';
@@ -75,6 +76,7 @@ const Toolbox2 = (props) => {
     const [position, setPosition] = React.useState({ x: 0, y: 0 });
     const [mainContext, setMainContext] = React.useState(undefined);
     const [tempContext, setTempContext] = React.useState(undefined);
+    const [aboutShow, setAboutShow] = React.useState(false);
 
     React.useEffect(()=>{
         setMainContext(getContext(props.mainCanvasName));
@@ -145,6 +147,14 @@ const Toolbox2 = (props) => {
         setCheckViewShow(!checkViewShow);
     }
 
+    const handleAboutClose = () => {
+        setAboutShow(false);
+    }
+
+    const handleAboutOpen = () => {
+        setAboutShow(true);
+    }
+
     return (
         <div>
         <Draggable 
@@ -174,7 +184,7 @@ const Toolbox2 = (props) => {
                                 pr="5px"
                             >
                                 <Tooltip title="" style={{ padding: 1, margin: 0 }}>
-                                    <IconButton >
+                                    <IconButton onClick={ handleAboutOpen }>
                                         <InfoIcon sx={{ color: "#FFFFFF", width: 16, height: 16 }} />
                                     </IconButton>
                                 </Tooltip>
@@ -248,9 +258,8 @@ const Toolbox2 = (props) => {
                                 orientation="vertical"/>
                             <ToolZoomIn show={ checkedList.zoomIn && expanded } selected={ false }/>
                             <ToolZoomOut show={ checkedList.zoomOut && expanded } selected={ false }/>
-                            <ToolRedo show={ checkedList.redo && expanded } selected={ false }/>
                             <ToolUndo show={ checkedList.undo && expanded } selected={ false }/>
-                            
+                            <ToolRedo show={ checkedList.redo && expanded } selected={ false }/>
 
                             <Divider style={{ marginLeft: 5, marginRight: 5 }} orientation="vertical"/>
                             <SaveTool canvasName="main-canvas" />
@@ -266,6 +275,7 @@ const Toolbox2 = (props) => {
             </div>
         </Draggable>
         <ToolSelection show={ checkViewShow } saveChange={ saveChange } selections={ checkedList }/>
+        <About show={ aboutShow } onClose={ handleAboutClose } />
         </div>
     );
 }
