@@ -141,7 +141,7 @@ export default class DragHelper {
                     g.pointsToMove = 'starting-points';
                 }
 
-                if (dHelper.isPointInPath(x, y, point[2], point[3])) {
+                if (this.isPointInPath(x, y, point[2], point[3])) {
                     g.pointsToMove = '1st-control-points';
                 }
 
@@ -406,7 +406,6 @@ export default class DragHelper {
         for (i; i < length; i++) {
             p = points[i];
             point = p[1];
-
             if (p[0] === 'line') {
                 points[i] = [p[0],
                     [
@@ -416,9 +415,7 @@ export default class DragHelper {
                         getPoint(y, prevY, point[3])
                     ], p[2]
                 ];
-            }
-
-            if (p[0] === 'arrow') {
+            } else if (p[0] === 'arrow') {
                 points[i] = [p[0],
                     [
                         getPoint(x, prevX, point[0]),
@@ -427,9 +424,7 @@ export default class DragHelper {
                         getPoint(y, prevY, point[3])
                     ], p[2]
                 ];
-            }
-
-            if (p[0] === 'text') {
+            } else if (p[0] === 'text') {
                 points[i] = [p[0],
                     [
                         point[0],
@@ -437,9 +432,7 @@ export default class DragHelper {
                         getPoint(y, prevY, point[2])
                     ], p[2]
                 ];
-            }
-
-            if (p[0] === 'arc') {
+            } else if (p[0] === 'arc') {
                 points[i] = [p[0],
                     [
                         getPoint(x, prevX, point[0]),
@@ -449,9 +442,7 @@ export default class DragHelper {
                         point[4]
                     ], p[2]
                 ];
-            }
-
-            if (p[0] === 'rect') {
+            } else if (p[0] === 'rect') {
                 points[i] = [p[0],
                     [
                         getPoint(x, prevX, point[0]),
@@ -460,9 +451,7 @@ export default class DragHelper {
                         point[3]
                     ], p[2]
                 ];
-            }
-
-            if (p[0] === 'image') {
+            } else if (p[0] === 'image') {
                 points[i] = [p[0],
                     [
                         point[0],
@@ -473,9 +462,7 @@ export default class DragHelper {
                         point[5]
                     ], p[2]
                 ];
-            }
-
-            if (p[0] === 'pdf') {
+            } else if (p[0] === 'pdf') {
                 points[i] = [p[0],
                     [
                         point[0],
@@ -486,9 +473,7 @@ export default class DragHelper {
                         point[5]
                     ], p[2]
                 ];
-            }
-
-            if (p[0] === 'quadratic') {
+            } else if (p[0] === 'quadratic') {
                 points[i] = [p[0],
                     [
                         getPoint(x, prevX, point[0]),
@@ -499,9 +484,7 @@ export default class DragHelper {
                         getPoint(y, prevY, point[5])
                     ], p[2]
                 ];
-            }
-
-            if (p[0] === 'bezier') {
+            } else if (p[0] === 'bezier') {
                 points[i] = [p[0],
                     [
                         getPoint(x, prevX, point[0]),
