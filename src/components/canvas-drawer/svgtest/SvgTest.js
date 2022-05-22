@@ -1,6 +1,7 @@
 import { ThreeSixty } from '@mui/icons-material';
 import React from 'react';
 import Circle from './Circle';
+import Line from './__Line';
 
 class SvgTest extends React.Component {
 
@@ -10,8 +11,10 @@ class SvgTest extends React.Component {
         this.state = {
             mousedowned: false,
             circles: [],
+            lines: [],
             path1: "",
-            path2: "" 
+            path2: "",
+            drawable: false 
         }
 
         this.handleDrag = this.handleDrag.bind(this);
@@ -20,6 +23,10 @@ class SvgTest extends React.Component {
         this.onPositionChanged = this.onPositionChanged.bind(this);
         this.updatePath = this.updatePath.bind(this);
         this.getControlPoints =  this.getControlPoints.bind(this);
+        this.handleDrawable = this.handleDrawable.bind(this);
+        this.onMouseDown = this.onMouseDown.bind(this);
+        this.onMouseUp = this.onMouseUp.bind(this);
+        this.draw = this.draw.bind(this);
     }
 
     componentDidMount() {
@@ -157,11 +164,44 @@ class SvgTest extends React.Component {
         this.updatePath(id, position);
     }
 
+    handleDrawable () {
+        this.setState({
+            ...this.state,
+            drawable: true
+        })
+        // document.
+    }
+
+    onMouseDown () {
+        console.log("this.state.mousedowned=>" + this.state.mousedowned);
+        if(this.state.drawable === false) return;
+        this.setState({
+            ...this.state,
+            mousedowned: true
+        })
+        document.addEventListener('mousemove', this.draw, false);
+    }
+
+    onMouseUp () {
+        console.log("on mouse up !!! mousedowned=>"+ this.state.mousedowned);
+        this.setState({
+            ...this.state,
+            mousedowned: false
+        })
+        document.removeEventListener('mousemove', this.draw, false);
+    }
+
+    draw (event) {
+        console.log("draw !!!");
+    }
+
     render() {
         return(
             <>
+                {/* <div onClick={ this.handleDrawable }>직선그리기</div> */}
                 <svg width="1000" height="1000" xmlns="http://www.w3.org/2000/svg" id="bcsvg"
-                    onMouseUp={ this.handleDragEnd }
+                    // onMouseDown={ this.onMouseDown }
+                    // onMouseUp={ this.onMouseUp }
                 >
                     <svg
                         // onMouseDown={ this.handleDragStart }
@@ -201,6 +241,25 @@ class SvgTest extends React.Component {
                         <path d="M130 110 C 120 140, 180 140, 170 110" stroke="black" fill="transparent"/> */}
                         {/* <path id="path1" d="M10,60 Q35,35,60,10" stroke="black" strokeWidth="2" fill="none"/> */}
                         {/* <path id="curve2" d="M25,25 Q40,25,40,10" stroke="black" strokeWidth="2" fill="none"/> */}
+                        <path id="test" d="M100,100 L150,100 Q175,75,200,100" stroke="black" strokeWidth="2" fill="none"/>
+                        {/* <Line id="line1" point1={{ x: 200, y: 200 }} point2={{ x: 300, y: 200 }} stroke="red" strokeWidth="3" fill="none" /> */}
+                        {/* {
+                            this.state.lines.map((cir, index)=>{
+                                return(
+                                    <Circle 
+                                        key={ cir.id }
+                                        id={ cir.id } 
+                                        position={ cir.position } 
+                                        radius={ cir.radius } 
+                                        stroke={ cir.stroke } 
+                                        strokeWidth={ cir.strokeWidth } 
+                                        fill={ cir.fill }
+                                        handlePositionChanged={ this.onPositionChanged }
+                                        confirmed={ cir.confirmed }
+                                    />
+                                )
+                            })
+                        } */}
                     </svg>
                 </svg>
 
