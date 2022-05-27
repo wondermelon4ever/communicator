@@ -12,6 +12,7 @@ const LineEdgeCircle = (props) => {
     const [linePaths, setLinePaths] = React.useState([]);
     
     const [circles, setCircles] = React.useState([]);
+    const [isCurve, setIsCurve] = React.useState(false);
 
     const [position, setPosition] = React.useState({ x: 0, y: 0 });
 
@@ -25,13 +26,59 @@ const LineEdgeCircle = (props) => {
         drawLines();
     }, [circles]);
 
+    const getControlPoints = (x0, y0, x1, y1, x2, y2, t) => {
+        var d01=Math.sqrt(Math.pow(x1-x0,2)+Math.pow(y1-y0,2));
+        var d12=Math.sqrt(Math.pow(x2-x1,2)+Math.pow(y2-y1,2));
+        var fa=t*d01/(d01+d12);
+        var fb=t-fa;
+        var p1x=x1+fa*(x0-x2), p1y=y1+fa*(y0-y2);
+        var p2x=x1-fb*(x0-x2), p2y=y1-fb*(y0-y2);
+        return [p1x,p1y,p2x,p2y];
+    };
+
+    const getCenterQuadraticPoint = (x0, y0, cx1, cy1, x1, y1) => {
+        var qu = 20;
+        var bp = new Array();
+        var t=1/qu;
+        bp.push({ x: x0, y: y0});
+        for(var k=1;k<qu;k++) {
+            t+=1/qu;
+            var x = (1-t)*((1-t)*x0+t*cx1)+t*((1-t)*cx1+t*x1), y = (1-t)*((1-t)*y0+t*cy1)+t*((1-t)*cy1+t*y1);
+            bp.push({ x: x, y: y });
+        }
+        return bp[11];
+    };
+
     const drawLines = () => {
         var linePaths = [];
-        var i, bi = 0;
+        var i, bi = 0, curve = circles.length >= 3 ? true : false;
         for(i = 1; i < circles.length; i++) {
             if(circles[i].isTemp === true) continue;
             var path = "M" + circles[bi].position.x+","+circles[bi].position.y+" ";
-            path += "L"+circles[i].position.x+","+circles[i].position.y;
+            if(isCurve && i < circles.length-1) {
+                path += "Q";
+                var points = getControlPoints(
+                    circles[bi].position.x, circles[bi].position.y, 
+                    circles[i].position.x, circles[i].position.y, 
+                    circles[i+1].position.x, circles[i+1].position.y,
+                    0.5
+                );
+                path += points[0]+","+points[1]+","+circles[i].position.x+","+circles[i].position.y;
+                path += " Q";
+                path += points[2]+","+points[3]+","+circles[i+1].position.x+","+circles[i+1].position.y;
+            } else {
+                if(!isCurve) path += "L"+circles[i].position.x+","+circles[i].position.y;
+                else {
+                    path += "Q";
+                    var points = getControlPoints(
+                        circles[i-2].position.x, circles[i-2].position.y, 
+                        circles[i-1].position.x, circles[i-1].position.y, 
+                        circles[i].position.x, circles[i].position.y,
+                        0.5
+                    );
+                    path += points[2]+","+points[3]+","+circles[i].position.x+","+circles[i].position.y;
+                }
+            }
             linePaths.push(path);
             bi = i;
         }
@@ -87,42 +134,71 @@ const LineEdgeCircle = (props) => {
         setCircles(circles);
     }
 
-    const handleCirclePositionChanged = (cidx, position) => {
+    const handleCirclePositionChanged = (cidx, position, mouseUp) => {
         var newCircles = [];
+        var newIdx = 0;
         circles.forEach((cir, index)=>{
             var isTemp = cir.cidx === cidx && cir.isTemp ? true : false;
+            cir.cidx = newIdx++;
             if(cir.cidx===cidx) {
                 cir.position.x = position.x;
                 cir.position.y = position.y;
                 if(cir.isTemp === true) {
+                    if(mouseUp) newIdx--;
+                    setIsCurve(true);
                     cir.isTemp = false;
                     var tdx = cir.cidx, pdx = tdx-1, ndx = tdx+1;
-                    newCircles.push({
-                        // cidx: cidx++, 
-                        // position: {
-                        //     x: command[1][0],
-                        //     y: command[1][1]
-                        // },
-                        // radius: 4, 
-                        // fill: "red",
-                        // isTemp: true
-                    });  
+                    var prevPoints = circles[pdx].position, currPoints = cir.position, nextPoints = circles[ndx].position;
+                    // var centerPoint = getCenterQuadraticPoint (prevPoints.x, prevPoints.y, currPoints.x, currPoints.y, nextPoints.x, nextPoints.y);
+                    if(mouseUp) {
+                         newCircles.push({
+                            cidx: newIdx++, 
+                            position: {
+                                x: (prevPoints.x + currPoints.x)>>1,
+                                y: (prevPoints.y + currPoints.y)>>1
+                            },
+                            radius: 4, 
+                            fill: "red",
+                            isTemp: true
+                        });
+                        cir.cidx = newIdx++;
+                    }
+
+                    newCircles.push(cir);
+                    
+                    if(mouseUp) {
+                        newCircles.push({
+                            cidx: newIdx++, 
+                            position: {
+                                x: (currPoints.x + nextPoints.x)>>1,
+                                y: (currPoints.y + nextPoints.y)>>1
+                            },
+                            radius: 4, 
+                            fill: "red",
+                            isTemp: true
+                        });
+                    }
+                } else {
+                    newCircles.push(cir);
                 }
+            } else {
+                if(cir.isTemp === true) {
+                    var tdx = cir.cidx, pdx = tdx-1, ndx = tdx+1;
+                    // if(isCurve) {
+    
+                    // } else {
+                        if(pdx >= 0 && ndx < circles.length) {
+                            var prev = newCircles[pdx], next = circles[ndx];
+                            cir.position.x = (prev.position.x + next.position.x)>>1;
+                            cir.position.y = (prev.position.y + next.position.y)>>1;
+                        }
+                    // }
+                }
+    
+                newCircles.push(cir);
             }
             
-            if(cir.isTemp === true) {
-                var tdx = cir.cidx, pdx = tdx-1, ndx = tdx+1;
-                if(pdx >= 0 && ndx < circles.length) {
-                    var prev = newCircles[pdx], next = circles[ndx];
-                    cir.position.x = (prev.position.x + next.position.x)>>1;
-                    cir.position.y = (prev.position.y + next.position.y)>>1;
-                }
-            }
-
-            if(isTemp === true) {
-
-            }
-            newCircles.push(cir);
+            
         });
 
         setCircles(newCircles);
@@ -193,6 +269,7 @@ const LineEdgeCircle = (props) => {
             }
             {
                 circles.map((cir, index)=>{
+                    console.log(index + "=>" + JSON.stringify(cir));
                     return(
                         <Circle 
                             key={ index }
