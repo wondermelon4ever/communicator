@@ -27,7 +27,7 @@ class Circle extends React.Component {
     }
 
     componentDidMount () {
-        console.log("component circle was mounted :" + this.state.id);
+        console.log("Component circle was mounted :" + this.state.id);
     }
 
     handleContextMenuOpen = (event) => {
@@ -60,7 +60,7 @@ class Circle extends React.Component {
         this.props.handlePositionChanged(this.props.cid, {
             x: event.offsetX,
             y: event.offsetY
-        }, false);
+        });
         var temp = this.state;
         temp.isTemp = false;
         this.setState(temp);
@@ -91,7 +91,7 @@ class Circle extends React.Component {
                     r={ radius } 
                     stroke={ stroke } 
                     strokeWidth={ strokeWidth } 
-                    fill={ isTemp === true ? "gray" : fill }
+                    fill={ isTemp === true ? "red" : fill }
                     onContextMenu={ this.handleContextMenuOpen }
                     onMouseDown={ this.handleMouseDown }
                     onMouseUp={ this.handleMouseUp }

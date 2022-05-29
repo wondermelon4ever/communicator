@@ -16,6 +16,7 @@ export default class Node {
         this.color= "black";
         this.radius= 4;
         this.state= STATE.TEMP;
+        this.controlPosition = undefined;
     }
 
     getId() { return this.id; }
@@ -30,6 +31,8 @@ export default class Node {
     setRadius(radius) { this.radius = radius; }
     getState() { return this.state; }
     setState(state) { this.state=state; }
+    getControlPosition() { return this.controlPosition; }
+    setControlPosition(controlPosition) { this.controlPosition=controlPosition; }
 
     append(newNode) {
         if(this.next === undefined) {
