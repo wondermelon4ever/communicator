@@ -1,119 +1,111 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Divider, Menu, MenuItem } from '@mui/material';
 
-export default class LinePath extends React.Component {
+const LinePath = ( props ) => {
+    const id = props.id;
+    const [lineKind, setLineKind] = useState(props.lineKind);
+    const [point1, setPoint1] = useState(props.point1);
+    const [point2, setPoint2] = useState(props.point2);
+    const [pointc, setPointc] = useState(props.pointc);
 
-    constructor(props) {
-        super(props);
+    // 나중에 path별로 변경할 수 있는 속성들 (컨텍스트 메뉴에서 특정 라인만 변경할 수도 있음)
+    const [values, setValues] = useState({
+        stroke: props.values.stroke,
+        strokeWidth: props.values.strokeWidth,
+        fill: props.values.fill,
+    });
+    const [path, setPath] = useState("");
+       
+    const [contextMenuOpen, setContextMenuOpen] = useState(false);
+    const [contextMenuAnchorPoint, setContextMenuAnchorPoint] = useState({
+        x: 10, y: 10
+    });
 
-        this.id = props.id;
-        this.state = {
-            lineKind: props.lineKind,
-            point1: props.point1,
-            point2: props.point2,
-            pointc: props.pointc,
-            // 나중에 path별로 변경할 수 있는 속성들 (컨텍스트 메뉴에서 특정 라인만 변경할 수도 있음)
-            values: {
-                stroke: props.stroke,
-                strokeWidth: props.strokeWidth,
-                fill: props.fill,
-            },
-            path: "",
+    useEffect(()=>{
+        makePath();
+    }, []);
 
-            contextMenuOpen: false,
-            contextMenuAnchorPoint: {
-                x: 10, y: 10
-            }
-        }
+    useEffect(()=>{
+        makePath();
+        setPoint1(props.point1);
+    }, [props.point1]);
 
-        this.handleContextMenuClose = this.handleContextMenuClose.bind(this);
-        this.handleContextMenuOpen = this.handleContextMenuOpen.bind(this);
-        this.handleOnClick = this.handleOnClick.bind(this);
-        this.makePath = this.makePath.bind(this);
-    }
+    useEffect(()=>{
+        makePath();
+        setPoint2(props.point2);
+    }, [props.point2]);
 
-    componentDidMount () {
-        this.makePath();
-    }
+    useEffect(()=>{
+        makePath();
+        setPointc(props.pointc);
+    }, [props.point2]);
 
-    componentDidUpdate (prevProps) {
-        if (this.props.point1 !== prevProps.point1 || 
-            this.props.point2 !== prevProps.point2 || 
-            this.props !== prevProps.point2 ) {
-            this.setState({
-                point1: this.props.point1,
-                point2: this.props.point2,
-                pointc: this.props.pointc,
-            });
-        }
-    }
+    useEffect(()=>{
+        makePath();
+    }, [lineKind]);
 
-    changeLineKind (lineKind) {
-        this.setState({
-            ...this.state,
-            lineKind: lineKind,
-            contextMenuOpen: false
-        });
-    }
-
-    makePath () {
+    const makePath = () => {
         var newPath = "M"+point1.x+","+point1.y+" ";
-        if(this.state.lineKind === "Straight") {
+        if(lineKind === "Straight") {
             newPath += "L"+point1.x+","+point1.y+","+point2.x+","+point2.y;
-        } else {
+        } else if(lineKind === "Curve") {
             newPath += "Q"+pointc.x+","+pointc.y+","+point2.x+","+point2.y;
+        } else {
+            newPath = "";
         }
-        this.setState({
-            ...this.state,
-            path: newPath
+        setPath(newPath);
+    }
+
+    const changeLineKind = (lineKind) => {
+        setLineKind(lineKind);
+        setContextMenuOpen(false);
+    }
+
+
+    const handleContextMenuClose = () => {
+        setContextMenuOpen(false);
+    }
+
+    const handleOnClick = (event) => {
+        props.handleOnLinePathClick(event);
+    }
+
+    const handleContextMenuOpen = (event) => {
+        event.preventDefault();
+        setContextMenuOpen(true);
+        setContextMenuAnchorPoint({
+            x: event.pageX,
+            y: event.pageY
         });
     }
 
-    handleContextMenuClose () {
-        this.setState({
-            ...this.state,
-            contextMenuOpen: false
-        })
-    }
+    return (
+        <>
+            <path 
+                id={ id } 
+                d={ path }
+                stroke={ values.stroke }
+                strokeWidth={ values.strokeWidth }
+                fill={ values.fill }
 
-    handleOnClick (event) {
-        this.props.handleOnLinePathClick(event);
-    }
-
-    handleContextMenuOpen () {
-        this.setState({
-            ...this.state,
-            contextMeunOpen: true
-        });
-    }
-
-    render () {
-        return (
-            <>
-                <path 
-                    id={ this.id } 
-                    d={ this.state.path }
-                    stroke={ this.state.values.stroke }
-                    strokeWidth={ this.state.values.strokeWidth }
-                    fill={ this.props.values.fill }
-
-                    onContextMenu={ this.handleContextMenuOpen }
-                    onClick={ this.handleOnClick }
-                />
-                <Menu
-                    open={ this.state.contextMenuOpen }
-                    onClose={ this.handleContextMenuClose }
-                    anchorReference="anchorPosition"
-                    anchorPosition={
-                        { top: this.state.contextMenuAnchorPoint.y, left: this.state.contextMenuAnchorPoint.x }
-                    }
-                >
-                    <MenuItem onClick={ () => this.changeLineKind ("Curve") }>Curve</MenuItem>
-                    <MenuItem onClick={ () => this.changeLineKind ("Straight") }>Straight</MenuItem>
-                    <Divider />
-                    <MenuItem onClick={ this.handleContextMenuClose }>Change attributes</MenuItem>
-                </Menu>
-            </>
-        );
-    }
+                onContextMenu={ handleContextMenuOpen }
+                onClick={ handleOnClick }
+            />
+            <Menu
+                open={ contextMenuOpen }
+                onClose={ handleContextMenuClose }
+                anchorReference="anchorPosition"
+                anchorPosition={
+                    { top: contextMenuAnchorPoint.y, left: contextMenuAnchorPoint.x }
+                }
+            >
+                <MenuItem onClick={ () => changeLineKind ("Curve") }>Curve</MenuItem>
+                <MenuItem onClick={ () => changeLineKind ("Straight") }>Straight</MenuItem>
+                <Divider />
+                <MenuItem onClick={ handleContextMenuClose }>Change attributes</MenuItem>
+            </Menu>
+        </>
+    )
 }
+
+export default LinePath;
