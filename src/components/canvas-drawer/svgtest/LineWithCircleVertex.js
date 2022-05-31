@@ -5,17 +5,24 @@ import Circle from './Circle';
 import Node, { STATE } from "./Node";
 
 import { calculateTwoCenterPoints, createPath } from './LineDrawHelper';
+import LinePath from './LinePath';
 
 var num = 0;
 const radius = 4;
 const LineWithCircleVertex = ( { lid, command, stroke, strokeWidth, fill, ...props } ) => {
+
+    const [isMouseDown, setIsMouseDown] = React.useState(false);
+    const [anchorPosition, setAnchorPosition] = React.useState({
+        x: 100,
+        y: 100
+    })
+    const [isMouseOver, setIsMouseOver] = React.useState(false);
 
     // const [lineId, setLineId] = useState(lid ? lineId : "LineWithCircleEdge-${num++}");
     const [lineId, setLineId] = React.useState(lid ? lid : "LineWithCircleEdge-"+(num)++);
 
     const [head, setHead] = useState(undefined);
     const [tail, setTail] = useState(undefined);
-    const [path, setPath] = useState("");
     const [pathList, setPathList] = useState([]);
 
     const [vertexList, setVertexList] = useState([]);
@@ -24,6 +31,14 @@ const LineWithCircleVertex = ( { lid, command, stroke, strokeWidth, fill, ...pro
     const [lineType, setLineType] = useState("Curve");
 
     const nodeNum = useRef(0);
+
+    const handleMove = useRef(function (event) {
+        console.log("handle move !!!");
+        setAnchorPosition({
+            // x: event.offsetX,
+            // y: event.offsetY
+        })
+    });
 
     useEffect(()=>{
         var cmd = command[0];
@@ -46,6 +61,9 @@ const LineWithCircleVertex = ( { lid, command, stroke, strokeWidth, fill, ...pro
             setHead(h);
             setTail(t);
         }
+        var element = document.getElementById(lineId);
+        var rect = element.getBoundingClientRect();
+        console.log("position of this line group=>" + JSON.stringify(rect));
     }, []);
 
     useEffect(()=>{
@@ -101,6 +119,7 @@ const LineWithCircleVertex = ( { lid, command, stroke, strokeWidth, fill, ...pro
     }
 
     const handleVertexPositionChanged = (vid, position) => {
+        if(position === undefined) return;
         var h = head;
         var node = h.find(vid);
         node.position = position;
@@ -157,8 +176,49 @@ const LineWithCircleVertex = ( { lid, command, stroke, strokeWidth, fill, ...pro
         setShowTempVertex(!showTempVertex);
     }
 
+    // const handleMove = (event) => {
+    //     console.log("handle move !!!");
+    //     setAnchorPosition({
+    //         x: event.offsetX,
+    //         y: event.offsetY
+    //     })
+    // }
+
+    const handleMouseDown = (event) => {
+        event.preventDefault();
+        console.log("handle mouse down ### !!!");
+        document.addEventListener("mousemove", handleMove.current);
+        setIsMouseDown(true);
+    }
+
+    const handleMouseUp = (event) => {
+        event.preventDefault();
+        console.log("handle mouse up ### !!!");
+        document.removeEventListener("mousemove", handleMove.current);
+        setIsMouseDown(false);
+    }
+
+    const handleMouseOver = (event) => {
+        // setIsMouseOver(true);
+    }
+
+    const handleMouseLeave = (event) => {
+        // setIsMouseOver(false);
+    }
+
     return (
-        <svg id={ lineId }>
+        <svg id={ lineId }
+            // onMouseDown={ handleMouseDown }
+            // onMouseUp={ handleMouseUp }
+            // onMouseOver={ handleMouseOver }
+            // onMouseLeave= { handleMouseLeave }
+            // pointerEvents="bounding-box"
+            // style={{
+            //     cursor: isMouseOver ? "move" : "pointer",
+            // }}
+            // y={anchorPosition.y}
+            // x={anchorPosition.x}
+        >
             {
                 pathList.map((path, index)=>{
                     return (
@@ -193,6 +253,22 @@ const LineWithCircleVertex = ( { lid, command, stroke, strokeWidth, fill, ...pro
                     )
                 })
             }
+            <LinePath 
+                lineKind="Curve"
+                point1={{ x: 200, y: 200 }}
+                point2={{ x: 400, y: 100 }}
+                pointc={{ x: 200, y: 100 }}
+                values={{
+                    stroke: "red",
+                    strokeWidth: "2",
+                    fill: "none",
+                }}
+                handleOnLinePathClick={ () => console.log("handleon line path clicked !!!")}
+                anchor={{
+                    x: anchorPosition.x,
+                    y: anchorPosition.y
+                }}
+            />
         </svg>
     )
 }
