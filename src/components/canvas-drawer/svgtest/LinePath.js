@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Divider, Menu, MenuItem } from '@mui/material';
 
+import { createPath } from './LineDrawHelper';
+
 const LinePath = ( props ) => {
     const id = props.id;
     const [lineKind, setLineKind] = useState(props.lineKind);
@@ -45,14 +47,7 @@ const LinePath = ( props ) => {
     }, [lineKind]);
 
     const makePath = () => {
-        var newPath = "M"+point1.x+","+point1.y+" ";
-        if(lineKind === "Straight") {
-            newPath += "L"+point1.x+","+point1.y+","+point2.x+","+point2.y;
-        } else if(lineKind === "Curve") {
-            newPath += "Q"+pointc.x+","+pointc.y+","+point2.x+","+point2.y;
-        } else {
-            newPath = "";
-        }
+        var newPath = createPath(point1, pointc, point2, lineKind);
         setPath(newPath);
     }
 
@@ -90,6 +85,11 @@ const LinePath = ( props ) => {
 
                 onContextMenu={ handleContextMenuOpen }
                 onClick={ handleOnClick }
+
+                style={{
+                    zIndex: 1000
+                }}
+                pointerEvents="visiblePainted"
             />
             <Menu
                 open={ contextMenuOpen }
