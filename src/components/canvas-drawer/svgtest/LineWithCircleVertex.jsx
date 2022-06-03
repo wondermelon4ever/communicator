@@ -1,81 +1,124 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { unmountComponentAtNode } from "react-dom";
 
 import Circle from './Circle';
-import LinePath from './LinePath'
-import Node, { STATE } from "./Node"
+import Node, { STATE } from "./Node";
 
 import { calculateTwoCenterPoints, createPath } from './LineDrawHelper';
 import LinePath from './LinePath';
 
 var num = 0;
 const radius = 4;
-export default class LineWithCircleVertex extends React.Component {
+const LineWithCircleVertex = ( { lid, command, stroke, strokeWidth, fill, ...props } ) => {
 
-    static nodeNum = 0;
-    constructor(props) {
-        super(props);
+    const [isMouseDown, setIsMouseDown] = React.useState(false);
+    const [anchorPosition, setAnchorPosition] = React.useState({
+        x: 100,
+        y: 100
+    })
+    const [isMouseOver, setIsMouseOver] = React.useState(false);
 
-        this.head = undefined, this.tail = undefined;
+    // const [lineId, setLineId] = useState(lid ? lineId : "LineWithCircleEdge-${num++}");
+    const [lineId, setLineId] = React.useState(lid ? lid : "LineWithCircleEdge-"+(num)++);
 
-        this.state = {
-            lineId: this.props.lid ? lid : "LineWithCircleEdge-"+(num)++,
-            isMouseDown: false,
-            anchorPosition: {
-                x: 100, y: 100
-            },
-            isMouseOver: false,
+    const [head, setHead] = useState(undefined);
+    const [tail, setTail] = useState(undefined);
+    const [pathList, setPathList] = useState([]);
 
-            pathList: [],
-            vertexList: [],
-            showTempVertex: false,
-            lineType: "Curve"
-        }
+    const [vertexList, setVertexList] = useState([]);
+    const [showTempVertex, setShowTempVertex] = useState(false);
+    // const [lineType, setLineType] = useState("Straight");
+    const [lineType, setLineType] = useState("Curve");
 
-        this.draw = this.draw.bind(this);
-        this.handleVertexPositionChanged = this.handleVertexPositionChanged.bind(this);
-        this.toggleTempVertexShow = this.toggleTempVertexShow.bind(this);
+    const nodeNum = useRef(0);
 
-        this.handleMouseDown = this.handleMouseDown.bind(this);
-        this.handleMouseUp = this.handleMouseUp.bind(this);
-        this.handleMouseMove = this.handleMouseMove.bind(this);
-        this.handleMouseOver = this.handleMouseOver.bind(this);
-        this.handleMouseLeave =  this.handleMouseLeave.bind(this);
-    }
+    const handleMove = useRef(function (event) {
+        console.log("handle move !!!");
+        setAnchorPosition({
+            // x: event.offsetX,
+            // y: event.offsetY
+        })
+    });
 
-    componentDidMount () {
-        var command = props.command;
+    useEffect(()=>{
+        var cmd = command[0];
         if(cmd !== "Line") {
             unmountComponentAtNode(document.getElementById("root"));
-            return;
+        } else {
+            const pos1 = { x: command[1][0], y: command[1][1] }, pos2 = { x: command[2][0], y: command[2][1] };
+            var h = new Node(nodeNum.current++, pos1), t = new Node(nodeNum.current++, pos2);
+            h.setState(STATE.DRAWABLE), t.setState(STATE.DRAWABLE);
+
+            var temp = new Node(nodeNum.current++, {
+                x: (pos1.x+pos2.x)/2,
+                y: (pos1.y+pos2.y)/2
+            });
+            temp.setState(STATE.TEMP);
+            temp.setRadius(3);
+
+            h.append(temp); 
+            h.append(t);
+            setHead(h);
+            setTail(t);
         }
-        const pos1 = { x: command[1][0], y: command[1][1] }, pos2 = { x: command[2][0], y: command[2][1] };
-        var h = new Node(nodeNum.current++, pos1), t = new Node(nodeNum.current++, pos2);
-        h.setState(STATE.DRAWABLE), t.setState(STATE.DRAWABLE);
+        var element = document.getElementById(lineId);
+        var rect = element.getBoundingClientRect();
+        console.log("position of this line group=>" + JSON.stringify(rect));
+    }, []);
 
-        var temp = new Node(nodeNum.current++, {
-            x: (pos1.x+pos2.x)/2,
-            y: (pos1.y+pos2.y)/2
-        });
-        temp.setState(STATE.TEMP);
-        temp.setRadius(3);
-
-        h.append(temp); 
-        h.append(t);
-
-        this.head = h;
+    useEffect(()=>{
         draw(true);
+    }, [head]);
 
-        // var element = document.getElementById(lineId);
-        // var rect = element.getBoundingClientRect();
-        // console.log("position of this line group=>" + JSON.stringify(rect));
+    const draw = (isInit) => {
+        if(head === undefined) return;
+
+        var node = head, prev, next, vList = [], pList = [];
+        var path = "";
+        if(isInit) {
+            prev = node, node = prev.next, next = node.next;
+            path += "M"+prev.position.x+","+prev.position.y+" ";
+            path += lineType==="Straight" ? "L" : "Q";
+            path += node.position.x+","+node.position.y+","+next.position.x+","+next.position.y;
+            pList.push(path);
+
+            vList.push({ id: prev.id, position: prev.position, fill: prev.color, radius: radius, isTemp: false });
+            vList.push({ id: node.id, position: node.position, fill: node.color, radius: radius, isTemp: true  });
+            vList.push({ id: next.id, position: next.position, fill: next.color, radius: radius, isTemp: false });
+        } else { 
+            prev = head, node = prev.next, next = node.next;
+            // 0번 Vertex 저장
+            vList.push({ id: prev.id, position: prev.position, fill: prev.color, radius: radius, isTemp: prev.state === STATE.TEMP ? true : false });
+
+            while(node !== undefined) {
+                path += createPath(prev.position, node.controlPosition, next.position, lineType);
+                pList.push(path);
+                // This always should be temp node
+                vList.push({
+                    id: node.id,
+                    position: node.position,
+                    fill: node.color,
+                    radius: radius,
+                    isTemp: node.state === STATE.TEMP ? true : false
+                });
+                
+                vList.push({
+                    id: next.id,
+                    position: next.position,
+                    fill: next.color,
+                    radius: radius,
+                    isTemp: next.state === STATE.TEMP ? true : false
+                });
+
+                prev = next; node = prev.next;
+                if(node !== undefined) next = node.next;
+            }
+        }
+        setVertexList(vList);
+        setPathList(pList);
     }
 
-    draw (isInit) { 
-        
-    }
-
-    handleVertexPositionChanged (vid, position) {
+    const handleVertexPositionChanged = (vid, position) => {
         if(position === undefined) return;
         var h = head;
         var node = h.find(vid);
@@ -129,95 +172,105 @@ export default class LineWithCircleVertex extends React.Component {
         draw(false);
     }
 
-    toggleTempVertexShow (event) {
-        this.setState({
-            ...this.state,
-            showTempVertex: !this.state.showTempVertex
-        })
+    const toggleTempVertexShow = (event) => {
+        setShowTempVertex(!showTempVertex);
     }
 
-    handleMouseMove (event) {
-        // console.log("handle move !!!");
-        // setAnchorPosition({
-        //     x: event.offsetX,
-        //     y: event.offsetY
-        // })
+    // const handleMove = (event) => {
+    //     console.log("handle move !!!");
+    //     setAnchorPosition({
+    //         x: event.offsetX,
+    //         y: event.offsetY
+    //     })
+    // }
+
+    const handleMouseDown = (event) => {
+        event.preventDefault();
+        console.log("handle mouse down ### !!!");
+        document.addEventListener("mousemove", handleMove.current);
+        setIsMouseDown(true);
     }
 
-    handleMouseDown (event) {
-        // event.preventDefault();
-        // console.log("handle mouse down ### !!!");
-        // document.addEventListener("mousemove", handleMove.current);
-        // setIsMouseDown(true);
+    const handleMouseUp = (event) => {
+        event.preventDefault();
+        console.log("handle mouse up ### !!!");
+        document.removeEventListener("mousemove", handleMove.current);
+        setIsMouseDown(false);
     }
 
-    handleMouseUp = (event) => {
-        // event.preventDefault();
-        // console.log("handle mouse up ### !!!");
-        // document.removeEventListener("mousemove", handleMove.current);
-        // setIsMouseDown(false);
-    }
-
-    handleMouseOver (event) {
+    const handleMouseOver = (event) => {
         // setIsMouseOver(true);
     }
 
-    handleMouseLeave (event) {
+    const handleMouseLeave = (event) => {
         // setIsMouseOver(false);
     }
 
-    render () {
-        return(
-            <svg id={ lineId }
-                // onMouseDown={ handleMouseDown }
-                // onMouseUp={ handleMouseUp }
-                // onMouseOver={ handleMouseOver }
-                // onMouseLeave= { handleMouseLeave }
-                // pointerEvents="bounding-box"
-                // style={{
-                //     cursor: isMouseOver ? "move" : "pointer",
-                // }}
-                // y={anchorPosition.y}
-                // x={anchorPosition.x}
-            >
-                {
-                    this.state.pathList.map((line, index)=>{
-                        return (
-                            <LinePath 
-                                id={ line.id }
-                                point1={ line.point1 }
-                                point2={ line.point2 }
-                                pointc={ line.pointc }
-                                values={{
-                                    stroke: line.stroke,
-                                    strokewidth: line.strokeWidth,
-                                    fill: line.fill
-                                }}
-                                lineKind={ line.lineKind }
-                            />
-                        )
-                    })
-                }
-                {
-                    this.state.vertexList.map((node, index)=>{
-                        return (
-                            <Circle 
-                                key={ node.id }
-                                cid={ node.id }
-                                position={ node.position }
-                                radius={ node.radius }
-                                stroke={ this.props.stroke} 
-                                strokeWidth={ this.props.strokeWidth } 
-                                fill={ node.fill } 
-                                isTemp={ node.isTemp }
-                                handlePositionChanged={ this.handleVertexPositionChanged }
-                                show={ node.isTemp === false || this.state.showTempVertex ? true : false }
-                                toggleTempVertexShow={ this.toggleTempVertexShow }
-                            />
-                        )
-                    })
-                }
-            </svg>
-        )
-    }
+    return (
+        <svg id={ lineId }
+            // onMouseDown={ handleMouseDown }
+            // onMouseUp={ handleMouseUp }
+            // onMouseOver={ handleMouseOver }
+            // onMouseLeave= { handleMouseLeave }
+            // pointerEvents="bounding-box"
+            // style={{
+            //     cursor: isMouseOver ? "move" : "pointer",
+            // }}
+            // y={anchorPosition.y}
+            // x={anchorPosition.x}
+        >
+            {
+                pathList.map((path, index)=>{
+                    return (
+                        <path 
+                            key={ index }
+                            d={ path } 
+                            stroke={ stroke } 
+                            strokeWidth={ strokeWidth } 
+                            fill="none" 
+                            onClick={ toggleTempVertexShow }
+                            
+                        />
+                    )
+                })
+            }
+            {
+                vertexList.map((node, index)=>{
+                    return (
+                        <Circle 
+                            key={ node.id }
+                            cid={ node.id }
+                            position={ node.position }
+                            radius={ node.radius }
+                            stroke={ stroke} 
+                            strokeWidth={ strokeWidth } 
+                            fill={ node.fill } 
+                            isTemp={ node.isTemp }
+                            handlePositionChanged={ handleVertexPositionChanged }
+                            show={ node.isTemp === false || showTempVertex ? true : false }
+                            toggleTempVertexShow={ toggleTempVertexShow }
+                        />
+                    )
+                })
+            }
+            <LinePath 
+                lineKind="Curve"
+                point1={{ x: 200, y: 200 }}
+                point2={{ x: 400, y: 100 }}
+                pointc={{ x: 200, y: 100 }}
+                values={{
+                    stroke: "red",
+                    strokeWidth: "2",
+                    fill: "none",
+                }}
+                handleOnLinePathClick={ () => console.log("handleon line path clicked !!!")}
+                anchor={{
+                    x: anchorPosition.x,
+                    y: anchorPosition.y
+                }}
+            />
+        </svg>
+    )
 }
+
+export default LineWithCircleVertex;
