@@ -49,6 +49,7 @@ class Circle extends React.Component {
     }
 
     handleMouseUp = (event) => {
+        console.log("circle mouse up !!!");
         event.preventDefault();
         this.ismousedown = false;
         document.removeEventListener ('mousemove', this.handleMouseMove);
@@ -97,6 +98,7 @@ class Circle extends React.Component {
                     onMouseUp={ this.handleMouseUp }
                     style={{ display: show ? "block" : "none" }}
                     onClick={ this.props.toggleTempVertexShow }
+                    pointerEvents="all"
                 />
                 <Menu
                     open={ this.state.contextMenuOpen }
