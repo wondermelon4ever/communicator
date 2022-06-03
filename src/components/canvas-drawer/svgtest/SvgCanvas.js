@@ -3,7 +3,7 @@ import LineEdgeCircle from './LineEdgeCircle';
 import LineWithCircleVertex from './LineWithCircleVertex';
 
 const commands = [
-    ["Line", [100, 100], [300, 100]]   
+    ["Line", [50, 50], [300, 100]]   
 ];
 const SvgCanvas = (props) => {
     
@@ -18,7 +18,7 @@ const SvgCanvas = (props) => {
                     command={ commands[0] }
                     stroke="black"
                     strokeWidth="1"
-                    fill="black"
+                    fill="none"
                 />
             </svg>
         </>
