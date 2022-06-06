@@ -30,6 +30,10 @@ class Circle extends React.Component {
         console.log("Component circle was mounted :" + this.state.id);
     }
 
+    componentDidUpdate (prevProps, prevState, snapshot) {
+        // console.log("circle updated: " + this.state.id+", " + JSON.stringify(prevProps.position));
+    }
+
     handleContextMenuOpen = (event) => {
         event.preventDefault();
         var temp = this.state;

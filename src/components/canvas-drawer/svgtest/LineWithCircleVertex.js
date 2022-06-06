@@ -16,11 +16,9 @@ export default class LineWithCircleVertex extends React.Component {
         super(props);
 
         this.head = undefined, this.tail = undefined;
-        this.childLeftTopMost = {
-            left: 0, top: 0
-        }
-
         this.prevMousePosition = { x: 0, y: 0 };
+        this.initialPosition   = { x: 0, y: 0 };
+        this.amountOfMovement  = { x: 0, y: 0 };
 
         this.state = {
             lineId: this.props.lid ? this.props.lid : "LineWithCircleEdge-"+(num)++,
@@ -57,11 +55,6 @@ export default class LineWithCircleVertex extends React.Component {
         }
         const pos1 = { x: command[1][0], y: command[1][1] }, pos2 = { x: command[2][0], y: command[2][1] };
 
-        if(pos1.x < pos2.x) this.childLeftTopMost.left = pos1.x;
-        else this.childLeftTopMost.left = pos2.x;
-        if(pos1.y < pos2.y) this.childLeftTopMost.top = pos1.y;
-        else this.childLeftTopMost.top = pos2.y;
-
         var h = new Node(LineWithCircleVertex.nodeNum++, pos1), t = new Node(LineWithCircleVertex.nodeNum++, pos2);
         h.setState(STATE.DRAWABLE), t.setState(STATE.DRAWABLE);
 
@@ -86,9 +79,9 @@ export default class LineWithCircleVertex extends React.Component {
         var path = "";
         if(isInit) {
             prev = node, node = prev.next, next = node.next;
-            path += "M"+prev.position.x+","+prev.position.y+" ";
-            path += this.state.lineType==="Straight" ? "L" : "Q";
-            path += node.position.x+","+node.position.y+","+next.position.x+","+next.position.y;
+            // path += "M"+prev.position.x+","+prev.position.y+" ";
+            // path += this.state.lineType==="Straight" ? "L" : "Q";
+            // path += node.position.x+","+node.position.y+","+next.position.x+","+next.position.y;
             // pList.push(path);
 
             pList.push({
@@ -157,8 +150,9 @@ export default class LineWithCircleVertex extends React.Component {
 
     handleOnVertexPositionChanged (vid, position) {
         if(position === undefined) return;
-        if(position.x < this.childLeftTopMost.left) this.childLeftTopMost.left = position.x;
-        if(position.y < this.childLeftTopMost.top)  this.childLeftTopMost.top  = position.y;
+
+        position.x -= this.amountOfMovement.x;
+        position.y -= this.amountOfMovement.y;
 
         var h = this.head;
         var node = h.find(vid);
@@ -222,14 +216,18 @@ export default class LineWithCircleVertex extends React.Component {
     handleOnMouseMove (event) {
         event.preventDefault();
         if(event.ctrlKey === false || this.state.isMouseDown === false) return;
+
+        var moveX = (event.clientX-this.prevMousePosition.x), moveY = (event.clientY-this.prevMousePosition.y);
+        this.amountOfMovement.x += moveX, this.amountOfMovement.y += moveY;
+        var g = document.getElementById(this.state.lineId), t;
         
-        this.setState({
-            ...this.state,
-            anchorPosition: {
-                x: this.state.anchorPosition.x+(event.clientX-this.prevMousePosition.x),
-                y: this.state.anchorPosition.y+(event.clientY-this.prevMousePosition.y)
-            }
-        })
+        if (g.transform.baseVal.numberOfItems == 0) {
+            g.setAttribute("transform", "translate(" + moveX + ", " + moveY + ")");
+        } else {
+            t = g.transform.baseVal.getItem(0);
+            t.setMatrix(t.matrix.translate(moveX, moveY));
+        }
+
         this.prevMousePosition = { x: event.clientX, y: event.clientY };
     }
 
@@ -242,17 +240,18 @@ export default class LineWithCircleVertex extends React.Component {
         document.addEventListener("mousemove", this.handleOnMouseMove);
         this.setState({
             ...this.state,
-            isMouseDown: true
+            isMouseDown: true,
         })
     }
 
     handleOnMouseUp = (event) => {
         event.preventDefault();
         document.removeEventListener("mousemove", this.handleOnMouseMove);
+        
         this.prevMousePosition = { x: 0, y : 0 };
         this.setState({
             ...this.state,
-            isMouseDown: false
+            isMouseDown: false,
         });
     }
 
@@ -276,7 +275,7 @@ export default class LineWithCircleVertex extends React.Component {
 
     render () {
         return(
-            <svg id={ this.state.lineId }
+            <g id={ this.state.lineId }
                 onMouseDown={ this.handleOnMouseDown }
                 onMouseUp={ this.handleOnMouseUp }
                 onMouseOver={ this.handleOnMouseOver }
@@ -284,10 +283,14 @@ export default class LineWithCircleVertex extends React.Component {
                 pointerEvents="bounding-box"
                 style={{
                     cursor: this.state.isMouseOver ? "move" : "pointer",
-                    zIndex: 0
                 }}
                 y={ this.state.anchorPosition.y}
                 x={ this.state.anchorPosition.x}
+                // 확대축소를 가능하게 함
+                // viewBox={
+                //     "0 0 600 600"
+                // }
+                // transform={ 'translate('+(this.state.move.x)+','+this.state.move.y+')' }
             >
                 {
                     this.state.pathList.map((line, index)=>{
@@ -305,7 +308,6 @@ export default class LineWithCircleVertex extends React.Component {
                                 }}
                                 lineKind={ line.lineKind }
                                 handleOnLinePathClick={ this.handleOnLinePathClicked }
-                                offset={ this.state.anchorPosition }
                             />
                         )
                     })
@@ -325,12 +327,11 @@ export default class LineWithCircleVertex extends React.Component {
                                 handlePositionChanged={ this.handleOnVertexPositionChanged }
                                 show={ node.isTemp === false || this.state.showTempVertex ? true : false }
                                 toggleTempVertexShow={ this.toggleTempVertexShow }
-                                offset={ this.state.anchorPosition }
                             />
                         )
                     })
                 }
-            </svg>
+            </g>
         )
     }
 }
