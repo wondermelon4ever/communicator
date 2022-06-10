@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Divider, Menu, MenuItem } from '@mui/material';
+import ContextMenu from './ContextMenu';
 
 import { createPath } from './LineDrawHelper';
 
 const LinePath = ( props ) => {
     const id = props.id;
+    let handleContextMenuOpen = undefined;
+    let handleContextMenuclose = undefined;
     const [lineKind, setLineKind] = useState(props.lineKind);
     const [point1, setPoint1] = useState(props.point1);
     const [point2, setPoint2] = useState(props.point2);
@@ -18,11 +21,6 @@ const LinePath = ( props ) => {
     });
     const [path, setPath] = useState("");
        
-    const [contextMenuOpen, setContextMenuOpen] = useState(false);
-    const [contextMenuAnchorPoint, setContextMenuAnchorPoint] = useState({
-        x: 10, y: 10
-    });
-
     useEffect(()=>{
         makePath();
     }, []);
@@ -53,25 +51,15 @@ const LinePath = ( props ) => {
 
     const changeLineKind = (lineKind) => {
         setLineKind(lineKind);
-        setContextMenuOpen(false);
-    }
-
-
-    const handleContextMenuClose = () => {
-        setContextMenuOpen(false);
+        handleContextMenuclose();
     }
 
     const handleOnClick = (event) => {
         props.handleOnLinePathClick(event);
     }
 
-    const handleContextMenuOpen = (event) => {
-        event.preventDefault();
-        setContextMenuOpen(true);
-        setContextMenuAnchorPoint({
-            x: event.pageX,
-            y: event.pageY
-        });
+    const openContextMenu = (event) => {
+        handleContextMenuOpen(event);
     }
 
     return (
@@ -83,7 +71,7 @@ const LinePath = ( props ) => {
                 strokeWidth={ values.strokeWidth }
                 fill={ values.fill }
 
-                onContextMenu={ handleContextMenuOpen }
+                onContextMenu={ openContextMenu }
                 onClick={ handleOnClick }
 
                 style={{
@@ -91,19 +79,24 @@ const LinePath = ( props ) => {
                 }}
                 pointerEvents="visiblePainted"
             />
-            <Menu
-                open={ contextMenuOpen }
-                onClose={ handleContextMenuClose }
-                anchorReference="anchorPosition"
-                anchorPosition={
-                    { top: contextMenuAnchorPoint.y, left: contextMenuAnchorPoint.x }
-                }
-            >
-                <MenuItem onClick={ () => changeLineKind ("Curve") }>Curve</MenuItem>
-                <MenuItem onClick={ () => changeLineKind ("Straight") }>Straight</MenuItem>
-                <Divider />
-                <MenuItem onClick={ handleContextMenuClose }>Change attributes</MenuItem>
-            </Menu>
+            <ContextMenu
+                render={ ( open, anchorPosition, onContextMenuOpen, onContextMenuClose ) => (
+                    handleContextMenuOpen = onContextMenuOpen, handleContextMenuclose = onContextMenuClose,
+                    <Menu
+                        open={ open }
+                        onClose={ onContextMenuClose }
+                        anchorReference="anchorPosition"
+                        anchorPosition={
+                            { top: anchorPosition.y, left: anchorPosition.x }
+                        }
+                    >
+                        <MenuItem onClick={ () => changeLineKind ("Curve") }>Curve</MenuItem>
+                        <MenuItem onClick={ () => changeLineKind ("Straight") }>Straight</MenuItem>
+                        <Divider />
+                        <MenuItem onClick={ onContextMenuClose }>Change attributes</MenuItem>
+                    </Menu>
+                )}
+            />
         </>
     )
 }
