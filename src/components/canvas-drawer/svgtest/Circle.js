@@ -1,5 +1,6 @@
 import React from 'react';
 import { Divider, Menu, MenuItem } from '@mui/material';
+import ContextMenu from './ContextMenu';
 
 class Circle extends React.Component {
     
@@ -9,21 +10,16 @@ class Circle extends React.Component {
         super(props);
 
         this.ismousedown = false;
-        
+        this.handleContextMenuOpen = undefined;        
         this.state = {
             id: props.cid === undefined ? "circle-"+(Circle.num)++ : props.cid,
-            contextMenuOpen: false,
-            contextMenuAnchorPoint: { 
-                x: 10, y: 10
-            },
             isTemp: props.isTemp === undefined ? false : props.isTemp
         };
 
-        this.handleContextMenuOpen = this.handleContextMenuOpen.bind(this);
-        this.handleContextMenuClose = this.handleContextMenuClose.bind(this);
         this.handleMouseDown = this.handleMouseDown.bind(this);
         this.handleMouseUp = this.handleMouseUp.bind(this);
         this.handleMouseMove = this.handleMouseMove.bind(this);
+        this.openContextMenu = this.openContextMenu.bind(this);
     }
 
     componentDidMount () {
@@ -34,15 +30,8 @@ class Circle extends React.Component {
         // console.log("circle updated: " + this.state.id+", " + JSON.stringify(prevProps.position));
     }
 
-    handleContextMenuOpen = (event) => {
-        event.preventDefault();
-        var temp = this.state;
-        temp.contextMenuAnchorPoint = {
-            x: event.pageX,
-            y: event.pageY
-        };
-        temp.contextMenuOpen = true;
-        this.setState(temp);
+    openContextMenu = (event) => {
+        this.handleContextMenuOpen(event);
         this.ismousedown = false;
     }
 
@@ -71,13 +60,6 @@ class Circle extends React.Component {
         this.setState(temp);
     }
 
-    handleContextMenuClose = () => {
-        this.setState({
-            ...this.state,
-            contextMenuOpen: false
-        })
-    }
-
     render () {
         const { id, 
                 position, 
@@ -97,26 +79,31 @@ class Circle extends React.Component {
                     stroke={ stroke } 
                     strokeWidth={ strokeWidth } 
                     fill={ isTemp === true ? "red" : fill }
-                    onContextMenu={ this.handleContextMenuOpen }
+                    onContextMenu={ this.openContextMenu }
                     onMouseDown={ this.handleMouseDown }
                     onMouseUp={ this.handleMouseUp }
                     style={{ display: show ? "block" : "none" }}
                     onClick={ this.props.toggleTempVertexShow }
                     pointerEvents="all"
                 />
-                <Menu
-                    open={ this.state.contextMenuOpen }
-                    onClose={ this.handleContextMenuClose }
-                    anchorReference="anchorPosition"
-                    anchorPosition={
-                        { top: this.state.contextMenuAnchorPoint.y, left: this.state.contextMenuAnchorPoint.x }
-                    }
-                >
-                    <MenuItem onClick={ this.handleContextMenuClose }>Curve</MenuItem>
-                    <MenuItem onClick={ this.handleContextMenuClose }>Straight</MenuItem>
-                    <Divider />
-                    <MenuItem onClick={ this.handleContextMenuClose }>Delete</MenuItem>
-                </Menu>
+                <ContextMenu
+                    render={ ( open, anchorPosition, handleContextMenuOpen, handleContextMenuClose ) => (
+                        this.handleContextMenuOpen = handleContextMenuOpen,
+                        <Menu
+                            open={ open }
+                            onClose={ handleContextMenuClose }
+                            anchorReference="anchorPosition"
+                            anchorPosition={
+                                { top: anchorPosition.y, left: anchorPosition.x }
+                            }
+                        >
+                            <MenuItem onClick={ handleContextMenuClose }>Curve</MenuItem>
+                            <MenuItem onClick={ handleContextMenuClose }>Straight</MenuItem>
+                            <Divider />
+                            <MenuItem onClick={ handleContextMenuClose }>Delete</MenuItem>
+                        </Menu>
+                     )}
+                />
             </>
         );
     }
