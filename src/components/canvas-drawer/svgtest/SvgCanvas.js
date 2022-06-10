@@ -1,6 +1,7 @@
 import React from 'react';
 import LineEdgeCircle from './LineEdgeCircle';
 import LineWithCircleVertex from './LineWithCircleVertex';
+import Rectangle from './Rectangle';
 
 const commands = [
     ["Line", [50, 50], [300, 100]]   
@@ -19,6 +20,27 @@ const SvgCanvas = (props) => {
                     stroke="black"
                     strokeWidth="1"
                     fill="none"
+                />
+                <Rectangle 
+                    id="Rectangle-01"
+                    position={{
+                        x: 300,
+                        y: 300
+                    }}
+                    offset={{
+                        y: 20,
+                        x: 0
+                    }}
+                    rx={5}
+                    ry={5}
+                    width={100}
+                    height={100}
+                    stroke="black"
+                    strokeOpacity={0.7}
+                    strokeWidth={2}
+                    fill="yellow"
+                    fillOpacity="0.7"
+                    title="sample rectangle"
                 />
             </svg>
         </>
