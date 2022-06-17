@@ -1,4 +1,13 @@
+// import React from 'react';
+// import withMouse from "./MouseHoc"
 
-export default class Shape {
-    
-}
+// const Shape = (props) => {
+
+//         return (
+//             <div>
+//                 Hi ~~~
+//             </div>
+//         )        
+// }
+
+// export default withMouse()(Shape);
