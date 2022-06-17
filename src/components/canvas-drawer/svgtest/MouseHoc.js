@@ -1,22 +1,20 @@
 import React from 'react';
 
-export default function withMouse ( TargetComponent, ...props ) {
+var num = 0;
+
+const withMouse = (shape, decideMouseCursor) => ( TargetComponent ) => {
     return class extends React.Component {
         constructor(props) {
             super(props);
-            this.targetId = props.targetId;
-            this.onMouseDown = props.onMouseDown;
-            this.onMouseUp = props.onMouseUp;
-            this.onMouseMove = props.onMouseMove;
-            this.isMouseInside = false;
+            this.targetId = shape+(num++);
+            this.element =  undefined;
 
             this.state = {
-                position: {
-                    x: 0, y: 0
-                },
-                isMouseDown: false,
                 isSelected: false,
                 cursor: "pointer",
+                isMouseInside: false,
+                isMouseInsideDown: false,
+                mouse: { x: 0, y: 0 }
             }
 
             this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -24,111 +22,83 @@ export default function withMouse ( TargetComponent, ...props ) {
             this.handleMouseMove = this.handleMouseMove.bind(this);
             this.handleMouseOver = this.handleMouseOver.bind(this);
             this.handleMouseUp = this.handleMouseUp.bind(this);
-            this.handleClick = this.handleClick.bind(this);
-
-            this.decideMouseCursor = this.decideMouseCursor.bind(this);
         }
 
-        decideMouseCursor = (event) => {
-            this.setState({
-                ...this.state,
-                cursor: "nw-resize"
-            })
-            // const posX = event.offsetX-this.state.offset.x, posY = event.clientY-this.state.offset.y;
-            // const posX = event.offsetX, posY = event.clientY;
-            // var cursor = "move";
-            // if(posY < this.state.anchorPosition.y+20) {
-            //     if(posX < this.state.anchorPosition.x+20) {
-            //         cursor = "nw-resize";
-            //     } else if(posX > this.state.anchorPosition.x+this.state.width-20) {
-            //         cursor = "ne-resize";
-            //     } else {
-            //         cursor = "n-resize";
-            //     }
-            // } else if(posY > this.state.anchorPosition.y+this.state.height-20) {
-            //     if(posX < this.state.anchorPosition.x+20) {
-            //         cursor = "sw-resize";
-            //     } else if(posX > this.state.anchorPosition.x+this.state.width-20) {
-            //         cursor = "se-resize";
-            //     } else {
-            //         cursor = "s-resize";
-            //     }
-            // } else {
-            //     if(posX < this.state.anchorPosition.x + 20) {
-            //         cursor = "w-resize";
-            //     } else if(posX > this.state.anchorPosition.x+this.state.width-20) {
-            //         cursor = "e-resize";
-            //     }
-            // }
-     
-            // this.setState({
-            //     ...this.state,
-            //     mouseCursor: cursor
-            // })
+        componentDidMount() {
+            this.element = document.getElementById(this.targetId);
         }
 
         handleMouseDown (event) {
             event.preventDefault();
             this.setState({
                 ...this.state,
-                isMouseDown: true
+                isMouseInsideDown: true
             })
-            document.addEventListener('mousemove', this.handleMouseMove);
         }
 
         handleMouseUp (event) {
             event.preventDefault();
             this.setState({
                 ...this.state,
-                isMouseDown: false
-            });
-            document.removeEventListener ('mousemove', this.handleMouseMove);
+                isMouseInsideDown: false
+            })
         }
 
         handleMouseMove (event) {
-            if(this.isMouseInside === true) {
-                this.decideMouseCursor(event);
-            }
-            this.state({
-                ...this.state,
-                position: {
-                    x: event.clientX,
-                    y: event.clientY
+            if(this.state.isMouseInside === true) {
+                var rect = this.element.getBoundingClientRect();
+                var cursor = decideMouseCursor(event, rect);
+                this.setState({
+                    ...this.state,
+                    cursor: cursor,
+                });
+
+                if(this.state.isMouseInsideDown === true) {
+                    this.setState({
+                        ...this.state,
+                        mouse: { x: event.clientX, y: event.clientY },
+                    });
                 }
-            });
-            event.preventDefault();
-            this.onMouseMove(event);
+            }
         }
 
         handleMouseOver (event) {
-            this.isMouseInside = true;
+            this.setState({
+                ...this.state,
+                isMouseInside: true
+            })
         }
 
         handleMouseLeave (event) {
             this.setState({
                 ...this.state,
-                mouseCursor: "pointer"
-            })
-            this.isMouseInside = false;
+                cursor: "pointer",
+                isMouseInside: false
+            });
         }
 
         render() {
             return (
-                <TargetComponent 
-                    isMouseDown={ this.state.isMouseDown }
-                    isSelected={ this.state.isSelected }
-                    mouse={ this.state.position }
-                    cursor={ this.state.cursor }
-
-                    handleMouseDown={ this.handleMouseDown }
-                    handleMouseLeave={ this.handleMouseLeave }
-                    // handleMouseMove={ this.handleMouseMove }
-                    handleMouseOver={ this.handleMouseOver }
-                    handleMouseUp={ this.handleMouseUp }
-                    handleClick={ this.handleclick }
-                    {...props }
-                />
+                <svg
+                    id={ this.targetId }
+                    onMouseLeave={ this.handleMouseLeave }
+                    onMouseOver={ this.handleMouseOver }
+                    onMouseMove={ this.handleMouseMove }
+                    onMouseDown={ this.handleMouseDown }
+                    onMouseUp={ this.handleMouseUp }
+                >
+                    <TargetComponent 
+                        // isSelected={ this.state.isSelected }
+                        mouse={ this.state.mouse }
+                        cursor={ this.state.cursor }
+                        isMouseInside={ this.state.isMouseInside }
+                        isMouseInsideDown={ this.state.isMouseInsideDown }
+                        {...this.props }
+                    />
+                </svg>
             )
         }
     }
 }
+
+export default withMouse;
