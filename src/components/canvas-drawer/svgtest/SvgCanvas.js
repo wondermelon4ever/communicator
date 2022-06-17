@@ -2,12 +2,13 @@ import React from 'react';
 import LineEdgeCircle from './LineEdgeCircle';
 import LineWithCircleVertex from './LineWithCircleVertex';
 import Rectangle from './Rectangle';
+// import Shape from './Shape';
 
 const commands = [
     ["Line", [50, 50], [300, 100]]   
 ];
 const SvgCanvas = (props) => {
-    
+
     return (
         <>
             <div>
@@ -27,10 +28,6 @@ const SvgCanvas = (props) => {
                         x: 300,
                         y: 300
                     }}
-                    offset={{
-                        y: 20,
-                        x: 0
-                    }}
                     rx={5}
                     ry={5}
                     width={100}
@@ -43,6 +40,7 @@ const SvgCanvas = (props) => {
                     title="sample rectangle"
                 />
             </svg>
+            
         </>
     )
 }
