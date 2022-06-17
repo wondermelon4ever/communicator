@@ -1,25 +1,53 @@
 import React from 'react';
 import { Divider, Menu, MenuItem } from '@mui/material';
 import ContextMenu from './ContextMenu';
+import withMouse from './MouseHoc';
 
-export default class Rectangle extends React.Component {
+const decideMouseCursor = (event, rect) => {
+    const posX = event.clientX, posY = event.clientY;
+    var cursor = "move";
+    if(posY < rect.y+15) {
+        if(posX < rect.x+15) {
+            cursor = "nw-resize";
+        } else if(posX > rect.x+rect.width-15) {
+            cursor = "ne-resize";
+        } else {
+            cursor = "n-resize";
+        }
+    } else if(posY > rect.y+rect.height-15) {
+        if(posX < rect.x+15) {
+            cursor = "sw-resize";
+        } else if(posX > rect.x+rect.width-15) {
+            cursor = "se-resize";
+        } else {
+            cursor = "s-resize";
+        }
+    } else {
+        if(posX < rect.x + 15) {
+            cursor = "w-resize";
+        } else if(posX > rect.x+rect.width-15) {
+            cursor = "e-resize";
+        }
+    }
+    return cursor;
+}
+
+class Rectangle extends React.Component {
 
     constructor(props) {
         super(props);
         this.id = props.id;
+        this.isMouseInside = props.isMouseInside;
+        this.isMouseInsideDown = props.isMouseInsideDown;
         this.isMouseDown = false;
         this.handleContextMenuOpen = undefined;
         this.prevMousePosition = undefined;
-        this.isMouseInside = false;
-
+        this.offset = undefined;
+        
         this.state = {
             anchorPosition: {
                 x: props.position.x,
                 y: props.position.y
-            },
-            offset: {
-                x: props.offset.x,
-                y: props.offset.y
             },
             rx: props.rx,
             ry: props.ry,
@@ -31,22 +59,109 @@ export default class Rectangle extends React.Component {
             fill: props.fill,
             fillOpacity: props.fillOpacity,
             title: props.title,
-
-            mouseCursor: "pointer",
-            isSelected: false,
         }
 
-        this.decideMouseCursor = this.decideMouseCursor.bind(this);
         this.handleMouseDown = this.handleMouseDown.bind(this);
-        this.handleMouseLeave= this.handleMouseLeave.bind(this);
         this.handleMouseMove = this.handleMouseMove.bind(this);
-        this.handleMouseOver = this.handleMouseOver.bind(this);
         this.handleMouseUp = this.handleMouseUp.bind(this);
         this.openContextMenu = this.openContextMenu.bind(this);
+        this.resize = this.resize.bind(this);
+    }
+
+    componentDidUpdate(prevProps) {
+        if(prevProps.isMouseInside !== this.props.isMouseInside) {
+            this.isMouseInside = this.props.isMouseInside;
+        }
+
+        if(prevProps.isMouseInsideDown !== this.props.isMouseInsideDown) {
+            this.isMouseInsideDown = this.props.isMouseInsideDown;
+        }
+
+        if(prevProps.mouse.x !== this.props.mouse.x || prevProps.mouse.y !== this.props.mouse.y) {
+            this.resize(this.props.mouse, this.props.cursor);
+        }
+    }
+    
+    resize = (mouse, cursor) => {
+        if(!this.isMouseInside || !this.isMouseInsideDown) return;
+
+        var apos   = this.state.anchorPosition, 
+            width  = this.state.width,
+            height = this.state.height;
+        if(cursor !== "move") {
+            if(mouse.y < apos.y) height += apos.y-mouse.y-this.offset.y-3;
+            else height -= mouse.y-apos.y-this.offset.y-3;
+    
+            if(mouse.x < apos.x) width += apos.x-mouse.x-5;
+            else width -= mouse.x-apos.x-5;
+        }
+
+        if (cursor === "nw-resize") {
+            this.setState({
+                ...this.state,
+                anchorPosition: {
+                    x: mouse.x-5, y: mouse.y-28,
+                },
+                height: height,
+                width: width
+            });
+        } else if(cursor === "ne-resize") {
+            this.setState({
+                ...this.state,
+                anchorPosition: {
+                    x: apos.x, y: mouse.y-28,
+                },
+                height: height,
+                width: mouse.x+5-apos.x,
+            });
+        } else if(cursor === "n-resize") {
+            this.setState({
+                ...this.state,
+                anchorPosition: {
+                    x: apos.x, y: mouse.y-28
+                },
+                height: height
+            });
+        } else if(cursor === "sw-resize") {
+            this.setState({
+                ...this.state,
+                anchorPosition: {
+                    x: mouse.x-5, y: apos.y
+                },
+                height: mouse.y-apos.y,
+                width: width
+            });
+            
+        } else if(cursor === "se-resize") {
+            this.setState({
+                ...this.state,
+                height: mouse.y-apos.y,
+                width: mouse.x-apos.x+5
+            })
+            
+        } else if(cursor === "s-resize") {
+            this.setState({
+                ...this.state,
+                height: mouse.y+3-apos.y,
+            });
+        } else if(cursor === "w-resize") {
+            this.setState({
+                ...this.state,
+                anchorPosition: {
+                    x: mouse.x-5, y: apos.y
+                },
+                width: width
+            });
+
+        } else if(cursor === "e-resize") {
+            this.setState({
+                ...this.state,
+                width: mouse.x+3-apos.x,
+            });
+        }
     }
 
     openContextMenu = (event) => {
-        console.log("open context menu !!!");
         this.handleContextMenuOpen(event);
         this.isMouseDown = false;
     }
@@ -57,45 +172,12 @@ export default class Rectangle extends React.Component {
         document.addEventListener('mousemove', this.handleMouseMove);
     }
 
-    decideMouseCursor = (event) => {
-        // const posX = event.offsetX-this.state.offset.x, posY = event.clientY-this.state.offset.y;
-        console.log("event.offsetX=>" + event.offsetX);
-        const posX = event.offsetX, posY = event.clientY;
-        var cursor = "move";
-        if(posY < this.state.anchorPosition.y+20) {
-            if(posX < this.state.anchorPosition.x+20) {
-                cursor = "nw-resize";
-            } else if(posX > this.state.anchorPosition.x+this.state.width-20) {
-                cursor = "ne-resize";
-            } else {
-                cursor = "n-resize";
-            }
-        } else if(posY > this.state.anchorPosition.y+this.state.height-20) {
-            if(posX < this.state.anchorPosition.x+20) {
-                cursor = "sw-resize";
-            } else if(posX > this.state.anchorPosition.x+this.state.width-20) {
-                cursor = "se-resize";
-            } else {
-                cursor = "s-resize";
-            }
-        } else {
-            if(posX < this.state.anchorPosition.x + 20) {
-                cursor = "w-resize";
-            } else if(posX > this.state.anchorPosition.x+this.state.width-20) {
-                cursor = "e-resize";
-            }
-        }
- 
-        this.setState({
-            ...this.state,
-            mouseCursor: cursor
-        })
-    }
-
     handleMouseMove = (event) => {
         event.preventDefault();
-        if(this.isMouseInside === true) {
-            this.decideMouseCursor(event);
+        if(this.offset === undefined) {
+            this.offset = {
+                x: event.clientX-event.offsetX, y: event.clientY-event.offsetY
+            }
         }
 
         if(event.ctrlKey === false || this.isMouseDown === false) return;
@@ -104,12 +186,12 @@ export default class Rectangle extends React.Component {
             moveY = this.prevMousePosition === undefined ? 0 : (event.offsetY-this.prevMousePosition.y);
 
         this.prevMousePosition = { x: event.offsetX, y: event.offsetY };
-
+        var apos = this.state.anchorPosition;
         this.setState({
-            ...this.props,
+            ...this.state,
             anchorPosition: {
-                x: this.state.anchorPosition.x+moveX,
-                y: this.state.anchorPosition.y+moveY
+                x: apos.x+moveX,
+                y: apos.y+moveY
             }
         });
     }
@@ -119,18 +201,6 @@ export default class Rectangle extends React.Component {
         this.isMouseDown = false;
         document.removeEventListener ('mousemove', this.handleMouseMove);
         this.prevMousePosition = undefined;
-    }
-
-    handleMouseOver = (event) => {
-        this.isMouseInside = true;
-    }
-
-    handleMouseLeave = (event) => {
-        this.setState({
-            ...this.state,
-            mouseCursor: "pointer"
-        })
-        this.isMouseInside = false;
     }
 
     render () {
@@ -150,14 +220,11 @@ export default class Rectangle extends React.Component {
                         strokeWidth: this.state.strokeWidth,
                         fillOpacity: this.state.fillOpacity,
                         strokeOpacity: this.state.strokeOpacity,
-
-                        cursor: this.state.mouseCursor
+                        cursor: this.props.cursor
                     }}
                     onContextMenu={ this.openContextMenu }
                     onMouseDown={ this.handleMouseDown }
                     onMouseUp={ this.handleMouseUp }
-                    onMouseOver={ this.handleMouseOver }
-                    onMouseLeave={ this.handleMouseLeave }
                 >
                     <title>
                         { this.props.title }
@@ -185,3 +252,5 @@ export default class Rectangle extends React.Component {
         );
     }
 }
+
+export default withMouse("Rectangle", decideMouseCursor)(Rectangle);
